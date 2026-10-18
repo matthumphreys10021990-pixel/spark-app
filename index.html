@@ -105,6 +105,21 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .nv.tour-on,.nv-c.tour-on{box-shadow:0 0 0 3px #111214,0 0 0 7px #DDF58B;z-index:1;position:relative;animation:tourRing 1.6s ease-in-out infinite}
 @keyframes tourRing{0%,100%{box-shadow:0 0 0 3px #111214,0 0 0 7px #DDF58B}50%{box-shadow:0 0 0 3px #111214,0 0 0 11px rgba(221,245,139,.55)}}
 .rm .nv.tour-on,.rm .nv-c.tour-on{animation:none}
+.sw-btn{appearance:none;border:1px solid rgba(245,245,242,.22);background:rgba(17,18,20,.35);color:#F5F5F2;border-radius:999px;min-height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.sw-ask{margin-top:14px;background:rgba(17,18,20,.6);border:1px solid rgba(245,245,242,.14);border-radius:20px;padding:14px}
+.sw-wrap{position:absolute;inset:0;z-index:30;background:#111214;display:flex;box-sizing:border-box}
+.sw-card{width:100%;height:100%;overflow-y:auto;scrollbar-width:none;background:#111214;padding:24px 20px 32px;box-sizing:border-box}
+.sw-card .sw-opt{background:#1C1D21}
+.sw-card .sw-opt:hover,.sw-card .sw-opt:focus-visible{background:#26272C}
+.sw-card .sw-tabs{background:#1C1D21}
+.sw-opt{appearance:none;border:0;width:100%;background:#111214;color:#F5F5F2;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;font:inherit;cursor:pointer}
+.sw-opt:hover,.sw-opt:focus-visible{background:#26272C}
+.sw-tabs{display:grid;gap:2px;background:#111214;border-radius:999px;padding:3px;margin:0 0 12px}
+.sw-tab{appearance:none;border:0;background:transparent;color:#A1A1AA;border-radius:999px;min-height:46px;padding:0 2px;font:inherit;font-size:12px;letter-spacing:-0.01em;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;min-width:0}
+.sw-tab.on{background:#B7A6F6;color:#111214}
+.sw-tab-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.sw-tab-n{font-size:11px;font-weight:600;opacity:.75}
+.sw-kit{display:inline-block;font-size:12px;font-weight:700;color:#111214;background:#B7A6F6;border-radius:999px;padding:3px 10px}
 .jdel{appearance:none;border:0;background:transparent;color:#F4A29A;width:36px;height:36px;margin:-8px -10px -8px 0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
 .jdel:hover,.jdel:focus-visible{background:#2A1F20}
 .ib{appearance:none;border:0;cursor:pointer;width:44px;height:44px;flex:none;border-radius:50%;background:#1C1D21;color:#F5F5F2;display:inline-flex;align-items:center;justify-content:center;padding:0;font:inherit}
@@ -803,10 +818,12 @@ body.kb .nav{display:none!important}
     <section class="rise" style="position: relative; overflow: hidden; isolation: isolate; margin-top: 16px; border-radius: 32px; padding: 22px 20px 20px; background: radial-gradient(120% 90% at 85% 0%, rgba(183,166,246,.42), rgba(183,166,246,0) 55%), radial-gradient(90% 80% at 0% 100%, rgba(221,245,139,.20), rgba(221,245,139,0) 60%), #1C1D21">
       <svg class="rings" viewBox="0 0 200 200" width="280" height="280" aria-hidden="true" style="right: -110px; top: -110px; z-index: -1"><g fill="none" stroke="#F5F5F2" stroke-opacity=".06" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
-        <span class="tag" style="background: rgba(17,18,20,.55); color: #D4D4D8">{{act.ex.areaText}}</span>
+        <span class="tag" style="background: rgba(17,18,20,.55); color: #DDF58B">{{act.kitLabel}}</span>
         <button onClick="{{toggleCues}}" aria-expanded="{{showCues}}" style="appearance: none; cursor: pointer; font: inherit; border: 0; height: 32px; padding: 0 12px; border-radius: 999px; background: rgba(245,245,242,.1); color: #F5F5F2; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; flex: none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V15M12 18.5v.5"></path></svg>{{cuesLabel}}</button>
       </div>
       <h1 class="d" style="font-size: 34px; margin-top: 16px">{{act.ex.name}}</h1>
+      <div class="row" style="gap: 8px; margin-top: 12px; justify-content: flex-start"><button class="sw-btn" onClick="{{openSwitch}}" aria-label="Switch to a similar exercise"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg>Switch exercise</button></div>
+      <sc-if value="{{swAsk.on}}" hint-placeholder-val="{{ false }}"><div class="sw-ask rise"><span style="font-size: 15px; line-height: 1.45">{{swAsk.text}}</span><div class="row" style="gap: 8px; margin-top: 10px"><button class="btn sm" style="background: #DDF58B; color: #111214" onClick="{{swAsk.yes}}">Yes, from now on</button><button class="btn b-ghost sm" onClick="{{swAsk.no}}">Just today</button></div></div></sc-if>
       <sc-if value="{{showCues}}" hint-placeholder-val="{{ false }}">
       <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px">
         <sc-for list="{{act.cues}}" as="c" hint-placeholder-count="3"><div class="row" style="gap: 12px; align-items: flex-start"><span style="width: 26px; height: 26px; flex: none; border-radius: 50%; background: #DDF58B; color: #111214; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{c.n}}</span><span style="font-size: 15px; line-height: 1.4; padding-top: 3px">{{c.t}}</span></div></sc-for>
@@ -857,14 +874,14 @@ body.kb .nav{display:none!important}
     <div style="display: grid; grid-template-columns: {{act.gridCols}}; gap: 10px">
       <sc-if value="{{act.hasKg}}" hint-placeholder-val="{{ true }}">
       <div class="numtile">
-        <span class="ws-mut" style="font-size: 13px; font-weight: 600">Weight</span>
-        <span style="white-space: nowrap"><span class="n9" style="font-size: 52px">{{act.kg}}</span><span class="ws-mut" style="font-size: 14px; font-weight: 600; margin-left: 4px">{{act.unit}}</span></span>
+        <span class="ws-mut" style="font-size: 13px; font-weight: 600">{{act.kgLabel}}</span>
+        <span style="white-space: nowrap; display: flex; align-items: flex-end; height: 54px"><span class="n9" style="font-size: {{act.kgSize}}">{{act.kg}}</span><span class="ws-mut" style="font-size: 14px; font-weight: 600; margin-left: 4px">{{act.unitShort}}</span></span>
         <span class="row" style="gap: 8px"><button class="numbtn" aria-label="Less weight" onClick="{{kgDown}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><button class="numbtn" aria-label="More weight" onClick="{{kgUp}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></span>
       </div>
       </sc-if>
       <div class="numtile">
         <span class="ws-mut" style="font-size: 13px; font-weight: 600">{{act.repTitle}}</span>
-        <span style="white-space: nowrap"><span class="n9" style="font-size: 52px">{{act.reps}}</span><span class="ws-mut" style="font-size: 14px; font-weight: 600; margin-left: 4px">{{act.repUnit}}</span></span>
+        <span style="white-space: nowrap; display: flex; align-items: flex-end; height: 54px"><span class="n9" style="font-size: 52px">{{act.reps}}</span><span class="ws-mut" style="font-size: 14px; font-weight: 600; margin-left: 4px">{{act.repUnit}}</span></span>
         <span class="row" style="gap: 8px"><button class="numbtn" aria-label="Fewer" onClick="{{repDown}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><button class="numbtn" aria-label="More" onClick="{{repUp}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></span>
       </div>
     </div>
@@ -896,14 +913,6 @@ body.kb .nav{display:none!important}
     </div>
 
     <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
-      <sc-if value="{{rest.water}}" hint-placeholder-val="{{ false }}">
-      <div style="background: rgba(166,216,250,.07); color: #F5F5F2; border-radius: 22px; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
-        <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #A6D8FA; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"></path></svg></span>
-        <span style="flex: 1; font-size: 15px; font-weight: 600">Have a sip of water?</span>
-        <button class="btn b-sky sm" style="min-height: 40px; padding: 0 14px" onClick="{{drankWater}}">Done</button>
-        <button class="link" style="color: #9FB7C9; min-height: 40px" onClick="{{skipWater}}">Later</button>
-      </div>
-      </sc-if>
 
       <sc-if value="{{rest.showStim}}" hint-placeholder-val="{{ true }}">
       <div style="background: rgba(166,216,250,.06); border-radius: 28px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
@@ -914,7 +923,7 @@ body.kb .nav{display:none!important}
       <sc-if value="{{rest.tabSpin}}" hint-placeholder-val="{{ true }}">
       <div style="height: 392px; justify-content: center; display: flex; flex-direction: column; align-items: center; gap: 8px">
         <div onPointerDown="{{spinDown}}" onPointerMove="{{spinMove}}" onPointerUp="{{spinUp}}" onPointerCancel="{{spinUp}}" style="width: 300px; height: 300px; touch-action: none; cursor: grab; filter: drop-shadow(0 8px 8px rgba(17,18,20,.16)) drop-shadow(0 2px 2px rgba(17,18,20,.14)); display: flex; align-items: center; justify-content: center; user-select: none">
-          <div data-spinner="1" style="width: 300px; height: 300px; will-change: transform">
+          <div data-spinner="1" style="width: 300px; height: 300px; will-change: transform; transform: {{spinTf}}">
             <svg viewBox="6 6 188 188" width="300" height="300" aria-hidden="true">
               <defs>
                 <radialGradient id="spLime" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#E9FBAE"></stop><stop offset=".6" stop-color="#DDF58B"></stop><stop offset="1" stop-color="#C6DE74"></stop></radialGradient>
@@ -1405,6 +1414,25 @@ body.kb .nav{display:none!important}
 </div>
 </sc-if>
 
+<!-- ================= SWITCH EXERCISE ================= -->
+<sc-if value="{{sw.on}}" hint-placeholder-val="{{ false }}">
+<div class="sw-wrap" role="dialog" aria-modal="true" aria-label="Switch exercise">
+  <div class="sw-card">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px">
+      <span><span class="tour-kicker">Instead of {{sw.from}}</span><h2 class="d" style="font-size: 26px; margin: 6px 0 0">{{sw.title}}</h2></span>
+      <button class="tour-x" aria-label="Close" onClick="{{sw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <p class="mut" style="margin: 8px 0 14px; font-size: 14px; line-height: 1.5">{{sw.sub}}</p>
+    <sc-if value="{{sw.hasTabs}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="Kit" style="grid-template-columns: {{sw.tabCols}}"><sc-for list="{{sw.tabs}}" as="t" hint-placeholder-count="4"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}"><span class="sw-tab-l">{{t.label}}</span><span class="sw-tab-n">{{t.count}}</span></button></sc-for></div></sc-if>
+    <sc-if value="{{sw.tabEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 6px 4px 0; font-size: 14px; line-height: 1.5">{{sw.tabEmptyText}}</p></sc-if>
+    <div style="display: flex; flex-direction: column; gap: 8px" role="tabpanel">
+      <sc-for list="{{sw.opts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}<sc-if value="{{o.hasLast}}" hint-placeholder-val="{{ false }}"> · {{o.last}}</sc-if></span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-for>
+    </div>
+    <sc-if value="{{sw.taken}}" hint-placeholder-val="{{ false }}"><button class="link" style="display: flex; margin: 14px auto 0; color: #A1A1AA" onClick="{{sw.simpler}}">Nothing’s free? Make it simpler</button></sc-if>
+  </div>
+</div>
+</sc-if>
+
 <!-- ================= FIRST-RUN TOUR ================= -->
 <sc-if value="{{tour.on}}" hint-placeholder-val="{{ false }}">
 <div class="tour" role="dialog" aria-modal="true" aria-label="How Spark works">
@@ -1616,8 +1644,175 @@ const EX = {
   glutebridge:{name:'Glute bridge',area:'Glutes · hamstrings',reps:12,bw:true,cues:['Lie on your back, knees bent','Push through your heels to lift your hips','Squeeze at the top, lower slowly']},
   doorrow:{name:'Doorway row',area:'Back · biceps',reps:10,bw:true,cues:['Hold both sides of a sturdy door frame','Lean back with your arms straight','Pull your chest towards the frame']},
   stepjack:{name:'Step jacks',area:'Heart · legs',reps:3,bw:true,repUnit:'minutes',cues:['Step one foot out as your arms go up','Step back in, then switch sides','Low impact, no jumping needed']},
-  benchdip:{name:'Bench dips',area:'Triceps',reps:10,bw:true,cues:['Hands on the edge of a bench or sturdy chair','Bend your elbows to about 90°','Push back up. Bend your knees to make it easier']}
+  benchdip:{name:'Bench dips',area:'Triceps',reps:10,bw:true,cues:['Hands on the edge of a bench or sturdy chair','Bend your elbows to about 90°','Push back up. Bend your knees to make it easier']},
+  cablepress:{name:'Cable chest press',area:'Chest · shoulders · triceps',reps:12,kg:15,best:17.5,step:2.5,unit:'kg each side',cues:['Set both handles at chest height','Step forward, then press out and together','Let your arms come back slowly']},
+  inclinedb:{name:'Incline dumbbell press',area:'Upper chest · shoulders',reps:10,kg:14,best:16,step:2,unit:'kg each',cues:['Set the bench to a low incline','Press up over your upper chest','Lower slowly to chest level']},
+  pecdeck:{name:'Pec deck machine',area:'Chest',reps:12,kg:35,best:40,step:2.5,unit:'kg',cues:['Seat so the handles line up with your chest','Bring your arms together like a big hug','Open back slowly and feel the stretch']},
+  cablefly:{name:'Cable fly',area:'Chest',reps:12,kg:7.5,best:10,step:2.5,unit:'kg each side',cues:['Handles at shoulder height, slight bend in your elbows','Sweep your hands together in front of you','Open back out slowly']},
+  pulldown1:{name:'Single-arm cable pulldown',area:'Back · biceps',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Kneel or sit facing the cable','Pull your elbow down to your side','Let it rise slowly, arm long']},
+  pullover:{name:'Dumbbell pullover',area:'Back · chest',reps:12,kg:14,best:16,step:2,unit:'kg',cues:['Lie across a bench, one dumbbell over your chest','Lower it back behind your head, elbows soft','Pull it back over your chest']},
+  machinerow:{name:'Seated row machine',area:'Back · biceps',reps:12,kg:40,best:45,step:2.5,unit:'kg',cues:['Chest against the pad','Pull your elbows back past your sides','Return slowly, arms long']},
+  bbrow:{name:'Barbell bent-over row',area:'Back · biceps',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Hinge forward with a flat back','Pull the bar to your belly button','Lower it with control']},
+  machinesp:{name:'Shoulder press machine',area:'Shoulders · triceps',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Handles level with your shoulders','Press up without locking out','Lower slowly to the start']},
+  arnold:{name:'Arnold press',area:'Shoulders',reps:10,kg:10,best:12,step:2,unit:'kg each',cues:['Start with your palms facing you','Turn your palms out as you press up','Reverse it on the way down']},
+  cablelat:{name:'Cable lateral raise',area:'Shoulders',reps:12,kg:5,best:7.5,step:2.5,unit:'kg',cues:['Stand side-on to the cable','Raise your arm out to shoulder height','Lower slowly, no swinging']},
+  machinelat:{name:'Lateral raise machine',area:'Shoulders',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Pads just above your elbows','Lift out to shoulder height','Lower slowly']},
+  cablecurl:{name:'Cable biceps curl',area:'Biceps',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Elbows by your sides','Curl the bar up towards your chest','Lower all the way down']},
+  machinecurl:{name:'Preacher curl machine',area:'Biceps',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Upper arms flat on the pad','Curl up smoothly','Lower slowly, all the way']},
+  hammer:{name:'Hammer curl',area:'Biceps · forearms',reps:12,kg:10,best:12,step:2,unit:'kg each',cues:['Palms facing each other','Curl up without swinging','Lower slowly']},
+  dipmachine:{name:'Triceps dip machine',area:'Triceps · chest',reps:12,kg:35,best:40,step:2.5,unit:'kg',cues:['Sit tall, elbows tucked in','Press down until your arms are straight','Let it rise slowly']},
+  cableoh:{name:'Overhead cable extension',area:'Triceps',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Face away from the cable, rope behind your head','Straighten your arms forward and up','Bend back slowly']},
+  hacksquat:{name:'Hack squat machine',area:'Legs · glutes',reps:10,kg:40,best:50,step:5,unit:'kg',cues:['Shoulders under the pads, feet mid-plate','Lower until your thighs are about level','Push back up through your heels']},
+  legext:{name:'Leg extension machine',area:'Quads',reps:12,kg:35,best:40,step:2.5,unit:'kg',cues:['Knees in line with the machine’s pivot','Straighten your legs smoothly','Lower slowly']},
+  hamcurl:{name:'Hamstring curl machine',area:'Hamstrings',reps:12,kg:30,best:35,step:2.5,unit:'kg',cues:['Pad just above your heels','Curl your heels towards you','Return slowly']},
+  pullthrough:{name:'Cable pull-through',area:'Glutes · hamstrings',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Face away from the cable, rope between your legs','Hinge at your hips, back flat','Squeeze your glutes to stand tall']},
+  cablecrunch:{name:'Cable crunch',area:'Core',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Kneel facing the cable, rope by your head','Curl down, elbows towards your knees','Come back up slowly']},
+  abmachine:{name:'Ab crunch machine',area:'Core',reps:12,kg:25,best:30,step:2.5,unit:'kg',cues:['Feet under the pads','Curl forward from your middle','Return slowly']},
+  treadmill:{name:'Treadmill walk',area:'Heart · legs',reps:10,bw:true,repUnit:'minutes',cues:['A brisk pace you can still talk at','Add a little incline if you like','Hold the rail only if you need to']},
+  xtrainer:{name:'Cross trainer',area:'Heart · whole body',reps:8,bw:true,repUnit:'minutes',cues:['Stand tall, hands on the moving handles','Push and pull evenly','An easy, steady pace']},
+  inclinemachine:{name:'Incline chest press machine',area:'Upper chest · shoulders · triceps',reps:10,kg:35,best:40,step:2.5,unit:'kg',cues:['Seat so the handles start at upper-chest height','Press up and out, without locking your elbows','Lower slowly to the start']},
+  smithbench:{name:'Smith machine bench press',area:'Chest · shoulders · triceps',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Bar lined up over the middle of your chest','Unhook, lower to your chest under control','Press up and re-rack on the hooks']},
+  plateChest:{name:'Plate-loaded chest press',area:'Chest · shoulders · triceps',reps:10,kg:40,best:45,step:2.5,unit:'kg',cues:['Handles level with the middle of your chest','Press forward smoothly','Two seconds on the way back']},
+  lowfly:{name:'Low-to-high cable fly',area:'Upper chest',reps:12,kg:5,best:7.5,step:2.5,unit:'kg each side',cues:['Handles set low, slight bend in your elbows','Sweep up and together to chin height','Lower back slowly']},
+  cablepress1:{name:'Single-arm cable chest press',area:'Chest · core',reps:12,kg:10,best:12.5,step:2.5,unit:'kg',cues:['Stand side-on with the handle at chest height','Press straight forward, keep your hips square','Return slowly, then swap sides']},
+  bbbench:{name:'Barbell bench press',area:'Chest · shoulders · triceps',reps:8,kg:40,best:45,step:2.5,unit:'kg',cues:['Eyes under the bar, feet flat','Lower the bar to mid-chest with control','Press up, using a spotter or safety bars']},
+  dbfly:{name:'Dumbbell fly',area:'Chest',reps:12,kg:8,best:10,step:2,unit:'kg each',cues:['Lie on a bench, weights over your chest','Open your arms wide with a soft bend','Bring them back together like a hug']},
+  inclinebb:{name:'Incline barbell press',area:'Upper chest · shoulders',reps:8,kg:30,best:35,step:2.5,unit:'kg',cues:['Bench at a low incline','Lower the bar to your upper chest','Press back up over your shoulders']},
+  declinepu:{name:'Decline press-ups',area:'Upper chest · shoulders',reps:8,bw:true,cues:['Feet up on a bench, hands on the floor','Lower your chest towards the floor','Push back up, body in a straight line']},
+  kneepu:{name:'Knee press-ups',area:'Chest · arms',reps:12,bw:true,cues:['Knees on a mat, hands just wider than shoulders','Lower your chest towards the floor','Push back up, hips in line']},
+  chestdips:{name:'Chest dips',area:'Chest · triceps',reps:8,bw:true,cues:['Hands on parallel bars, lean forward a little','Lower until your shoulders are just below your elbows','Press back up. Use the assisted machine if needed']},
+  assistpull:{name:'Assisted pull-up machine',area:'Back · biceps',reps:8,kg:35,best:30,step:2.5,unit:'kg of help',cues:['More weight means more help','Pull your chest up towards the bar','Lower slowly until your arms are long']},
+  closepulldown:{name:'Close-grip lat pulldown',area:'Back · biceps',reps:12,kg:40,best:45,step:2.5,unit:'kg',cues:['Use the close-grip handle','Pull it down to your upper chest','Let it rise slowly, arms long']},
+  platepulldown:{name:'Plate-loaded pulldown machine',area:'Back · biceps',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Thighs tucked under the pads','Pull your elbows down to your sides','Return slowly']},
+  straightarm:{name:'Straight-arm cable pulldown',area:'Back · lats',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Arms straight, slight bend in the elbows','Sweep the bar down to your thighs','Let it rise back to eye level slowly']},
+  kneelpulldown:{name:'Kneeling cable pulldown',area:'Back · biceps',reps:12,kg:20,best:22.5,step:2.5,unit:'kg',cues:['Kneel facing the cable, rope or bar overhead','Pull down to your chest, elbows to your sides','Return slowly']},
+  bbpullover:{name:'Barbell pullover',area:'Back · chest',reps:10,kg:15,best:20,step:2.5,unit:'kg',cues:['Lie on a bench, light bar over your chest','Lower it back behind your head, arms soft','Pull it back over your chest']},
+  pullup:{name:'Pull-ups',area:'Back · biceps',reps:5,bw:true,cues:['Hands just wider than your shoulders','Pull your chest up towards the bar','Lower all the way down slowly']},
+  chinup:{name:'Chin-ups',area:'Back · biceps',reps:5,bw:true,cues:['Palms facing you, shoulder-width','Pull until your chin clears the bar','Lower slowly, arms long']},
+  negpullup:{name:'Negative pull-ups',area:'Back · biceps',reps:5,bw:true,repUnit:'slow reps',cues:['Step up so your chin is over the bar','Lower yourself over about five seconds','Step back up and repeat']},
+  tbarrow:{name:'T-bar row machine',area:'Back · biceps',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Chest on the pad if there is one','Pull the handles towards your belly','Lower with control']},
+  chestrow:{name:'Chest-supported row machine',area:'Back · biceps',reps:12,kg:35,best:40,step:2.5,unit:'kg',cues:['Chest flat on the pad','Squeeze your shoulder blades as you pull','Return slowly, arms long']},
+  reardeltm:{name:'Rear delt fly machine',area:'Upper back · rear shoulders',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Face the pad, handles at shoulder height','Sweep your arms out and back','Return slowly']},
+  cablerow1:{name:'Single-arm cable row',area:'Back · biceps',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Handle at chest height, stand or kneel','Pull your elbow back past your side','Reach forward slowly, then swap']},
+  facepull:{name:'Cable face pull',area:'Upper back · rear shoulders',reps:15,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Rope at eye height','Pull towards your face, elbows high','Return slowly']},
+  widecablerow:{name:'Wide-grip cable row',area:'Upper back',reps:12,kg:35,best:40,step:2.5,unit:'kg',cues:['Use the wide bar, sit tall','Pull to your lower chest, elbows wide','Return slowly']},
+  inclinedbrow:{name:'Chest-supported dumbbell row',area:'Back · biceps',reps:12,kg:12,best:14,step:2,unit:'kg each',cues:['Lie face down on an incline bench','Pull both dumbbells up past your ribs','Lower slowly']},
+  reversefly:{name:'Dumbbell reverse fly',area:'Upper back · rear shoulders',reps:12,kg:5,best:6,step:1,unit:'kg each',cues:['Hinge forward, back flat','Raise your arms out to the sides','Lower slowly, no swinging']},
+  invertedrow:{name:'Inverted row',area:'Back · biceps',reps:10,bw:true,cues:['Lie under a low bar or Smith bar','Pull your chest up to the bar, body straight','Lower slowly']},
+  superman:{name:'Superman hold',area:'Lower back · glutes',reps:20,bw:true,repUnit:'seconds',cues:['Lie face down, arms forward','Lift your arms, chest and legs a little','Hold, breathing steadily']},
+  smithsp:{name:'Smith machine shoulder press',area:'Shoulders · triceps',reps:10,kg:20,best:25,step:2.5,unit:'kg',cues:['Sit under the bar on an upright bench','Press up without locking out','Lower to chin height slowly']},
+  cablesp:{name:'Cable shoulder press',area:'Shoulders · triceps',reps:12,kg:7.5,best:10,step:2.5,unit:'kg each side',cues:['Handles low, sit or stand between the cables','Press up and slightly together','Lower slowly to shoulder height']},
+  bbohp:{name:'Barbell overhead press',area:'Shoulders · triceps',reps:8,kg:25,best:30,step:2.5,unit:'kg',cues:['Bar on your upper chest, feet hip-width','Press straight up, head through at the top','Lower back to your chest']},
+  landmine:{name:'Landmine press',area:'Shoulders · chest',reps:10,kg:10,best:15,step:2.5,unit:'kg',cues:['One end of a bar in a landmine or corner','Press the other end up and forward','Lower slowly, then swap arms']},
+  elevpike:{name:'Elevated pike press-ups',area:'Shoulders · triceps',reps:6,bw:true,cues:['Feet on a bench, hips high','Lower your head towards the floor','Press back up']},
+  cableupright:{name:'Cable upright row',area:'Shoulders · upper back',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Bar at the low pulley','Pull up to chest height, elbows high','Lower slowly']},
+  cablereardelt:{name:'Cable rear delt fly',area:'Rear shoulders',reps:12,kg:5,best:7.5,step:2.5,unit:'kg each side',cues:['Cables crossed at shoulder height','Pull your arms out wide','Return slowly']},
+  frontraise:{name:'Front raise',area:'Front shoulders',reps:12,kg:6,best:8,step:1,unit:'kg each',cues:['Weights in front of your thighs','Raise to shoulder height, arms soft','Lower slowly']},
+  uprightrow:{name:'Dumbbell upright row',area:'Shoulders · upper back',reps:12,kg:8,best:10,step:2,unit:'kg each',cues:['Weights in front of your thighs','Lift to chest height, elbows leading','Lower slowly']},
+  ytw:{name:'Y-T-W raises',area:'Upper back · shoulders',reps:8,bw:true,repUnit:'rounds',cues:['Lie face down on a bench or the floor','Lift your arms into a Y, then a T, then a W','Slow and controlled']},
+  curlmachine:{name:'Biceps curl machine',area:'Biceps',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Elbows lined up with the pivot','Curl up smoothly','Lower slowly']},
+  ropehammer:{name:'Rope hammer curl',area:'Biceps · forearms',reps:12,kg:15,best:17.5,step:2.5,unit:'kg',cues:['Rope at the low pulley, palms facing in','Curl up, elbows by your sides','Lower slowly']},
+  cablecurl1:{name:'Single-arm cable curl',area:'Biceps',reps:12,kg:7.5,best:10,step:2.5,unit:'kg',cues:['Handle at the low pulley','Curl up, elbow still','Lower slowly, then swap']},
+  ezcurl:{name:'EZ-bar curl',area:'Biceps',reps:10,kg:15,best:20,step:2.5,unit:'kg',cues:['Hold the angled grips','Curl up without swinging','Lower all the way down']},
+  inclinecurl:{name:'Incline dumbbell curl',area:'Biceps',reps:10,kg:8,best:10,step:2,unit:'kg each',cues:['Lie back on an incline bench, arms hanging','Curl up, elbows still','Lower slowly']},
+  concentration:{name:'Concentration curl',area:'Biceps',reps:12,kg:8,best:10,step:2,unit:'kg',cues:['Sit, elbow against your inner thigh','Curl up slowly','Lower all the way, then swap']},
+  chinhold:{name:'Chin-up hold',area:'Biceps · back',reps:15,bw:true,repUnit:'seconds',cues:['Palms facing you on a bar','Pull up and hold with your chin over','Lower slowly when the time is up']},
+  tricepsmachine:{name:'Triceps machine',area:'Triceps',reps:12,kg:25,best:30,step:2.5,unit:'kg',cues:['Elbows lined up with the pivot','Push down until your arms are straight','Return slowly']},
+  assistdip:{name:'Assisted dip machine',area:'Triceps · chest',reps:10,kg:35,best:30,step:2.5,unit:'kg of help',cues:['More weight means more help','Lower until your elbows bend to about 90°','Press back up']},
+  ropepush:{name:'Rope pushdown',area:'Triceps',reps:12,kg:17.5,best:20,step:2.5,unit:'kg',cues:['Elbows pinned to your sides','Push down and pull the rope apart','Return slowly']},
+  singlepush:{name:'Single-arm cable pushdown',area:'Triceps',reps:12,kg:7.5,best:10,step:2.5,unit:'kg',cues:['Elbow tucked in','Straighten your arm fully','Return slowly, then swap']},
+  skull:{name:'Skull crushers',area:'Triceps',reps:10,kg:15,best:20,step:2.5,unit:'kg',cues:['Lie on a bench, EZ-bar or dumbbells over your chest','Bend your elbows to lower towards your forehead','Straighten back up']},
+  kickback:{name:'Dumbbell kickback',area:'Triceps',reps:12,kg:6,best:8,step:1,unit:'kg each',cues:['Hinge forward, elbow by your side','Straighten your arm back','Lower slowly']},
+  closegrip:{name:'Close-grip bench press',area:'Triceps · chest',reps:10,kg:30,best:35,step:2.5,unit:'kg',cues:['Hands shoulder-width on the bar','Lower to your lower chest, elbows tucked','Press back up']},
+  diamondpu:{name:'Diamond press-ups',area:'Triceps · chest',reps:8,bw:true,cues:['Hands close together under your chest','Lower with elbows tucked in','Push back up. Knees down is fine']},
+  tridips:{name:'Parallel bar dips',area:'Triceps · chest',reps:8,bw:true,cues:['Stay upright between the bars','Lower until your elbows reach about 90°','Press back up']},
+  smithsquat:{name:'Smith machine squat',area:'Legs · glutes',reps:10,kg:30,best:40,step:2.5,unit:'kg',cues:['Bar across your upper back, feet slightly forward','Sit down until your thighs are about level','Push back up through your heels']},
+  beltsquat:{name:'Belt squat machine',area:'Legs · glutes',reps:10,kg:30,best:40,step:5,unit:'kg',cues:['Belt round your hips, feet on the platform','Squat down, chest up','Stand back up through your heels']},
+  cablesquat:{name:'Cable goblet squat',area:'Legs · glutes',reps:12,kg:20,best:25,step:2.5,unit:'kg',cues:['Hold the cable handle at your chest','Sit back and down','Stand up tall']},
+  bbsquat:{name:'Barbell back squat',area:'Legs · glutes · core',reps:8,kg:40,best:50,step:2.5,unit:'kg',cues:['Bar across your upper back, in a rack','Sit down until your thighs are about level','Stand up, using the safety bars']},
+  splitsquat:{name:'Bulgarian split squat',area:'Legs · glutes',reps:10,kg:8,best:10,step:2,unit:'kg each',cues:['Back foot on a bench behind you','Lower your back knee towards the floor','Push up through your front foot, then swap']},
+  dblunge:{name:'Dumbbell lunges',area:'Legs · glutes',reps:10,kg:8,best:10,step:2,unit:'kg each',cues:['Step forward into a lunge','Both knees bend to about 90°','Push back up, then swap legs']},
+  stepup:{name:'Dumbbell step-ups',area:'Legs · glutes',reps:10,kg:8,best:10,step:2,unit:'kg each',cues:['Step up onto a sturdy bench','Drive up through your front heel','Step down slowly, then swap']},
+  walklunge:{name:'Walking lunges',area:'Legs · glutes',reps:10,bw:true,repUnit:'steps each leg',cues:['Step forward into a lunge','Push through your front foot into the next step','Keep your chest up']},
+  wallsit:{name:'Wall sit',area:'Quads',reps:30,bw:true,repUnit:'seconds',cues:['Back against a wall','Slide down until your thighs are about level','Hold and breathe']},
+  bwsplit:{name:'Split squats',area:'Legs · glutes',reps:10,bw:true,repUnit:'each leg',cues:['One foot forward, one back','Lower your back knee towards the floor','Push back up']},
+  seatedcurl:{name:'Seated leg curl',area:'Hamstrings',reps:12,kg:30,best:35,step:2.5,unit:'kg',cues:['Pad just above your heels, thigh pad snug','Curl your heels under the seat','Return slowly']},
+  hipthrustm:{name:'Hip thrust machine',area:'Glutes · hamstrings',reps:12,kg:40,best:50,step:5,unit:'kg',cues:['Upper back on the pad, belt over your hips','Drive your hips up and squeeze','Lower slowly']},
+  abductor:{name:'Hip abductor machine',area:'Outer glutes',reps:15,kg:30,best:35,step:2.5,unit:'kg',cues:['Pads on the outside of your knees','Push your knees out','Return slowly']},
+  backext45:{name:'45° back extension',area:'Lower back · glutes · hamstrings',reps:12,bw:true,cues:['Hips just above the pad, feet locked in','Lower your chest towards the floor, back flat','Rise until your body is straight']},
+  cablekickback:{name:'Cable glute kickback',area:'Glutes',reps:12,kg:10,best:12.5,step:2.5,unit:'kg',cues:['Ankle strap at the low pulley','Kick your leg straight back','Return slowly, then swap']},
+  cablerdl:{name:'Cable Romanian deadlift',area:'Hamstrings · glutes',reps:12,kg:25,best:30,step:2.5,unit:'kg',cues:['Bar at the low pulley, soft knees','Hinge forward with a flat back','Stand tall and squeeze']},
+  bbdeadlift:{name:'Barbell deadlift',area:'Hamstrings · glutes · back',reps:6,kg:50,best:60,step:2.5,unit:'kg',cues:['Bar over the middle of your feet','Flat back, push the floor away','Lower with control']},
+  bbhipthrust:{name:'Barbell hip thrust',area:'Glutes',reps:10,kg:40,best:50,step:2.5,unit:'kg',cues:['Upper back on a bench, padded bar over your hips','Drive your hips up','Lower slowly']},
+  kbswing:{name:'Kettlebell swing',area:'Glutes · hamstrings · heart',reps:15,kg:12,best:16,step:4,unit:'kg',cues:['Hinge and hike the bell back between your legs','Snap your hips forward to swing it to chest height','Let it fall back into the next rep']},
+  sldl:{name:'Single-leg dumbbell RDL',area:'Hamstrings · glutes · balance',reps:10,kg:8,best:10,step:2,unit:'kg',cues:['Stand on one leg, weight in the other hand','Hinge forward, back leg lifting','Stand tall, then swap']},
+  singlebridge:{name:'Single-leg glute bridge',area:'Glutes · hamstrings',reps:10,bw:true,repUnit:'each leg',cues:['Lie on your back, one foot on the floor','Push your hips up','Lower slowly, then swap']},
+  bwkickback:{name:'Glute kickbacks',area:'Glutes',reps:12,bw:true,repUnit:'each leg',cues:['On hands and knees','Kick one leg back and up','Lower slowly, then swap']},
+  seatedcalf:{name:'Seated calf raise machine',area:'Calves',reps:15,kg:30,best:35,step:2.5,unit:'kg',cues:['Pad on your thighs, balls of your feet on the step','Rise as high as you can','Lower slowly into a stretch']},
+  standcalf:{name:'Standing calf raise machine',area:'Calves',reps:15,kg:40,best:50,step:5,unit:'kg',cues:['Shoulders under the pads','Rise onto your toes','Lower slowly']},
+  lpcalf:{name:'Leg press calf raise',area:'Calves',reps:15,kg:60,best:70,step:5,unit:'kg',cues:['Balls of your feet on the bottom of the plate','Push with your toes, legs straight','Lower slowly']},
+  dbcalf:{name:'Dumbbell calf raise',area:'Calves',reps:15,kg:12,best:14,step:2,unit:'kg each',cues:['Hold dumbbells, stand on a step','Rise onto your toes','Lower below the step slowly']},
+  bwcalf:{name:'Calf raises',area:'Calves',reps:20,bw:true,cues:['Stand on a step, hold something for balance','Rise onto your toes','Lower slowly']},
+  captain:{name:'Captain’s chair knee raise',area:'Core',reps:10,bw:true,cues:['Back against the pad, forearms on the rests','Lift your knees towards your chest','Lower slowly']},
+  rotary:{name:'Rotary torso machine',area:'Core · obliques',reps:12,kg:25,best:30,step:2.5,unit:'kg',cues:['Sit tall, pads against your chest','Rotate slowly one way','Return and repeat, then swap sides']},
+  woodchop:{name:'Cable woodchop',area:'Core · obliques',reps:12,kg:10,best:12.5,step:2.5,unit:'kg',cues:['Handle high, stand side-on','Pull down and across your body','Return slowly, then swap sides']},
+  pallof:{name:'Pallof press',area:'Core',reps:10,kg:10,best:12.5,step:2.5,unit:'kg',cues:['Stand side-on, handle at your chest','Press straight out and hold for a second','Bring it back, don’t let it twist you']},
+  farmer:{name:'Farmer’s carry',area:'Core · grip · shoulders',reps:40,kg:16,best:20,step:2,unit:'kg each',cues:['Heavy dumbbell in each hand','Walk tall for the distance in metres','Put them down safely']},
+  russian:{name:'Russian twist',area:'Core · obliques',reps:16,kg:5,best:6,step:1,unit:'kg',cues:['Sit with knees bent, lean back a little','Twist side to side with the weight','Slow and controlled']},
+  weightcrunch:{name:'Weighted crunch',area:'Core',reps:12,kg:5,best:6,step:1,unit:'kg',cues:['Lie back, weight held on your chest','Curl up, ribs towards hips','Lower slowly']},
+  sideplank:{name:'Side plank',area:'Core · obliques',reps:30,bw:true,repUnit:'seconds each side',cues:['Elbow under your shoulder','Lift your hips into a straight line','Hold, then swap sides']},
+  hollow:{name:'Hollow hold',area:'Core',reps:20,bw:true,repUnit:'seconds',cues:['Lie on your back, arms overhead','Lift your shoulders and legs a little','Press your lower back into the floor']},
+  legraise:{name:'Lying leg raise',area:'Lower core',reps:10,bw:true,cues:['Lie on your back, hands under your hips','Raise your legs up slowly','Lower without touching the floor']},
+  mountain:{name:'Mountain climbers',area:'Core · heart',reps:30,bw:true,repUnit:'seconds',cues:['High plank position','Drive your knees towards your chest in turn','Keep your hips level']},
+  birddog:{name:'Bird dog',area:'Core · lower back',reps:10,bw:true,repUnit:'each side',cues:['On hands and knees','Reach one arm forward and the opposite leg back','Hold, return, then swap']},
+  stairs:{name:'Stair climber',area:'Heart · legs',reps:8,bw:true,repUnit:'minutes',cues:['Hold the rails lightly','Steady pace, full steps','Breathe through your nose if you can']},
+  airbike:{name:'Air bike',area:'Heart · whole body',reps:5,bw:true,repUnit:'minutes',cues:['Push and pull the handles as you pedal','Start easy, it gets hard fast','Short bursts are fine']},
+  skipping:{name:'Skipping rope',area:'Heart · calves',reps:3,bw:true,repUnit:'minutes',cues:['Small jumps, on the balls of your feet','Turn the rope from your wrists','Rest whenever you need']},
+  shadowbox:{name:'Shadow boxing',area:'Heart · shoulders',reps:3,bw:true,repUnit:'minutes',cues:['Soft knees, fists up','Light, quick punches','Keep moving your feet']},
+  march:{name:'Brisk marching',area:'Heart · legs',reps:5,bw:true,repUnit:'minutes',cues:['March on the spot, knees up','Swing your arms','Any pace that warms you up']}
 };
+// Movement groups: every exercise has similar alternatives, so you can switch kit without making the workout easier.
+const PAT = {
+  chest:['chest','dbbench','cablepress','inclinedb','pecdeck','cablefly','pressup','floorpress','inclinepu','inclinemachine','smithbench','plateChest','lowfly','cablepress1','bbbench','dbfly','inclinebb','declinepu','kneepu','chestdips'],
+  vpull:['pulldown','pulldown1','pullover','assistpull','closepulldown','platepulldown','straightarm','kneelpulldown','bbpullover','pullup','chinup','negpullup'],
+  row:['cablerow','machinerow','dbrow','bbrow','doorrow','backext','tbarrow','chestrow','reardeltm','cablerow1','facepull','widecablerow','inclinedbrow','reversefly','invertedrow','superman'],
+  shoulder:['shoulder','machinesp','arnold','standpress','pikepu','smithsp','cablesp','bbohp','landmine','elevpike'],
+  lateral:['latraise','cablelat','machinelat','cableupright','cablereardelt','frontraise','uprightrow','ytw'],
+  biceps:['bicep','cablecurl','machinecurl','hammer','curlmachine','ropehammer','cablecurl1','ezcurl','inclinecurl','concentration','chinhold'],
+  triceps:['triceps','dipmachine','ohext','cableoh','benchdip','tricepsmachine','assistdip','ropepush','singlepush','skull','kickback','closegrip','diamondpu','tridips'],
+  squat:['legpress','goblet','hacksquat','legext','squat','smithsquat','beltsquat','cablesquat','bbsquat','splitsquat','dblunge','stepup','walklunge','wallsit','bwsplit'],
+  hinge:['rdl','hamcurl','pullthrough','glutebridge','seatedcurl','hipthrustm','abductor','backext45','cablekickback','cablerdl','bbdeadlift','bbhipthrust','kbswing','sldl','singlebridge','bwkickback'],
+  core:['plank','deadbug','cablecrunch','abmachine','captain','rotary','woodchop','pallof','farmer','russian','weightcrunch','sideplank','hollow','legraise','mountain','birddog'],
+  cardio:['bike','rower','treadmill','xtrainer','stepjack','stairs','airbike','skipping','shadowbox','march'],
+  calves:['seatedcalf','standcalf','lpcalf','dbcalf','bwcalf']
+};
+const EQUIP = {chest:'machine',dbbench:'free',cablepress:'cable',inclinedb:'free',pecdeck:'machine',cablefly:'cable',pressup:'body',floorpress:'free',inclinepu:'body',
+  pulldown:'machine',pulldown1:'cable',pullover:'free',doorrow:'body',cablerow:'cable',machinerow:'machine',dbrow:'free',bbrow:'free',backext:'body',
+  shoulder:'free',machinesp:'machine',arnold:'free',standpress:'free',pikepu:'body',latraise:'free',cablelat:'cable',machinelat:'machine',
+  bicep:'free',cablecurl:'cable',machinecurl:'machine',hammer:'free',triceps:'cable',dipmachine:'machine',ohext:'free',cableoh:'cable',benchdip:'body',
+  legpress:'machine',goblet:'free',hacksquat:'machine',legext:'machine',squat:'body',rdl:'free',hamcurl:'machine',pullthrough:'cable',glutebridge:'body',
+  plank:'body',deadbug:'body',cablecrunch:'cable',abmachine:'machine',bike:'machine',rower:'machine',treadmill:'machine',xtrainer:'machine',stepjack:'body',
+  inclinemachine:'machine',smithbench:'machine',plateChest:'machine',lowfly:'cable',cablepress1:'cable',bbbench:'free',dbfly:'free',inclinebb:'free',declinepu:'body',kneepu:'body',chestdips:'body',assistpull:'machine',closepulldown:'machine',platepulldown:'machine',straightarm:'cable',kneelpulldown:'cable',bbpullover:'free',pullup:'body',chinup:'body',negpullup:'body',tbarrow:'machine',chestrow:'machine',reardeltm:'machine',cablerow1:'cable',facepull:'cable',widecablerow:'cable',inclinedbrow:'free',reversefly:'free',invertedrow:'body',superman:'body',smithsp:'machine',cablesp:'cable',bbohp:'free',landmine:'free',elevpike:'body',cableupright:'cable',cablereardelt:'cable',frontraise:'free',uprightrow:'free',ytw:'body',curlmachine:'machine',ropehammer:'cable',cablecurl1:'cable',ezcurl:'free',inclinecurl:'free',concentration:'free',chinhold:'body',tricepsmachine:'machine',assistdip:'machine',ropepush:'cable',singlepush:'cable',skull:'free',kickback:'free',closegrip:'free',diamondpu:'body',tridips:'body',smithsquat:'machine',beltsquat:'machine',cablesquat:'cable',bbsquat:'free',splitsquat:'free',dblunge:'free',stepup:'free',walklunge:'body',wallsit:'body',bwsplit:'body',seatedcurl:'machine',hipthrustm:'machine',abductor:'machine',backext45:'machine',cablekickback:'cable',cablerdl:'cable',bbdeadlift:'free',bbhipthrust:'free',kbswing:'free',sldl:'free',singlebridge:'body',bwkickback:'body',seatedcalf:'machine',standcalf:'machine',lpcalf:'machine',dbcalf:'free',bwcalf:'body',captain:'machine',rotary:'machine',woodchop:'cable',pallof:'cable',farmer:'free',russian:'free',weightcrunch:'free',sideplank:'body',hollow:'body',legraise:'body',mountain:'body',birddog:'body',stairs:'machine',airbike:'machine',skipping:'free',shadowbox:'body',march:'body'};
+const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight'};
+Object.keys(PAT).forEach(function(p){ PAT[p].forEach(function(id){ if (EX[id] && !EX[id].pat) EX[id].pat = p; }); });
+Object.keys(EQUIP).forEach(function(id){ if (EX[id]) EX[id].kit = EQUIP[id]; });
+['assistpull','assistdip'].forEach(function(id){ if (EX[id]) EX[id].assist = true; });
+const GEAR_ORDER = {machine:['machine','cable','free','body'], cable:['cable','machine','free','body'], free:['free','cable','machine','body'], mix:null};
+// Picks the exercise for one movement slot, using the kit they chose, their saved preferences and where they are.
+function pickFor(pat, o, used){
+  o = o || {}; const list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0; });
+  if (!list.length) return null;
+  const where = o.where || 'gym';
+  let pool = where === 'home' ? list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; }) : where === 'outside' ? list.filter(function(id){ return EQUIP[id] === 'body'; }) : list.filter(function(id){ return EQUIP[id] !== 'body'; });
+  if (!pool.length) pool = list;
+  const liked = (o.prefs || {})[pat]; if (liked && pool.indexOf(liked) >= 0) return liked;
+  const ok = pool.filter(function(id){ return !(o.avoid || {})[id]; }); if (ok.length) pool = ok;
+  const order = GEAR_ORDER[o.gear || 'mix'];
+  if (order && where === 'gym') { for (let k = 0; k < order.length; k++) { const hit = pool.find(function(id){ return EQUIP[id] === order[k]; }); if (hit) return hit; } }
+  if (where === 'home') { const b = pool.find(function(id){ return EQUIP[id] === 'free'; }); return b || pool[0]; }
+  return pool[0];
+}
+function gearOpts(st){ st = st || {}; const w = (st.env && st.env.where) || (st.where === 'outdoors' ? 'outside' : st.where === 'mix' ? 'gym' : st.where) || 'gym'; return {gear: (st.env && st.env.gear) || st.gear || 'mix', prefs: st.exPrefs || {}, avoid: st.exAvoid || {}, where: w === 'else' ? 'gym' : w}; }
 const PLANS = {
   full:{key:'full',label:'Full',title:'Upper body',mins:35,ids:['chest','shoulder','pulldown','triceps'],sets:3},
   short:{key:'short',label:'Shorter',title:'Quick upper body',mins:20,ids:['chest','shoulder','pulldown'],sets:2},
@@ -1640,6 +1835,7 @@ const SWAPQ = {
 };
 const ONE_SPOT = {chest:'dbbench',shoulder:'standpress',pulldown:'dbrow',triceps:'ohext',cablerow:'dbrow'};
 const ISSUES = [
+  ['swap','I’d rather do a different exercise','M7 7h11l-3-3M17 17H6l3 3','#B7A6F6'],
   ['equip','Equipment is taken','M6 7v10M9 5v14M15 5v14M18 7v10M9 12h6','#DDF58B'],
   ['busy','Gym is too busy','M7 8a3 3 0 1 0 0-.01M17 8a3 3 0 1 0 0-.01M2 20c.8-3.5 2.6-5 5-5s4.2 1.5 5 5M12 20c.8-3.5 2.6-5 5-5s4.2 1.5 5 5','#B7A6F6'],
   ['noise','Too noisy','M4 10v4h4l5 4V6L8 10zM16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12','#B7A6F6'],
@@ -1689,14 +1885,14 @@ const GREET = {spark:true,text:'{greet}'};
 const PHS = ['ph','ph2','ph3'];
 
 const FOCUS = [
-  ['chest','Chest',['chest','dbbench']],
-  ['back','Back',['pulldown','cablerow','dbrow']],
-  ['shoulders','Shoulders',['shoulder','latraise']],
-  ['arms','Arms',['bicep','triceps']],
-  ['legs','Legs',['legpress','goblet','rdl']],
-  ['core','Core',['plank','deadbug']],
-  ['cardio','Cardio',['bike','rower']],
-  ['full','Full body',['chest','pulldown','goblet','plank','shoulder']]
+  ['chest','Chest',['chest','chest']],
+  ['back','Back',['vpull','row','row']],
+  ['shoulders','Shoulders',['shoulder','lateral']],
+  ['arms','Arms',['biceps','triceps']],
+  ['legs','Legs',['squat','hinge','squat','calves']],
+  ['core','Core',['core','core']],
+  ['cardio','Cardio',['cardio','cardio']],
+  ['full','Full body',['chest','vpull','squat','core','shoulder']]
 ];
 const IC = {
   gym:'M6 7v10M9 5v14M15 5v14M18 7v10M9 12h6', home:'M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
@@ -1843,6 +2039,16 @@ const sgCard = function(cc, cat, emergencyOnly){
 };
 // ===== Journal reader: what the coach picks up from recent entries Spark is allowed to learn from =====
 const BODY = [['lower back','back'],['upper back','back'],['achilles','lower'],['ankle','lower'],['foot','lower'],['feet','lower'],['toe','lower'],['knee','lower'],['shin','lower'],['calf','lower'],['calves','lower'],['hamstring','lower'],['quad','lower'],['thigh','lower'],['hip','lower'],['groin','lower'],['leg','lower'],['shoulder','upper'],['wrist','upper'],['elbow','upper'],['hand','upper'],['finger','upper'],['thumb','upper'],['arm','upper'],['bicep','upper'],['tricep','upper'],['chest','chest'],['neck','back'],['back','back'],['spine','back'],['rib','back']];
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dayDiff = function(at){ const a = new Date(at), n = new Date(); const da = new Date(a.getFullYear(), a.getMonth(), a.getDate()), dn = new Date(n.getFullYear(), n.getMonth(), n.getDate()); return Math.round((dn - da) / 864e5); };
+// Entries saved with a real time read 'Today, 21:10', then 'Yesterday, 21:10' after midnight, then the date.
+const whenOf = function(j){
+  if (!j || !j.at) return (j && j.when) || '';
+  const a = new Date(j.at); const t = String(a.getHours()).padStart(2, '0') + ':' + String(a.getMinutes()).padStart(2, '0'); const dd = dayDiff(j.at);
+  if (dd <= 0) return 'Today, ' + t; if (dd === 1) return 'Yesterday, ' + t;
+  return DOW[a.getDay()] + ' ' + a.getDate() + ' ' + MON[a.getMonth()] + (a.getFullYear() !== new Date().getFullYear() ? ' ' + a.getFullYear() : '') + ', ' + t;
+};
+const jDaysOf = function(j, todayN){ return j && j.at ? Math.max(0, dayDiff(j.at)) : jDays(j && j.when, todayN); };
 const jDays = function(when, todayN){ if (/^Today/i.test(when)) return 0; if (/^Yesterday/i.test(when)) return 1; const m = /(\d{1,2})\s+[A-Z][a-z]{2}/.exec(when || ''); return m ? Math.max(0, todayN - (+m[1])) : 9; };
 const findPart = function(x){
   for (let i = 0; i < BODY.length; i++) { const b = BODY[i]; const w = b[0] + (b[0] === 'feet' || b[0] === 'calves' ? '' : 's?');
@@ -1864,7 +2070,7 @@ const jQuote = function(text, re){
 const readJournal = function(list, todayN){
   const R = {};
   (list || []).forEach(function(j){
-    const d = jDays(j.when, todayN); const tags = j.tags || []; const x = (j.text || '') + ' ' + tags.join(' ');
+    const d = jDaysOf(j, todayN); const tags = j.tags || []; const x = (j.text || '') + ' ' + tags.join(' ');
     const hit = function(key, days, extra){ if (d <= days && !R[key]) R[key] = Object.assign({entry:j, id:j.id, days:d}, extra || {}); };
     const sgc = detectSG(j.text); if (sgc) { if (!R.sg) R.sg = {cat:sgc, id:j.id, entry:j}; if (sgc === 'self' || sgc === 'others') hit('crisis', 3); }
     const P = findPart(x);
@@ -1887,7 +2093,7 @@ const readJournal = function(list, todayN){
   });
   Object.keys(R).forEach(function(k){ if (R[k] && R[k].entry) R[k].t = jTime(R[k].entry); });
   const newest = (list || [])[0];
-  if (newest && !newest.auto && jTime(newest) && jDays(newest.when, todayN) === 0 && !Object.keys(R).some(function(k){ return R[k] && R[k].id === newest.id; }))
+  if (newest && !newest.auto && jTime(newest) && jDaysOf(newest, todayN) === 0 && !Object.keys(R).some(function(k){ return R[k] && R[k].id === newest.id; }))
     R.jnew = {entry:newest, id:newest.id, t:jTime(newest), days:0, q:jQuote(newest.text, POS_RE), positive: POS_RE.test(newest.text || '')};
   delete R.healed; const sgv = R.sg; delete R.sg; Object.defineProperty(R, 'sg', {value:sgv, enumerable:false}); return R;
 };
@@ -1906,29 +2112,30 @@ function focusLabel(foci){
   if (!names.length) return '';
   return names.length === 1 ? names[0] : names[0] + ' and ' + names[1].toLowerCase();
 }
-function focusIds(foci, n){
+function focusSlots(foci, n, o){
   const lists = (foci || []).map(function(f){ const x = FOCUS.find(function(y){ return y[0] === f; }); return x ? x[2] : []; }).filter(function(l){ return l.length; });
-  const out = []; let k = 0;
-  while (out.length < n && lists.length && k < 20) { lists.forEach(function(l){ const id = l[k % l.length]; if (out.length < n && out.indexOf(id) < 0) out.push(id); }); k++; }
-  return out;
+  const ids = [], pats = []; let k = 0;
+  while (ids.length < n && lists.length && k < 20) { lists.forEach(function(l){ if (ids.length >= n) return; const pt = l[k % l.length]; const id = pickFor(pt, o, ids); if (id) { ids.push(id); pats.push(pt); } }); k++; }
+  return {ids:ids, pats:pats};
 }
-function planObj(key, foci){
+function focusIds(foci, n, o){ return focusSlots(foci, n, o).ids; }
+function planObj(key, foci, o){
   const base = PLANS[key];
-  if (!foci || !foci.length || key === 'min' || key === 'stretch' || key === 'walk') return base;
+  if (!foci || !foci.length || key === 'min' || key === 'stretch' || key === 'walk') return Object.assign({}, base, {pats: base.ids.map(function(id){ return EX[id].pat || null; })});
   const n = {short:3, full:4, plus:5}[key] || 4;
-  const ids = focusIds(foci, n);
+  const fs = focusSlots(foci, n, o); const ids = fs.ids;
   if (!ids.length) return base;
   const lbl = focusLabel(foci);
   const title = key === 'short' ? 'Quick ' + lbl.toLowerCase() : key === 'plus' ? lbl + ' plus' : lbl;
-  return Object.assign({}, base, {ids:ids, title:title});
+  return Object.assign({}, base, {ids:ids, pats:fs.pats, title:title});
 }
-function mkSession(plan, foci){
-  const p = planObj(plan, foci);
-  return {plan:plan, ids:p.ids.slice(), sets:p.ids.map(function(){return p.sets;}), done:p.ids.map(function(){return 0;}),
+function mkSession(plan, foci, o){
+  const p = planObj(plan, foci, o);
+  return {plan:plan, ids:p.ids.slice(), pats:(p.pats || p.ids.map(function(id){ return EX[id].pat || null; })).slice(), sets:p.ids.map(function(){return p.sets;}), done:p.ids.map(function(){return 0;}),
     kg:p.ids.map(function(id){return EX[id].kg||0;}), reps:p.ids.map(function(id){return EX[id].reps;}), cur:0, adapted:0, pbs:[]};
 }
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
-function fmt(n){ return (Math.round(n*10)/10).toString(); }
+function fmt(n){ return (Math.round(n*100)/100).toString(); }
 function areaText(a){ const p = a.toLowerCase().split(' · '); return p.length > 1 ? p.slice(0, -1).join(', ') + ' and ' + p[p.length - 1] : p[0]; }
 
 class Component extends DCLogic {
@@ -1936,7 +2143,7 @@ class Component extends DCLogic {
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -1954,7 +2161,7 @@ class Component extends DCLogic {
     if (start === 'active' || start === 'activeSet' || start === 'adapt' || start === 'swap' || start === 'calm') {
       s.plan = 'full'; s.sess = mkSession('full', ['chest','back']); s.sess.done[0] = 1; s.back = 'active'; s.sess.prog = s.sess.ids.map(function(_, k){ return k === 0 ? 'same' : null; });
       if (start === 'activeSet') { s.screen = 'active'; s.resting = false; s.toast = ''; }
-      if (start === 'active') { s.resting = true; s.restStart = Date.now(); s.restLen = 60; s.waterDue = true; }
+      if (start === 'active') { s.resting = true; s.restStart = Date.now(); s.restLen = 180; s.waterDue = true; }
       if (start === 'swap') { s.screen = 'adapt'; s.issue = 'equip'; s.adaptStep = 'swap'; s.swapTo = 'dbbench'; s.sess.ids[0] = 'dbbench'; s.sess.kg[0] = 18; s.sess.reps[0] = 10; s.sess.adapted = 1; }
     }
     if (start === 'complete') {
@@ -1977,7 +2184,7 @@ class Component extends DCLogic {
   }
 
   lastOf(st, id){ const h = st.hist && st.hist[id]; if (h) return h; return st.fresh ? {kg:EX[id].kg || 0, reps:EX[id].reps, when:null, first:true} : {kg:EX[id].kg || 0, reps:EX[id].reps, when:'Last week'}; }
-  bestOf(st, id){ return st.fresh ? ((st.bests || {})[id] != null ? st.bests[id] : null) : EX[id].best; }
+  bestOf(st, id){ if (EX[id] && EX[id].assist) return null; return st.fresh ? ((st.bests || {})[id] != null ? st.bests[id] : null) : EX[id].best; }
   withHist(sess, st){ const self = this; sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return sess; }
   coachInfo(st){
     // Everything the coach can "see": today's plan, check-in, quick check, workout, week, goals and (if allowed) memories.
@@ -1985,7 +2192,7 @@ class Component extends DCLogic {
     const ti = st.week.findIndex(function(d){ return d.today; }); const t = st.week[ti] || {};
     const gym = t.t !== 'rest' || !!st.extraToday;
     const foci = this.envFoci(st); const focus = focusLabel(foci) || 'Full body';
-    const plan = planObj(PLANS[st.plan] && st.plan !== 'stretch' && st.plan !== 'walk' ? st.plan : 'full', foci);
+    const plan = planObj(PLANS[st.plan] && st.plan !== 'stretch' && st.plan !== 'walk' ? st.plan : 'full', foci, gearOpts(st));
     const lvl = function(k, i){ return v[k] ? CHECK[i].opts[v[k] - 1].toLowerCase() : ''; };
     const trained = !!(st.doneToday || st.trainedToday);
     const s = st.sess; let summary = null;
@@ -1996,14 +2203,14 @@ class Component extends DCLogic {
       summary.partial = summary.sets < summary.setsTotal;
     }
     const jl = st.memoryOn ? (st.journal || []).filter(function(j){ return j.learned; }) : [];
-    const jToday = jl.find(function(j){ return /^Today/.test(j.when); }) || null;
+    const jToday = jl.find(function(j){ return /^Today/.test(whenOf(j)); }) || null;
     const J = readJournal(jl, t.n || 11);
     const sleepJ = J.sleep ? J.sleep.entry : null;
     const stressJ = J.stress ? J.stress.entry : null;
     const DAYN = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
     let recentPB = null;
     if (s && trained && s.pbs && s.pbs.length) recentPB = {txt: s.pbs[0].kg + ' ' + s.pbs[0].unit + ' on the ' + s.pbs[0].name.toLowerCase(), when:'today'};
-    else { const pj = jl.find(function(j){ return j.pb; }); if (pj) recentPB = {txt: pj.pb.replace(/^Personal best:\s*/i, '').replace(/^(.*?)\s+([\d.]+\s*kg)$/, '$2 on $1'), when:'on ' + (DAYN[pj.when.slice(0, 3)] || 'Thursday')}; }
+    else { const pj = jl.find(function(j){ return j.pb; }); if (pj) recentPB = {txt: pj.pb.replace(/^Personal best:\s*/i, '').replace(/^(.*?)\s+([\d.]+\s*kg)$/, '$2 on $1'), when: (function(){ const w = whenOf(pj); return /^Today/.test(w) ? 'today' : /^Yesterday/.test(w) ? 'yesterday' : 'on ' + (DAYN[w.slice(0, 3)] || 'Thursday'); })()}; }
     const fid = plan.ids[0]; const fx = EX[fid]; const L = this.lastOf(st, fid);
     const last = {first: !!L.first, id:fid, name:fx.name.toLowerCase(), txt: fx.bw ? L.reps + ' ' + (fx.repUnit || 'reps') : fmt(L.kg) + ' ' + fx.unit + ' × ' + L.reps, up: fx.bw ? (L.reps + 2) + ' ' + (fx.repUnit || 'reps') : fmt(L.kg + (fx.step || 1)) + ' ' + fx.unit, bw: !!fx.bw};
     const missed = st.week.filter(function(d, i){ return i < ti && d.t !== 'rest' && !d.moved && !(st.joinN && d.n < st.joinN); }).map(function(d){ return (DAYS.find(function(x){ return x[0] === d.d; }) || [0, 0, d.d])[2]; });
@@ -2113,8 +2320,8 @@ class Component extends DCLogic {
   benchQ(st){ const f = this.envFoci(st); const chest = f.indexOf('chest') >= 0 || f.indexOf('full') >= 0;
     return chest ? {q:'Is there a bench free?', kind:'bench', opts:[[true,'Yes','I’ll grab it and some dumbbells'],[false,'No','Let’s work around it'],['over','It’s all a bit much','Keep it really simple today']]}
                  : {q:'Can you grab a pair of dumbbells?', kind:'db', opts:[[true,'Yes','Dumbbells it is'],[false,'No','Bodyweight only, then'],['over','It’s all a bit much','Keep it really simple today']]}; }
-  needBench(st){ const e = st.env || {}; if (e.where !== 'gym' || !(e.busy >= 1)) return false; const p = planObj(st.plan, this.envFoci(st)); return p.ids.some(function(id){ return !EX[id].bw; }); }
-  envSteps(st){ const s = []; if (!st.checked || st.envEnergy) s.push('energy'); s.push('where', 'space', 'noise', 'temp'); s.push('plan'); return s; }
+  needBench(st){ const e = st.env || {}; if (e.where !== 'gym' || !(e.busy >= 1)) return false; const p = planObj(st.plan, this.envFoci(st), gearOpts(st)); return p.ids.some(function(id){ return !EX[id].bw; }); }
+  envSteps(st){ const s = []; if (!st.checked || st.envEnergy) s.push('energy'); s.push('where', 'space'); if ((st.env || {}).where === 'gym') s.push('gear'); s.push('noise', 'temp'); s.push('plan'); return s; }
   envPlan(st){
     // Coaching, not planning: read how today feels, then say how far to lower the bar.
     const e = st.env || {}; const v = st.vals || {};
@@ -2149,7 +2356,7 @@ class Component extends DCLogic {
     const st = this.S(); const P = this.envPlan(st);
     let sess, key;
     if (variant === 'mini') { key = 'min'; sess = this.withHist({plan:'min', ids:['pressup'], sets:[3], done:[0], kg:[0], reps:[0], cur:0, adapted:1, pbs:[]}, st); }
-    else { key = variant === 'short' ? 'short' : P.orig; sess = this.withHist(mkSession(key, P.foci), st); sess.adapted = variant === 'usual' ? 0 : 1; }
+    else { key = variant === 'short' ? 'short' : P.orig; sess = this.withHist(mkSession(key, P.foci, gearOpts(st)), st); sess.adapted = variant === 'usual' ? 0 : 1; }
     const toast = {usual:'Have a great workout.', orig:'Do what you can. Skip anything that’s taken.', short:'Shorter today. That still counts.', mini:'Press-ups it is. That’s a workout.'}[variant];
     this.set({sess:sess, plan:key, screen:'active', back:'today', checked:true, envEnergy:false, envLadder:false, quiet: variant !== 'usual' && P.quiet, envHot: P.hot, resting:false, toast:toast, pbNow:null, showCues:false, adaptStep:'pick', issue:null, paused:false});
   }
@@ -2528,6 +2735,51 @@ class Component extends DCLogic {
     return 'full';
   }
 
+  switchOpts(st){
+    // 3 to 5 similar exercises for the current slot: same muscles, different kit. Not easier, just different.
+    const s = st.sess; if (!s) return [];
+    const i = s.cur; const cur = s.ids[i]; const pat = (s.pats && s.pats[i]) || (EX[cur] && EX[cur].pat);
+    const others = s.ids.filter(function(id, k){ return k !== i; });
+    const o = gearOpts(st);
+    let list = (PAT[pat] || []).filter(function(id){ return id !== cur && others.indexOf(id) < 0 && EX[id]; });
+    if (o.where === 'gym') { const kitFirst = list.filter(function(id){ return EQUIP[id] !== 'body'; }); list = kitFirst.concat(list.filter(function(id){ return EQUIP[id] === 'body'; })); }
+    else if (o.where === 'home') list = list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; });
+    // one of each kit first, so there's a real choice
+    const seen = {}; const firstEach = list.filter(function(id){ if (seen[EQUIP[id]]) return false; seen[EQUIP[id]] = true; return true; });
+    const rest = list.filter(function(id){ return firstEach.indexOf(id) < 0; });
+    return firstEach.concat(rest).slice(0, 5);
+  }
+  switchGroups(st){
+    const s = st.sess; if (!s) return [];
+    const i = s.cur; const cur = s.ids[i]; const pat = (s.pats && s.pats[i]) || (EX[cur] && EX[cur].pat);
+    const others = s.ids.filter(function(id, k){ return k !== i; }); const o = gearOpts(st);
+    let list = (PAT[pat] || []).filter(function(id){ return id !== cur && others.indexOf(id) < 0 && EX[id]; });
+    if (o.where === 'home') list = list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; });
+    if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
+    const curKit = EQUIP[cur]; return ['machine','cable','free','body'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
+  }
+  doSwitch(to, reason){
+    const st = this.S(); const s = clone(st.sess); const i = s.cur; const from = s.ids[i];
+    const pat = (s.pats && s.pats[i]) || EX[from].pat; const L = this.lastOf(st, to);
+    s.ids[i] = to; s.kg[i] = L.kg || EX[to].kg || 0; s.reps[i] = L.reps || EX[to].reps; if (s.prog) s.prog[i] = null;
+    if (!s.pats) s.pats = s.ids.map(function(id){ return EX[id].pat || null; }); s.pats[i] = pat;
+    const patch = {sess:s, swOpen:false, swReason:null, swTab:null, showCues:false, toast:'Switched to ' + EX[to].name.toLowerCase() + '. Same muscles.'};
+    if (reason === 'taken') { s.adapted += 1; patch.adaptTotal = (st.adaptTotal || 0) + 1; patch.screen = 'active'; patch.adaptStep = 'pick'; patch.issue = null; }
+    else patch.swAsk = {pat:pat, from:from, to:to};
+    this.set(patch);
+  }
+  keepSwitch(always){
+    const st = this.S(); const a = st.swAsk; if (!a) return;
+    const patch = {swAsk:null};
+    if (always) {
+      patch.exPrefs = Object.assign({}, st.exPrefs || {}); patch.exPrefs[a.pat] = a.to;
+      patch.exAvoid = Object.assign({}, st.exAvoid || {}); patch.exAvoid[a.from] = true; delete patch.exAvoid[a.to];
+      patch.toast = 'Got it. I’ll use the ' + EX[a.to].name.toLowerCase() + ' from now on.';
+      if (st.memoryOn) patch.memories = (st.memories || []).filter(function(m){ return m.id !== 'mx-' + a.pat; }).concat([{id:'mx-' + a.pat, text:'You prefer the ' + EX[a.to].name.toLowerCase() + ' to the ' + EX[a.from].name.toLowerCase() + '.', src:'From a workout, today', on:true}]);
+    }
+    this.set(patch);
+  }
+
   doSwap(to){
     const st = this.S(); const s = clone(st.sess); const i = s.cur;
     s.ids[i] = to; s.kg[i] = EX[to].kg || 0; s.reps[i] = EX[to].reps; s.adapted += 1;
@@ -2591,8 +2843,7 @@ class Component extends DCLogic {
     const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
     const patch = {sess:s, pbNow:pbNow, toast:toast};
     if (!lastOfAll) {
-      patch.resting = true; patch.restStart = Date.now(); patch.restLen = (ex.bw ? 45 : 60) + (st.envHot ? 15 : 0); patch.restBuzzed = false;
-      patch.waterDue = st.envHot ? logged % 2 === 0 : logged % 3 === 0;
+      patch.resting = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
       if (toast) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
     }
     this.set(patch);
@@ -2706,7 +2957,7 @@ class Component extends DCLogic {
     if (navOn[scr] !== undefined) navOn[scr] = 'on';
     if ((scr === 'memories' || scr === 'settings') && navOn[st.back] !== undefined) navOn[st.back] = 'on';
     const todayFoci = self.envFoci(st);
-    const plan = planObj(st.plan, todayFoci);
+    const plan = planObj(st.plan, todayFoci, gearOpts(st));
     const styleObj = STYLES.find(function(x){ return x.key === st.style; }) || STYLES[0];
 
     // Today
@@ -2825,10 +3076,15 @@ class Component extends DCLogic {
       skip:function(){ self.set({envAt:'plan'}); }};
     if (envAt === 'energy') { env.coach = 'You skipped the check-in earlier, so just this one.'; env.q = 'First, how’s your energy?';
       env.opts = CHECK[0].opts.map(function(label, idx){ const lv = idx + 1; return optRow(label, '', v.energy === lv, function(){ const cur = self.S(); const nv = Object.assign({}, cur.vals, {energy:lv}); envAdvance({vals:nv, plan: self.rec(nv)}); }, segsFor(lv, 5)); }); }
-    if (envAt === 'where') { env.coach = 'Quick check before we start. Four taps.'; env.q = 'Where are you working out today?';
+    if (envAt === 'where') { env.coach = 'Quick check before we start. Just a few taps.'; env.q = 'Where are you working out today?';
       env.where = ENV_WHERE.map(function(w){ const on = E.where === w[0]; return {label:w[1], ic:IC[w[2]], on:on, usual: usualWhere === w[0], st: on ? 'background: #DDF58B; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ const ne = setEnv('where', w[0]); delete ne.busy; delete ne.kit; delete ne.bench; envAdvance({env:ne}); }}; }); }
     if (envAt === 'space') { const sp = ENV_SPACE[E.where] || ENV_SPACE.gym; env.coach = sp.coach; env.q = sp.q;
       env.opts = sp.opts.map(function(o, idx){ return optRow(o[1], o[2], E[sp.key] === o[0], function(){ const ne = setEnv(sp.key, o[0]); delete ne.bench; envAdvance({env:ne}); }, sp.key === 'busy' ? segsFor(idx + 1, 3) : null); }); }
+    if (envAt === 'gear') { const bz = E.busy || 0;
+      env.coach = bz === 2 ? 'It’s packed, so machines are usually the easiest to grab. Your call though.' : bz === 1 ? 'A little busy. Pick whatever you fancy and I’ll work around it.' : 'The gym’s on your side. What do you fancy today?';
+      env.q = 'What would you like to use?';
+      const GEAR = [['machine','Machines', bz ? 'Simple to set up, and easy to grab when it’s busy' : 'Simple to set up and steady'], ['cable','Cables','Smooth, and easy to adjust'], ['free','Free weights','Dumbbells and a bench'], ['mix','Mix it up','Spark picks the best of each']];
+      env.opts = GEAR.map(function(o){ const on = (E.gear || st.gear) === o[0]; return optRow(o[1], o[2], on, function(){ const ne = setEnv('gear', o[0]); envAdvance({env:ne, gear:o[0]}); }); }); }
     if (envAt === 'noise') { env.coach = 'Nearly there.'; env.q = 'How noisy is it?';
       env.opts = ENV_NOISE.map(function(o, idx){ return optRow(o[1], '', E.noise === o[0], function(){ envAdvance({env:setEnv('noise', o[0])}); }, segsFor(idx + 1, 3)); }); }
     if (envAt === 'temp') { env.coach = 'Last one.'; env.q = 'How does the temperature feel?';
@@ -2890,7 +3146,7 @@ class Component extends DCLogic {
         prog: (function(){
           const id = s.ids[i]; const L = self.lastOf(st, id);
           const asked = s.prog && s.prog[i];
-          if (s.done[i] > 0 || asked || !s.prog || L.first) return {on:false, when:'', text:'', a:null, b:null, aLabel:'', bLabel:'', aSt:'', bSt:''};
+          if (s.done[i] > 0 || asked || !s.prog || L.first || ex.assist) return {on:false, when:'', text:'', a:null, b:null, aLabel:'', bLabel:'', aSt:'', bSt:''};
           const v = st.vals || {};
           const wantUp = st.stepUpNext === id;
           const easy = !wantUp && ((s.adapted > 0) || st.plan === 'short' || st.plan === 'min' || (v.energy && v.energy <= 2) || v.stress >= 4);
@@ -2912,6 +3168,10 @@ class Component extends DCLogic {
         primaryLabel: allDone ? (last ? 'Finish workout' : 'Next: ' + EX[s.ids[i + 1]].name) : 'Log set ' + (s.done[i] + 1),
         primaryCls:'b-lime', primaryIcSt:'background: #111214; color: #DDF58B', primaryIc: allDone && !last ? 'M5 12h14M13 6l6 6-6 6' : 'M5 12l5 5 9-10',
         setPills: s.sets.slice(i, i + 1).length ? (function(){ const out = []; for (let k = 0; k < s.sets[i]; k++) { const d = k < s.done[i]; const now = k === s.done[i]; out.push({label:'Set ' + (k + 1), done:d, st: d ? 'background: #B7A6F6; color: #111214' : now ? 'background: #DDF58B; color: #111214' : 'background: rgba(245,245,242,.04); color: #A1A1AA; box-shadow: inset 0 0 0 1.5px #3A3B42'}); } return out; })() : [],
+        kitLabel: KIT_LABEL[EQUIP[s.ids[i]]] || '',
+        kgLabel: /each side/.test(ex.unit || '') ? 'Weight per side' : /each/.test(ex.unit || '') ? 'Weight per dumbbell' : 'Weight',
+        unitShort: (ex.unit || '').replace(/ each.*$/, ''),
+        kgSize: (function(){ const n = fmt(s.kg[i]).length; return n <= 4 ? '52px' : n === 5 ? '44px' : '38px'; })(),
         showRing: true,
         setNow: Math.min(s.done[i] + 1, s.sets[i]), setOf: s.sets[i],
         ringDash: (2 * Math.PI * 80 * Math.min(1, s.done[i] / s.sets[i])).toFixed(1) + ' ' + (2 * Math.PI * 80).toFixed(1),
@@ -2924,10 +3184,26 @@ class Component extends DCLogic {
     }
     const bump = function(field, dir){ return function(){
       const cur = self.S(); const s = clone(cur.sess); const i = s.cur; const ex = EX[s.ids[i]];
-      if (field === 'kg') s.kg[i] = Math.max(0, s.kg[i] + dir * (ex.step || 1)); else s.reps[i] = Math.max(1, s.reps[i] + dir);
+      if (field === 'kg') s.kg[i] = Math.max(0, Math.round((s.kg[i] + dir * 0.25) * 100) / 100); else s.reps[i] = Math.max(1, s.reps[i] + dir);
       self.set({sess:s});
     }; };
 
+    // Switch exercise sheet
+    const swGroups = st.sess ? self.switchGroups(st) : [];
+    const swCurKit = st.sess ? EQUIP[st.sess.ids[st.sess.cur]] : null;
+    const swTabKey = swGroups.some(function(g){ return g.key === st.swTab; }) ? st.swTab : ((swGroups.find(function(g){ return g.key === swCurKit; }) || swGroups[0] || {}).key);
+    const swList = (swGroups.find(function(g){ return g.key === swTabKey; }) || {ids:[]}).ids;
+    const TAB_LABEL = {machine:'Machines', cable:'Cables', free:'Free weights', body:'Bodyweight'};
+    const swCur = st.sess ? EX[st.sess.ids[st.sess.cur]] : null;
+    const sw = {tabs: swGroups.map(function(g){ const on = g.key === swTabKey; return {label:TAB_LABEL[g.key], count:g.ids.length, on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swTab:g.key}); }}; }),
+      tabCols: 'repeat(' + Math.max(1, swGroups.length) + ', minmax(0, 1fr))', hasTabs: swGroups.length > 1,
+      on: !!st.swOpen && !!st.sess, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
+      title: st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
+      sub: st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
+      opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + fmt(L.kg) + ' ' + x.unit), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ self.doSwitch(id, st.swReason); }}; }),
+      close:function(){ self.set({swOpen:false, swReason:null, swTab:null}); },
+      simpler:function(){ self.set({swOpen:false, swReason:null, screen:'adapt', issue:'equip', adaptStep:'talk'}); }};
+    const ask = st.swAsk && EX[st.swAsk.to] && EX[st.swAsk.from] ? {on:true, text:'Use the ' + EX[st.swAsk.to].name.toLowerCase() + ' instead of the ' + EX[st.swAsk.from].name.toLowerCase() + ' from now on?', yes:function(){ self.keepSwitch(true); }, no:function(){ self.keepSwitch(false); }} : {on:false};
     // Adapt
     const adapt = {picking: st.adaptStep === 'pick', talking: st.adaptStep === 'talk', swapping: st.adaptStep === 'swap', msg:'', opts:[], issueLabel:'', ex:{name:''}, cues:[], dose:'', doseShort:'', doseUnit:'', kicker:'', swapMsg:'', canRetry:false};
     const issueObj = ISSUES.find(function(x){ return x[0] === st.issue; });
@@ -2964,6 +3240,7 @@ class Component extends DCLogic {
       else { adapt.kicker = 'Swap, same muscles'; adapt.swapMsg = 'Perfect. Let’s switch to ' + sx.name.toLowerCase() + '. It still works your ' + areaText(sx.area) + '.'; adapt.canRetry = !!SWAPQ[st.swapTo]; }
     }
     const issues = ISSUES.map(function(x){ return {label:x[1], icon:x[2], st:'background: ' + x[3], pick:function(){
+      if (x[0] === 'equip' || x[0] === 'swap') { const cur = self.S(); if (cur.sess && self.switchOpts(cur).length) return self.set({screen:'active', swOpen:true, swReason: x[0] === 'equip' ? 'taken' : null}); }
       if (x[0] === 'lost') { const cur = self.S(); return self.set({issue:'lost', adaptStep:'swap', swapTo: cur.sess ? cur.sess.ids[cur.sess.cur] : 'pressup'}); }
       self.set({issue:x[0], adaptStep:'talk'});
     }}; });
@@ -2992,8 +3269,8 @@ class Component extends DCLogic {
     const moodTags = MOODS.map(function(m){ const on = st.draftMood === m; return {label:m, on:on, cls: on ? 'on' : '', pick:function(){ self.set({draftMood: self.S().draftMood === m ? null : m}); }}; });
     const PROMPTS = ['What got in the way?','What felt good?','How’s your head today?','What helped?'];
     const prompts = PROMPTS.map(function(p){ return {label:p, pick:function(){ const cur = self.S(); self.set({draft: (cur.draft ? cur.draft + '\n' : '') + p + ' '}); }}; });
-    const journalView = st.journal.map(function(j){ const learned = !!j.learned && st.memoryOn; return {when:j.when, text:j.text, tags:j.tags, learned:learned, hasPb:!!j.pb, pb:j.pb || '',
-      delLabel:'Delete journal entry from ' + j.when, confirming: st.jConfirm === j.id,
+    const journalView = st.journal.map(function(j){ const learned = !!j.learned && st.memoryOn; return {when:whenOf(j), text:j.text, tags:j.tags, learned:learned, hasPb:!!j.pb, pb:j.pb || '',
+      delLabel:'Delete journal entry from ' + whenOf(j), confirming: st.jConfirm === j.id,
       confirmText: 'Delete this entry? You can’t undo this.' + (learned ? ' Anything Spark already learned from it stays in Insights and memories, where you can forget it too.' : ''),
       del:function(){ self.set({jConfirm: self.S().jConfirm === j.id ? null : j.id}); },
       no:function(){ self.set({jConfirm:null}); },
@@ -3179,7 +3456,7 @@ class Component extends DCLogic {
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
     return {
-      is:is, nav:nav, navOn:navOn, showNav:showNav, tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
+      is:is, nav:nav, navOn:navOn, showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
       tourClose:function(){ self.set({tour:null}); },
@@ -3323,7 +3600,7 @@ class Component extends DCLogic {
       prepIsWorkout: st.plan !== 'stretch' && st.plan !== 'walk', prepGymTip: st.memoryOn && st.plan !== 'stretch' && st.plan !== 'walk',
       prepSetsLabel: plan.sets === 1 ? '1 set each' : plan.sets + ' sets each', prepStartLabel: st.plan === 'stretch' ? 'Start stretching' : st.plan === 'walk' ? 'Start my walk' : 'Start workout',
       prepFoot: st.plan === 'stretch' || st.plan === 'walk' ? 'Stop whenever you like. It all counts.' : 'Pause, swap or stop whenever you need.',
-      startSession:function(){ const cur = self.S(); const tf = ((cur.week.find(function(d){ return d.today; }) || {}).focus) || []; self.set({sess:self.withHist(mkSession(cur.plan, tf), cur), screen:'active', back:'prep', toast:'', pbNow:null, showCues:false, adaptStep:'pick', issue:null}); },
+      startSession:function(){ const cur = self.S(); const tf = ((cur.week.find(function(d){ return d.today; }) || {}).focus) || []; self.set({sess:self.withHist(mkSession(cur.plan, tf, gearOpts(cur)), cur), screen:'active', back:'prep', toast:'', pbNow:null, showCues:false, adaptStep:'pick', issue:null}); },
       act:act, toast:st.toast, hasToast: !!st.toast, pbNow: st.pbNow || {kg:'',unit:'',prev:''}, hasPbNow: !!st.pbNow,
       quiet:st.quiet, notQuiet: !st.quiet, quietCls: st.quiet ? 'on' : '',
       quietOff:function(){ self.set({quiet:false}); }, toggleQuiet:function(){ self.set({quiet:!self.S().quiet}); },
@@ -3348,7 +3625,7 @@ class Component extends DCLogic {
         if (s.adapted) tags.push('Adapted');
         const f = FEELS.find(function(x){ return x[0] === cur.feel; }); if (f) tags.push(f[1]);
         const text = cur.note && cur.note.trim() ? cur.note.trim() : (logged + ' sets logged' + (s.adapted ? ', adapted ' + s.adapted + (s.adapted === 1 ? ' time' : ' times') : '') + '. Showed up and moved.');
-        const entry = {id:'j' + Date.now(), when:'Today, 15:30', text:text, tags:tags, learned:cur.memoryOn, auto: !(cur.note && cur.note.trim()), pb: s.pbs.length ? 'Personal best: ' + s.pbs[0].name.toLowerCase() + ' ' + s.pbs[0].kg + ' ' + s.pbs[0].unit : ''};
+        const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:text, tags:tags, learned:cur.memoryOn, auto: !(cur.note && cur.note.trim()), pb: s.pbs.length ? 'Personal best: ' + s.pbs[0].name.toLowerCase() + ' ' + s.pbs[0].kg + ' ' + s.pbs[0].unit : ''};
         const sgc = detectSG(text);
         if (sgc) return self.set(Object.assign({journal:[entry].concat(cur.journal), doneToday:true, note:'', feel:null, screen:'companion', back:'journal', toast:''}, self.sgStart(cur, sgc, entry.id, !entry.learned)));
         self.set({journal:[entry].concat(cur.journal), doneToday:true, note:'', feel:null, screen:'journal', back:'today', toast:'Saved to your journal.'});
@@ -3363,7 +3640,7 @@ class Component extends DCLogic {
       saveEntry:function(){
         const cur = self.S(); const t = (cur.draft || '').trim(); if (!t) return self.set({composing:false});
         const learned = cur.learn && cur.memoryOn;
-        const entry = {id:'j' + Date.now(), when:'Today, 15:30', text:t, tags: cur.draftMood ? [cur.draftMood] : [], learned:learned};
+        const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags: cur.draftMood ? [cur.draftMood] : [], learned:learned};
         const patch = {journal:[entry].concat(cur.journal), composing:false, draft:'', draftMood:null, listening:false, toast: learned ? 'Saved. Spark will keep this in mind.' : 'Saved privately. Spark won’t learn from it.'};
         const sgc = detectSG(t);
         if (sgc) return self.set(Object.assign(patch, {screen:'companion', back:'journal', toast:''}, self.sgStart(cur, sgc, entry.id, !learned)));
