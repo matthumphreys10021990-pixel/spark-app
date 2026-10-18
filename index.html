@@ -268,6 +268,7 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 html,body{margin:0;height:100%;background:#111214;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #app{position:fixed;inset:0;display:flex;justify-content:center;background:#111214;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);box-sizing:border-box}
 #app > .sp{width:100%!important;max-width:520px;height:100%!important}
+body.kb .nav{display:none!important}
 </style>
 </head>
 <body>
@@ -1531,16 +1532,41 @@ html,body{margin:0;height:100%;background:#111214;overscroll-behavior:none;-webk
     const frag = document.getElementById('tpl').content.cloneNode(true);
     build(frag, vals);
     patchKids(root, frag);
-    clearTimeout(saveT); saveT = setTimeout(save, 400);
+    save();
   }
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(app.state)); } catch (e) {} }
-  window.addEventListener('pagehide', save);
-  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') save(); });
-  window.SparkBoot = function(Component){
-    if (/[?&]reset\b/.test(location.search)) { try { localStorage.removeItem(KEY); } catch (e) {} history.replaceState(null, '', location.pathname); }
+  // ---- Saving: every change is written straight away to two places on the phone ----
+  let db = null, last = '';
+  function openDB(){ return new Promise(function(res){ try { const r = indexedDB.open('spark-app', 1); r.onupgradeneeded = function(){ r.result.createObjectStore('kv'); }; r.onsuccess = function(){ db = r.result; res(db); }; r.onerror = function(){ res(null); }; } catch (e) { res(null); } }); }
+  function idbGet(){ return new Promise(function(res){ if (!db) return res(null); try { const q = db.transaction('kv').objectStore('kv').get(KEY); q.onsuccess = function(){ res(q.result || null); }; q.onerror = function(){ res(null); }; } catch (e) { res(null); } }); }
+  function save(){
+    if (!app) return; let json; try { json = JSON.stringify(app.state); } catch (e) { return; }
+    if (json === last) return; last = json;
+    try { localStorage.setItem(KEY, json); } catch (e) {}
+    try { if (db) db.transaction('kv', 'readwrite').objectStore('kv').put(json, KEY); } catch (e) {}
+  }
+  function saveNow(){ last = ''; save(); }
+  window.addEventListener('pagehide', saveNow);
+  window.addEventListener('beforeunload', saveNow);
+  document.addEventListener('freeze', saveNow);
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') saveNow(); });
+  // ---- Hide the bottom bar while the keyboard is up ----
+  const isField = function(el){ return el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && !/^(button|checkbox|radio|range|submit)$/i.test(el.type || ''))); };
+  let kbT = null;
+  document.addEventListener('focusin', function(e){ if (isField(e.target)) { clearTimeout(kbT); document.body.classList.add('kb'); } });
+  document.addEventListener('focusout', function(){ clearTimeout(kbT); kbT = setTimeout(function(){ if (!isField(document.activeElement)) document.body.classList.remove('kb'); }, 120); });
+  window.SparkBoot = async function(Component){
     root = document.getElementById('app');
+    await openDB();
+    const reset = /[?&]reset\b/.test(location.search);
+    if (reset) { try { localStorage.removeItem(KEY); } catch (e) {} try { if (db) db.transaction('kv', 'readwrite').objectStore('kv').delete(KEY); } catch (e) {} history.replaceState(null, '', location.pathname); }
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
     app = new Component({start:'welcome'});
-    try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.screen) app.state = Object.assign({}, app.state, saved, TRANSIENT); } catch (e) {}
+    let saved = null;
+    if (!reset) {
+      try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+      if (!saved || !saved.screen) { try { saved = JSON.parse((await idbGet()) || 'null'); } catch (e) {} }
+    }
+    if (saved && saved.screen) app.state = Object.assign({}, app.state, saved, TRANSIENT);
     render();
     if (app.componentDidMount) app.componentDidMount();
   };
