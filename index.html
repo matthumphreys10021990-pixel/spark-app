@@ -1367,6 +1367,7 @@ body.kb .nav{display:none!important}
   </div>
   <button class="btn b-surf sm full" style="margin-top: 20px" onClick="{{replayTour}}">Take the tour again</button>
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
+  <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">Prototype: coach replies and memory are simulated. Nothing leaves this session.</p>
 </div>
 </sc-if>
@@ -1535,11 +1536,11 @@ body.kb .nav{display:none!important}
     save();
   }
   // ---- Saving: every change is written straight away to two places on the phone ----
-  let db = null, last = '';
+  let db = null, last = '', wiping = false;
   function openDB(){ return new Promise(function(res){ try { const r = indexedDB.open('spark-app', 1); r.onupgradeneeded = function(){ r.result.createObjectStore('kv'); }; r.onsuccess = function(){ db = r.result; res(db); }; r.onerror = function(){ res(null); }; } catch (e) { res(null); } }); }
   function idbGet(){ return new Promise(function(res){ if (!db) return res(null); try { const q = db.transaction('kv').objectStore('kv').get(KEY); q.onsuccess = function(){ res(q.result || null); }; q.onerror = function(){ res(null); }; } catch (e) { res(null); } }); }
   function save(){
-    if (!app) return; let json; try { json = JSON.stringify(app.state); } catch (e) { return; }
+    if (!app || wiping) return; let json; try { json = JSON.stringify(app.state); } catch (e) { return; }
     if (json === last) return; last = json;
     try { localStorage.setItem(KEY, json); } catch (e) {}
     try { if (db) db.transaction('kv', 'readwrite').objectStore('kv').put(json, KEY); } catch (e) {}
@@ -1554,11 +1555,20 @@ body.kb .nav{display:none!important}
   let kbT = null;
   document.addEventListener('focusin', function(e){ if (isField(e.target)) { clearTimeout(kbT); document.body.classList.add('kb'); } });
   document.addEventListener('focusout', function(){ clearTimeout(kbT); kbT = setTimeout(function(){ if (!isField(document.activeElement)) document.body.classList.remove('kb'); }, 120); });
+  window.SparkStartAgain = function(){
+    if (!confirm('Start again from scratch? This deletes your journal, memories and progress on this phone.')) return;
+    wiping = true;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    const done = function(){ location.replace(location.pathname); };
+    try { if (db) { const t = db.transaction('kv', 'readwrite'); t.objectStore('kv').delete(KEY); t.oncomplete = done; t.onerror = done; return; } } catch (e) {}
+    done();
+  };
+  document.addEventListener('click', function(e){ const b = e.target.closest && e.target.closest('[data-action="start-again"]'); if (b) window.SparkStartAgain(); });
   window.SparkBoot = async function(Component){
     root = document.getElementById('app');
     await openDB();
-    const reset = /[?&]reset\b/.test(location.search);
-    if (reset) { try { localStorage.removeItem(KEY); } catch (e) {} try { if (db) db.transaction('kv', 'readwrite').objectStore('kv').delete(KEY); } catch (e) {} history.replaceState(null, '', location.pathname); }
+    const reset = false;
+    if (location.search) history.replaceState(null, '', location.pathname);
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
     app = new Component({start:'welcome'});
     let saved = null;
