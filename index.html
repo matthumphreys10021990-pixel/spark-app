@@ -479,7 +479,7 @@ body.kb .nav{display:none!important}
   <div class="row" style="justify-content: space-between; padding: 0 20px">
     <div class="row" style="gap: 12px">
       <button class="ib" aria-label="Profile and settings" onClick="{{nav.settings}}" style="width: 48px; height: 48px; background: #B7A6F6; color: #111214; font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 18px">{{userInitial}}</button>
-      <span><span class="d" style="font-size: 22px; display: block">Hi {{userName}}</span><span class="mut" style="font-size: 14px">Sunday, 11 October</span></span>
+      <span><span class="d" style="font-size: 22px; display: block">Hi {{userName}}</span><span class="mut" style="font-size: 14px">{{todayDateLabel}}</span></span>
     </div>
   </div>
 
@@ -742,7 +742,7 @@ body.kb .nav{display:none!important}
       </button>
     </sc-for>
   </div>
-  <sc-if value="{{tomorrowPlanned}}" hint-placeholder-val="{{ false }}"><div class="toast" style="margin-top: 14px">Monday, 07:30: 15-⁠minute session added</div></sc-if>
+  <sc-if value="{{tomorrowPlanned}}" hint-placeholder-val="{{ false }}"><div class="toast" style="margin-top: 14px">{{plannedToast}}</div></sc-if>
   <div class="card" style="margin-top: 20px; display: flex; flex-direction: column; gap: 18px">
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Missed one? Let it slide</span><span class="mut" style="font-size: 14px">Moves to your next free day. Never piles up.</span></span><button class="tg {{slideCls}}" aria-pressed="{{slide}}" aria-label="Let missed sessions slide" onClick="{{toggleSlide}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">One gentle reminder</span><span class="mut" style="font-size: 14px">30 minutes before. Never more than one.</span></span><button class="tg {{remCls}}" aria-pressed="{{reminders}}" aria-label="One gentle reminder" onClick="{{toggleRem}}"></button></div>
@@ -1259,7 +1259,7 @@ body.kb .nav{display:none!important}
   <h1 class="d" style="font-size: 34px">Progress</h1>
   <p class="mut" style="margin: 8px 0 0; font-size: 15px">What you did, not what you didn't.</p>
   <div class="card" style="margin-top: 20px">
-    <div class="row" style="justify-content: space-between"><span style="font-weight: 600; font-size: 17px">Workout consistency</span><span class="mut" style="font-size: 14px">October</span></div>
+    <div class="row" style="justify-content: space-between"><span style="font-weight: 600; font-size: 17px">Workout consistency</span><span class="mut" style="font-size: 14px">{{monthLabel}}</span></div>
     <p style="margin: 6px 0 16px; font-size: 14px"><span style="color: #DDF58B; font-weight: 600">{{monthCountLabel}}</span> <span class="mut">so far this month</span></p>
     <div class="cal">
       <sc-for list="{{weekHeads}}" as="h" hint-placeholder-count="7"><span class="mut" style="text-align: center; font-size: 12px">{{h}}</span></sc-for>
@@ -1577,7 +1577,8 @@ body.kb .nav{display:none!important}
   window.addEventListener('pagehide', saveNow);
   window.addEventListener('beforeunload', saveNow);
   document.addEventListener('freeze', saveNow);
-  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') saveNow(); });
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') saveNow(); else if (app && app.dayCheck) { try { app.dayCheck(); } catch (e) {} } });
+  window.addEventListener('pageshow', function(){ if (app && app.dayCheck) { try { app.dayCheck(); } catch (e) {} } });
   // ---- Hide the bottom bar while the keyboard is up ----
   const isField = function(el){ return el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && !/^(button|checkbox|radio|range|submit)$/i.test(el.type || ''))); };
   let kbT = null;
@@ -1604,7 +1605,7 @@ body.kb .nav{display:none!important}
       try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
       if (!saved || !saved.screen) { try { saved = JSON.parse((await idbGet()) || 'null'); } catch (e) {} }
     }
-    if (saved && saved.screen) app.state = Object.assign({}, app.state, saved, TRANSIENT);
+    if (saved && saved.screen) { app.state = Object.assign({}, app.state, saved, TRANSIENT); ['dayKey','joinKey','doneDates','plannedDates'].forEach(function(k){ if (!(k in saved)) delete app.state[k]; }); }
     render();
     if (app.componentDidMount) app.componentDidMount();
   };
@@ -1853,6 +1854,24 @@ const GOALS = ['Feel calmer','Get stronger','More energy','Build a routine','Sle
 const WHERE = [['gym','A gym','M6 7v10M9 5v14M15 5v14M18 7v10M9 12h6'],['home','At home','M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],['outdoors','Outdoors','M12 3l7 12H5zM12 15v6M8 21h8'],['mix','A mix','M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3']];
 const EXP = [['new','New to this','Show me exactly what to do'],['basics','I know the basics','A few pointers now and then'],['confident','Pretty confident','Mostly just keep me on track']];
 const DAYS = [['Mon','M','Monday'],['Tue','T','Tuesday'],['Wed','W','Wednesday'],['Thu','T','Thursday'],['Fri','F','Friday'],['Sat','S','Saturday'],['Sun','S','Sunday']];
+// ===== Real calendar: the live app runs on today's date, not the prototype's sample week =====
+const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const pad2 = function(n){ return (n < 10 ? '0' : '') + n; };
+const dkey = function(dt){ return dt.getFullYear() + '-' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate()); };
+const todayKeyNow = function(){ return dkey(new Date()); };
+const keyDate = function(k){ const a = String(k).split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); };
+const addDays = function(dt, n){ const x = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()); x.setDate(x.getDate() + n); return x; };
+const mondayOf = function(dt){ const x = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()); const wd = (x.getDay() + 6) % 7; x.setDate(x.getDate() - wd); return x; };
+// Builds this week (Mon–Sun) from their routine, ticking the days they actually trained.
+function buildRealWeek(st, now){
+  now = now || new Date(); const mon = mondayOf(now); const tk = dkey(now);
+  const R = st.routine || (function(){ const r = {}; (st.week || []).forEach(function(d){ r[d.d] = {t:d.t, focus:d.focus}; }); return r; })();
+  const done = st.doneDates || {}; const planned = st.plannedDates || {};
+  return DAYS.map(function(D, i){ const dt = addDays(mon, i); const k = dkey(dt); const r = R[D[0]] || {t:'rest'};
+    const w = {d:D[0], n:dt.getDate(), key:k, t: planned[k] || r.t, focus: planned[k] && r.t === 'rest' ? (r.focus || ['full']) : r.focus};
+    if (k === tk) w.today = true; if (done[k]) w.moved = true; return w; });
+}
+
 const TIMES = [['early','Early morning','6–8am','early mornings','07:00'],['morning','Morning','8–11am','mornings','09:00'],['lunch','Lunchtime','12–2pm','lunchtimes','12:30'],['afternoon','Afternoon','2–5pm','afternoons','15:00'],['evening','Evening','5–8pm','evenings','18:00'],['late','Late','8–10pm','late evenings','20:30']];
 const LENS = [[10,'10 min','min'],[20,'20 min','short'],[35,'35 min','full'],[45,'45+ min','full']];
 const REMIND = [['30m','30 minutes before','A quick heads-up and check-in'],['1h','1 hour before','Time to check in and get ready'],['night','The night before','Helps you plan ahead'],['none','No reminders','You can turn them on later']];
@@ -2043,12 +2062,13 @@ const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON = ['Jan','Feb','Mar
 const dayDiff = function(at){ const a = new Date(at), n = new Date(); const da = new Date(a.getFullYear(), a.getMonth(), a.getDate()), dn = new Date(n.getFullYear(), n.getMonth(), n.getDate()); return Math.round((dn - da) / 864e5); };
 // Entries saved with a real time read 'Today, 21:10', then 'Yesterday, 21:10' after midnight, then the date.
 const whenOf = function(j){
+  if (j && !j.at && /^j\d{12,}$/.test(j.id || '')) j = Object.assign({}, j, {at: +j.id.slice(1)});
   if (!j || !j.at) return (j && j.when) || '';
   const a = new Date(j.at); const t = String(a.getHours()).padStart(2, '0') + ':' + String(a.getMinutes()).padStart(2, '0'); const dd = dayDiff(j.at);
   if (dd <= 0) return 'Today, ' + t; if (dd === 1) return 'Yesterday, ' + t;
   return DOW[a.getDay()] + ' ' + a.getDate() + ' ' + MON[a.getMonth()] + (a.getFullYear() !== new Date().getFullYear() ? ' ' + a.getFullYear() : '') + ', ' + t;
 };
-const jDaysOf = function(j, todayN){ return j && j.at ? Math.max(0, dayDiff(j.at)) : jDays(j && j.when, todayN); };
+const jDaysOf = function(j, todayN){ if (j && !j.at && /^j\d{12,}$/.test(j.id || '')) j = Object.assign({}, j, {at: +j.id.slice(1)}); return j && j.at ? Math.max(0, dayDiff(j.at)) : jDays(j && j.when, todayN); };
 const jDays = function(when, todayN){ if (/^Today/i.test(when)) return 0; if (/^Yesterday/i.test(when)) return 1; const m = /(\d{1,2})\s+[A-Z][a-z]{2}/.exec(when || ''); return m ? Math.max(0, todayN - (+m[1])) : 9; };
 const findPart = function(x){
   for (let i = 0; i < BODY.length; i++) { const b = BODY[i]; const w = b[0] + (b[0] === 'feet' || b[0] === 'calves' ? '' : 's?');
@@ -2153,8 +2173,9 @@ class Component extends DCLogic {
       week:[{d:'Mon',n:5,t:'full',moved:true,focus:['chest','back']},{d:'Tue',n:6,t:'rest'},{d:'Wed',n:7,t:'walk',moved:true,focus:['cardio']},{d:'Thu',n:8,t:'short',moved:true,focus:['arms','shoulders']},{d:'Fri',n:9,t:'rest'},{d:'Sat',n:10,t:'full',focus:['legs','core']},{d:'Sun',n:11,t:'full',today:true,focus:['chest','back']}]};
     const s = Object.assign({}, b);
     s.memories = s.memories.filter(function(m){ return m.id !== 'm3'; });
+    if (start === 'welcome') { const tk = todayKeyNow(); Object.assign(s, {dayKey:tk, joinKey:tk, doneDates:{}, plannedDates:{}}); }
     if (start === 'welcome') return Object.assign(s, {fresh:true, journal:[], memories:[], hist:null, adaptTotal:0, sessCount:0, pbLog:[], bests:{}, joinN:11,
-      week: s.week.map(function(w){ const c = Object.assign({}, w); delete c.moved; return c; })});
+      week: buildRealWeek(Object.assign({}, s, {routine:null, week: s.week.map(function(w){ const c = Object.assign({}, w); delete c.moved; return c; })}))});
     Object.assign(s, clone(SEED_SETUP)); s.memories = setupMemories(s).concat(s.memories);
     Object.assign(s, {screen:start, checked:true, vals:{mood:3,energy:2,stress:4,motiv:3}, plan:'short'});
     if (start === 'checkin') { s.checked = false; s.checkStep = 1; s.vals = {mood:0,energy:2,stress:0,motiv:0}; }
@@ -2213,9 +2234,9 @@ class Component extends DCLogic {
     else { const pj = jl.find(function(j){ return j.pb; }); if (pj) recentPB = {txt: pj.pb.replace(/^Personal best:\s*/i, '').replace(/^(.*?)\s+([\d.]+\s*kg)$/, '$2 on $1'), when: (function(){ const w = whenOf(pj); return /^Today/.test(w) ? 'today' : /^Yesterday/.test(w) ? 'yesterday' : 'on ' + (DAYN[w.slice(0, 3)] || 'Thursday'); })()}; }
     const fid = plan.ids[0]; const fx = EX[fid]; const L = this.lastOf(st, fid);
     const last = {first: !!L.first, id:fid, name:fx.name.toLowerCase(), txt: fx.bw ? L.reps + ' ' + (fx.repUnit || 'reps') : fmt(L.kg) + ' ' + fx.unit + ' × ' + L.reps, up: fx.bw ? (L.reps + 2) + ' ' + (fx.repUnit || 'reps') : fmt(L.kg + (fx.step || 1)) + ' ' + fx.unit, bw: !!fx.bw};
-    const missed = st.week.filter(function(d, i){ return i < ti && d.t !== 'rest' && !d.moved && !(st.joinN && d.n < st.joinN); }).map(function(d){ return (DAYS.find(function(x){ return x[0] === d.d; }) || [0, 0, d.d])[2]; });
+    const missed = st.week.filter(function(d, i){ return i < ti && d.t !== 'rest' && !d.moved && !(st.joinKey ? (d.key && d.key < st.joinKey) : (st.joinN && d.n < st.joinN)); }).map(function(d){ return (DAYS.find(function(x){ return x[0] === d.d; }) || [0, 0, d.d])[2]; });
     const moved = st.week.filter(function(d){ return d.moved || (d.today && trained); }).length;
-    const plannedN = st.week.filter(function(d){ return d.t !== 'rest' && !(st.joinN && d.n < st.joinN); }).length;
+    const plannedN = st.week.filter(function(d){ return d.t !== 'rest' && !(st.joinKey ? (d.key && d.key < st.joinKey) : (st.joinN && d.n < st.joinN)); }).length;
     const R = this.routineOf(st); const di = DAYS.findIndex(function(x){ return x[0] === t.d; });
     let nextDay = null; for (let k = 1; k <= 7; k++) { const dd = DAYS[(di + k) % 7]; const r = R[dd[0]]; if (r && r.t !== 'rest') { nextDay = {name: k === 1 ? 'tomorrow' : dd[2], focus: (focusLabel(r.focus) || 'a workout').toLowerCase()}; break; } }
     const tomorrow = DAYS[(di + 1) % 7][2];
@@ -2823,7 +2844,8 @@ class Component extends DCLogic {
     if (st.sess) st.sess.ids.forEach(function(id, i){ if (st.sess.done[i] > 0) { h[id] = {kg:st.sess.kg[i], reps:st.sess.reps[i], when:'Last time'}; if (!EX[id].bw && (bests[id] == null || st.sess.kg[i] > bests[id])) bests[id] = st.sess.kg[i]; } });
     const logged = st.sess && st.sess.done.some(function(x){ return x > 0; });
     const pbLog = (st.pbLog || []).concat(st.sess && st.sess.pbs ? st.sess.pbs.map(function(p){ return {name:p.name, val:p.kg + ' ' + p.unit, when:'Today'}; }) : []);
-    this.set({trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
+    const dd = Object.assign({}, st.doneDates || {}); if (st.fresh) dd[todayKeyNow()] = true;
+    this.set({doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
   }
 
   logSet(){
@@ -2849,8 +2871,33 @@ class Component extends DCLogic {
     this.set(patch);
   }
 
+  // A new day: tick yesterday off properly, rebuild the week, and start today fresh.
+  rollPatch(st){
+    const tk = todayKeyNow(); if (!st.fresh || st.dayKey === tk || st.onb) return null;
+    const prev = st.dayKey ? keyDate(st.dayKey) : null;
+    const doneDates = Object.assign({}, st.doneDates || {}); if (st.dayKey && (st.doneToday || st.trainedToday)) doneDates[st.dayKey] = true;
+    if (st.trainedAt) doneDates[dkey(new Date(st.trainedAt))] = true;
+    (st.journal || []).forEach(function(j){ if (j.auto && /^j\d{12,}$/.test(j.id || '')) doneDates[dkey(new Date(+j.id.slice(1)))] = true; });
+    const plannedDates = Object.assign({}, st.plannedDates || {});
+    if (st.tomorrowPlanned && prev && dkey(addDays(prev, 1)) === tk) plannedDates[tk] = plannedDates[tk] || 'short';
+    const ns = Object.assign({}, st, {doneDates:doneDates, plannedDates:plannedDates});
+    const week = buildRealWeek(ns);
+    const todayW = week.find(function(w){ return w.today; }) || {};
+    const midWorkout = st.screen === 'active' && st.sess && st.sess.done && st.sess.done.some(function(x){ return x > 0; });
+    const joinKey = st.joinKey || (function(){ let t = Date.now(); (st.journal || []).forEach(function(j){ const a = j.at || (/^j\d{12,}$/.test(j.id || '') ? +j.id.slice(1) : 0); if (a && a < t) t = a; }); if (st.trainedAt && st.trainedAt < t) t = st.trainedAt; return dkey(new Date(t)); })();
+    const patch = {joinKey:joinKey, dayKey:tk, doneDates:doneDates, plannedDates:plannedDates, week:week, weekOffset:0,
+      checked:false, checkStep:0, vals:{mood:0,energy:0,stress:0,motiv:0}, plan: plannedDates[tk] || st.basePlan || 'full', dayOff:false, doneToday:false, trainedToday:false, extraToday:false,
+      env:{}, envAt:'where', envLadder:false, envEnergy:false, tomorrowPlanned:false, swAsk:null, swOpen:false, toast:'', note:'', feel:null, daySheet:null,
+      chat:[GREET], convTurns:0, askCount:{}, startStep:0, chatSig:'', chatMenu:false, chatThinking:false};
+    if (!midWorkout) { patch.sess = null; if (['active','complete','adapt','env','checkin','calm'].indexOf(st.screen) >= 0) patch.screen = 'today'; }
+    return patch;
+  }
+  dayCheck(){ const st = this.S(); const p = this.rollPatch(st); if (p) this.set(p); }
+
   componentDidMount(){
     const self = this;
+    this.dayCheck();
+    this.dayTick = setInterval(function(){ self.dayCheck(); }, 30000);
     this.tick = setInterval(function(){
       const st = self.S();
       if (st.screen !== 'active' || !st.resting) return;
@@ -2860,7 +2907,7 @@ class Component extends DCLogic {
     }, 500);
   }
 
-  componentWillUnmount(){ clearTimeout(this.thinkTimer); clearTimeout(this.syncTimer); if (this.tick) clearInterval(this.tick); if (this.spinRaf) cancelAnimationFrame(this.spinRaf); }
+  componentWillUnmount(){ if (this.dayTick) clearInterval(this.dayTick); clearTimeout(this.thinkTimer); clearTimeout(this.syncTimer); if (this.tick) clearInterval(this.tick); if (this.spinRaf) cancelAnimationFrame(this.spinRaf); }
 
   buzz(ms){ try { if (this.S().haptics && typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
 
@@ -3001,7 +3048,7 @@ class Component extends DCLogic {
     if (TJ.crisis) todayBubble = 'Go gently today. If things feel heavy, Spark coach can show you who to contact.';
     if (st.sg) todayBubble = 'Your safety comes first. Open Spark coach to finish your safety check and see who can help.';
     const movedCount = st.week.filter(function(d){ return d.moved || (d.today && st.doneToday); }).length;
-    const ROUT = self.routineOf(st); const nextWeek = st.week.map(function(d){ const r = ROUT[d.d] || {t:d.t, focus:d.focus}; return {d:d.d, n:d.n + 7, t:r.t, focus:r.focus}; });
+    const ROUT = self.routineOf(st); const nextWeek = st.week.map(function(d){ const r = ROUT[d.d] || {t:d.t, focus:d.focus}; const nk = d.key ? addDays(keyDate(d.key), 7) : null; return {d:d.d, n: nk ? nk.getDate() : d.n + 7, key: nk ? dkey(nk) : undefined, t:r.t, focus:r.focus}; });
     const shownWeek = st.weekOffset ? nextWeek : st.week;
     const weekKey = st.weekOffset ? 'nextWeek' : 'week';
     const weekDots = shownWeek.map(function(d){
@@ -3012,7 +3059,7 @@ class Component extends DCLogic {
       const set = d.t !== 'rest';
       const restedToday = d.today && st.dayOff && !moved;
       const isDone = !!moved;
-      const beforeJoin = !!(st.joinN && d.n < st.joinN && !st.weekOffset);
+      const beforeJoin = !st.weekOffset && !!(st.joinKey ? (d.key && d.key < st.joinKey) : (st.joinN && d.n < st.joinN));
       const isRested = !isDone && !beforeJoin && (restedToday || (set && isPast) || (!set && !!d.wasSet));
       const isPlanned = !isDone && !isRested && set;
       const locked = isPast || isDone;
@@ -3029,7 +3076,8 @@ class Component extends DCLogic {
         aria: isDone ? 'Workout logged' : isPlanned ? 'Workout planned' : isRested ? 'Rest instead of a planned workout' : 'Rest day'};
     });
     const ringLen = 2 * Math.PI * 23;
-    const weekRing = (ringLen * Math.min(movedCount, 3) / 3).toFixed(1) + ' ' + ringLen.toFixed(1);
+    const weekPlanned = Math.max(1, st.week.filter(function(d){ return d.t !== 'rest' && !(st.joinKey && d.key && d.key < st.joinKey); }).length);
+    const weekRing = (ringLen * Math.min(movedCount, weekPlanned) / weekPlanned).toFixed(1) + ' ' + ringLen.toFixed(1);
     const quickStarts = [
       {title:'10-minute reset walk', sub:'Outdoors, any pace', ph:'ph3', go:function(){ self.set({plan:'min', checked:true, dayOff:false, screen:'prep', back:'today'}); }},
       {title:'Home press-up set', sub:'No equipment, 8 mins', ph:'ph', go:function(){ self.set({plan:'min', checked:true, dayOff:false, screen:'prep', back:'today'}); }},
@@ -3308,8 +3356,14 @@ class Component extends DCLogic {
     const chart = {pts:ptsArr.join(' '), area:'M24,130 L' + ptsArr.join(' L') + ' L316,130 Z', lx:xs[5].toFixed(1), ly:ys[5].toFixed(1), last:fmt(base[5]), gain:'+' + fmt(base[5] - 40) + ' kg'};
     const movedDays = st.fresh ? st.week.filter(function(w){ return w.moved || (w.today && (st.doneToday || st.trainedToday)); }).map(function(w){ return w.n; }) : [1,3,5,7,8]; if (!st.fresh && st.doneToday) movedDays.push(11);
     const monthCells = [];
-    for (let k = 0; k < 3; k++) monthCells.push({n:'', cls:'d-blank'});
-    for (let d = 1; d <= 31; d++) { let cls = d > 11 || (st.fresh && st.joinN && d < st.joinN) ? 'd-future' : (movedDays.indexOf(d) >= 0 ? 'd-moved' : 'd-none'); if (d === 11) cls += ' d-today'; monthCells.push({n:d, cls:cls}); }
+    const NOW = new Date(); const realCal = !!st.fresh;
+    const firstWd = realCal ? (new Date(NOW.getFullYear(), NOW.getMonth(), 1).getDay() + 6) % 7 : 3;
+    const daysIn = realCal ? new Date(NOW.getFullYear(), NOW.getMonth() + 1, 0).getDate() : 31; const todayD = realCal ? NOW.getDate() : 11;
+    const doneThisMonth = realCal ? Object.keys(st.doneDates || {}).filter(function(k){ const x = keyDate(k); return x.getFullYear() === NOW.getFullYear() && x.getMonth() === NOW.getMonth(); }).map(function(k){ return keyDate(k).getDate(); }) : null;
+    if (realCal) { movedDays.length = 0; doneThisMonth.forEach(function(x){ movedDays.push(x); }); if ((st.doneToday || st.trainedToday) && movedDays.indexOf(todayD) < 0) movedDays.push(todayD); }
+    const joinD = realCal && st.joinKey ? keyDate(st.joinKey) : null; const joinedThisMonth = joinD && joinD.getFullYear() === NOW.getFullYear() && joinD.getMonth() === NOW.getMonth();
+    for (let k = 0; k < firstWd; k++) monthCells.push({n:'', cls:'d-blank'});
+    for (let d = 1; d <= daysIn; d++) { let cls = d > todayD || (realCal ? (joinedThisMonth && d < joinD.getDate()) : (st.fresh && st.joinN && d < st.joinN)) ? 'd-future' : (movedDays.indexOf(d) >= 0 ? 'd-moved' : 'd-none'); if (d === todayD) cls += ' d-today'; monthCells.push({n:d, cls:cls}); }
     const PBST = ['background: #DDF58B; color: #111214','background: #B7A6F6; color: #111214','background: #1C1D21; color: #F5F5F2','background: #1C1D21; color: #F5F5F2'];
     const pbRaw = [{name:'Bench press',val:'80 kg',when:'8 October'},{name:'Chest press',val:'50 kg',when:'24 September'},{name:'Lat pulldown',val:'50 kg',when:'17 September'},{name:'Longest walk',val:'42 min',when:'27 September'}];
     if (st.sess && st.doneToday) st.sess.pbs.forEach(function(p){ pbRaw.unshift({name:p.name, val:p.kg + ' ' + p.unit, when:'Today'}); });
@@ -3451,7 +3505,7 @@ class Component extends DCLogic {
       const todayW = week.find(function(d){ return d.today; });
       const isGym = !todayW || todayW.t !== 'rest';
       const setupMem = cur.memoryOn ? setupMemories(cur) : [];
-      self.set({memories: setupMem.concat((cur.memories || []).filter(function(m){ return !m.setup && m.src !== 'You told Spark during setup'; })), screen:'today', back:'today', tour:0, tourDir:1, checkStep:0, checked:false, dayOff:false, doneToday:false, vals:{mood:0,energy:0,stress:0,motiv:0}, onb:0, daySheet:null, userName:nm, week:week, routine:routine, plan:lo[2], reminders: cur.remindWhen !== 'none', chat:[GREET]});
+      self.set({basePlan: lo[2], dayKey: cur.dayKey || todayKeyNow(), memories: setupMem.concat((cur.memories || []).filter(function(m){ return !m.setup && m.src !== 'You told Spark during setup'; })), screen:'today', back:'today', tour:0, tourDir:1, checkStep:0, checked:false, dayOff:false, doneToday:false, vals:{mood:0,energy:0,stress:0,motiv:0}, onb:0, daySheet:null, userName:nm, week:week, routine:routine, plan:lo[2], reminders: cur.remindWhen !== 'none', chat:[GREET]});
     };
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
@@ -3588,7 +3642,8 @@ class Component extends DCLogic {
       undoRest:function(){ self.set({dayOff:false}); },
       skipCheck:function(){ self.set({checked:true, plan:'full'}); },
       weekDots:weekDots, movedCount:movedCount, weekRing:weekRing, quickStarts:quickStarts,
-      weekLine: movedCount + ' of 3 sessions this week',
+      weekLine: movedCount + ' of ' + weekPlanned + (weekPlanned === 1 ? ' session' : ' sessions') + ' this week',
+      plannedToast: (function(){ const ti = st.week.findIndex(function(x){ return x.today; }); const nd = DAYS[(ti + 1) % 7][2]; const tmo = prefTimeObj(st); return (st.fresh ? (ti >= 0 ? (ti === 6 ? 'Monday' : nd) : 'Tomorrow') : 'Monday') + (tmo ? ', ' + tmo[4] : '') + ': 15-minute session added'; })(),
       checkQ:checkQ, checkDots:checkDots, checkPos: step + 1,
       checkBackLabel: step === 0 ? 'Close check-in' : 'Previous question',
       checkBack:function(){ const cur = self.S(); if ((cur.checkStep || 0) === 0) return self.go('today'); self.set({checkStep: cur.checkStep - 1}); },
@@ -3647,6 +3702,7 @@ class Component extends DCLogic {
         if (learned) patch.memories = cur.memories.concat([{id:'m' + Date.now(), text:'You wrote: “' + (t.length > 90 ? t.slice(0, 90) + '…' : t) + '”', src:'From your journal, today', on:true}]);
         self.set(patch);
       },
+      todayDateLabel: st.fresh ? (function(){ const n = new Date(); return DAYS[(n.getDay() + 6) % 7][2] + ', ' + n.getDate() + ' ' + MONTHS_LONG[n.getMonth()]; })() : 'Sunday, 11 October', monthLabel: st.fresh ? MONTHS_LONG[new Date().getMonth()] : 'October',
       journalView:journalView, journalEmpty: !st.journal.length, showInsights: !st.fresh, insightsEmpty: !!st.fresh, memberSince: st.fresh ? 'Joined Spark today' : 'Training with Spark since August',
       chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #71717A' : ''}; }),
       askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: sugg.length > 0 && !st.sg, moreLabel: st.chatMenu ? 'Hide other questions' : 'Or ask something else', moreOpen: !!st.chatMenu, moreIc: st.chatMenu ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore:function(){ self.set({chatMenu:!self.S().chatMenu}); self.scrollChat(); }, noTopicsLeft: started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: showTopics ? '520px' : '220px', chatPad: showTopics ? '640px' : '320px',
