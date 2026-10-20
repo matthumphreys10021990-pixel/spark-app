@@ -41,6 +41,19 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .link{appearance:none;border:0;background:none;cursor:pointer;font:inherit;font-weight:500;font-size:14px;color:#A1A1AA;min-height:44px;padding:0 4px;display:inline-flex;align-items:center;gap:4px}
 .chip{appearance:none;cursor:pointer;font:inherit;font-weight:500;font-size:14px;min-height:42px;padding:0 18px;border-radius:999px;background:transparent;color:#D4D4D8;border:1.5px solid #4A4B53;box-sizing:border-box;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .chip.on{background:#F5F5F2;color:#111214;border-color:#F5F5F2}
+.dt-row{background:#1C1D21;border-radius:22px;overflow:hidden}
+.dt-head{appearance:none;cursor:pointer;font:inherit;width:100%;border:0;background:transparent;color:#F5F5F2;display:flex;align-items:center;gap:12px;padding:14px 16px;min-height:60px;text-align:left}
+.dt-day{flex:1;font-weight:600;font-size:16px}
+.dt-val{font-size:14px;color:#DDF58B;font-weight:600;text-align:right}
+.dt-val.unset{color:#A1A1AA;font-weight:500}
+.dt-chev{flex:none;color:#A1A1AA;transition:transform .2s}
+.dt-row.open .dt-chev{transform:rotate(180deg)}
+.dt-body{padding:0 12px 14px;display:flex;flex-direction:column;gap:10px}
+.dt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dt-opt{appearance:none;cursor:pointer;font:inherit;border-radius:16px;border:1.5px solid #3A3B42;background:#111214;color:#F5F5F2;padding:8px 12px;min-height:52px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left}
+.dt-opt.on{background:#DDF58B;border-color:#DDF58B;color:#111214}
+.dt-opt b{font-weight:600;font-size:14px}
+.dt-opt span{font-size:12px;opacity:.7}
 .helpcard{background:#1C1D21;border:1px solid #2E2F35;border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:10px;width:100%;box-sizing:border-box}
 .help-row{background:#111214;border-radius:16px;padding:12px 14px}
 .help-cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:10px;padding:0 16px;border-radius:999px;background:#DDF58B;color:#111214;font-weight:700;font-size:15px;text-decoration:none}
@@ -381,12 +394,23 @@ body.kb .nav{display:none!important}
           <button aria-pressed="{{o.on}}" aria-label="{{o.full}}" onClick="{{o.pick}}" style="appearance: none; cursor: pointer; font: inherit; border-radius: 50%; width: 46px; height: 46px; margin: 0 auto; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: center; {{o.st}}">{{o.short}}</button>
         </sc-for>
       </div>
-      <h2 class="d" style="font-size: 20px; margin-top: 6px">What times usually suit you?</h2>
-      <p class="mut" style="margin: -10px 0 0; font-size: 14px">Pick any that work.</p>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px">
-        <sc-for list="{{timeOpts}}" as="o" hint-placeholder-count="6"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="flex-direction: column; align-items: flex-start; gap: 0; min-height: 56px; padding: 6px 16px; border-radius: 18px"><span style="font-weight: 600">{{o.label}}</span><span style="font-size: 12px; opacity: .7">{{o.range}}</span></button></sc-for>
-        <button class="chip {{flexCls}}" aria-pressed="{{flexOn}}" onClick="{{pickFlex}}" style="flex-direction: column; align-items: flex-start; gap: 0; min-height: 56px; padding: 6px 16px; border-radius: 18px"><span style="font-weight: 600">I'm flexible</span><span style="font-size: 12px; opacity: .7">Whenever suits</span></button>
+      <sc-if value="{{hasDayTimes}}" hint-placeholder-val="{{ true }}">
+      <h2 class="d" style="font-size: 20px; margin-top: 6px">What time suits each day?</h2>
+      <p class="mut" style="margin: -10px 0 0; font-size: 14px; line-height: 1.45">Pick one time and every day follows. Tap a day to give it its own time.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px" role="group" aria-label="Time for each day">
+        <sc-for list="{{dayTimeRows}}" as="r" hint-placeholder-count="3">
+          <div class="dt-row {{r.cls}}">
+            <button class="dt-head" aria-expanded="{{r.open}}" aria-label="{{r.aria}}" onClick="{{r.toggle}}"><span class="dt-day">{{r.day}}</span><span class="dt-val {{r.unsetCls}}">{{r.val}}</span><svg class="dt-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+            <sc-if value="{{r.open}}" hint-placeholder-val="{{ false }}">
+              <div class="dt-body">
+                <div class="dt-grid"><sc-for list="{{r.opts}}" as="o" hint-placeholder-count="7"><button class="dt-opt {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><b>{{o.label}}</b><span>{{o.range}}</span></button></sc-for></div>
+                <sc-if value="{{r.canAll}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: center" onClick="{{r.all}}">Use this time for every day</button></sc-if>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
       </div>
+      </sc-if>
       <h2 class="d" style="font-size: 20px; margin-top: 6px">How long, usually?</h2>
       <div style="display: flex; gap: 8px">
         <sc-for list="{{lenOpts}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="flex: 1; justify-content: center">{{o.label}}</button></sc-for>
@@ -732,7 +756,7 @@ body.kb .nav{display:none!important}
 <sc-if value="{{is.routine}}" hint-placeholder-val="{{ false }}">
 <div class="scroll" style="padding: 24px 20px 124px">
   <h1 class="d" style="font-size: 34px">Your week</h1>
-  <p class="mut" style="margin: 8px 0 20px; font-size: 15px; line-height: 1.5">A loose shape, not a contract. Tap a day to change it.</p>
+  <p class="mut" style="margin: 8px 0 20px; font-size: 15px; line-height: 1.5">A loose shape, not a contract. Tap a day to change its focus or time.</p>
   <div style="display: flex; flex-direction: column; gap: 10px">
     <sc-for list="{{routineRows}}" as="r" hint-placeholder-count="7">
       <button onClick="{{r.cycle}}" aria-label="{{r.aria}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; border: 0; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left; min-height: 72px; {{r.st}}">
@@ -1367,6 +1391,8 @@ body.kb .nav{display:none!important}
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Quiet workouts</span><span class="mut" style="font-size: 13px">No sounds, fewer things on screen.</span></span><button class="tg {{quietCls}}" aria-pressed="{{quiet}}" aria-label="Quiet workouts" onClick="{{toggleQuiet}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Gentle reminders</span><span class="mut" style="font-size: 13px">One a day at most. Never about missed days.</span></span><button class="tg {{remCls}}" aria-pressed="{{reminders}}" aria-label="Gentle reminders" onClick="{{toggleRem}}"></button></div>
   </div>
+  <h3 class="d" style="font-size: 18px; margin-top: 28px">Training week</h3>
+  <button class="card" onClick="{{nav.routine}}" style="appearance: none; cursor: pointer; font: inherit; color: inherit; border: 0; width: 100%; text-align: left; margin-top: 12px; display: flex; align-items: center; gap: 12px"><span style="flex: 1"><span style="display: block; font-weight: 600">Days and times</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{weekTimesSummary}}</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Memory and privacy</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Let Spark remember</span><span class="mut" style="font-size: 13px">{{memoryCount}} memories in use</span></span><button class="tg {{memCls}}" aria-pressed="{{memoryOn}}" aria-label="Let Spark remember" onClick="{{toggleMemory}}"></button></div>
@@ -1385,7 +1411,7 @@ body.kb .nav{display:none!important}
 <sc-if value="{{daySheetOn}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
   <button aria-label="Close" onClick="{{closeSheet}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
-  <div class="rise" role="dialog" aria-label="Plan {{sheet.title}}" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 14px 20px 28px; display: flex; flex-direction: column; gap: 16px">
+  <div class="rise" role="dialog" aria-label="Plan {{sheet.title}}" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 14px 20px 28px; display: flex; flex-direction: column; gap: 16px; max-height: 92%; overflow-y: auto; box-sizing: border-box">
     <div style="width: 40px; height: 4px; border-radius: 999px; background: #3A3B42; margin: 0 auto"></div>
     <div>
       <h2 class="d" style="font-size: 26px">{{sheet.title}}</h2>
@@ -1405,6 +1431,10 @@ body.kb .nav{display:none!important}
       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
         <sc-for list="{{sheet.foci}}" as="f" hint-placeholder-count="8"><button class="chip {{f.cls}}" aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="justify-content: center; min-height: 48px; font-size: 15px">{{f.label}}</button></sc-for>
       </div>
+    </sc-if>
+    <sc-if value="{{sheet.showTime}}" hint-placeholder-val="{{ false }}">
+      <h3 class="d" style="font-size: 18px">Time</h3>
+      <div class="dt-grid" role="group" aria-label="Time"><sc-for list="{{sheet.timeOpts}}" as="o" hint-placeholder-count="7"><button class="dt-opt {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><b>{{o.label}}</b><span>{{o.range}}</span></button></sc-for></div>
     </sc-if>
     <sc-if value="{{sheet.isRest}}" hint-placeholder-val="{{ false }}">
       <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">A day off. Rest is part of the plan.</p>
@@ -1944,16 +1974,37 @@ const MINI = {chest:['pressup','press-ups'], arms:['pressup','press-ups'], shoul
 // ===== Setup memories: onboarding answers the coach and the app keep using =====
 const GOAL_PHRASE = {'Feel calmer':'feel calmer','Get stronger':'get stronger','More energy':'have more energy','Build a routine':'build a routine','Sleep better':'sleep better','Feel more confident':'feel more confident','Lose weight':'lose weight','Just move more':'move more'};
 const listJoin = function(a){ return a.length <= 1 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; };
-const prefTimeObj = function(st){ if (st.prefFlex) return null; const k = TIMES.find(function(t){ return st.prefTimes && st.prefTimes[t[0]]; }); return k || TIMES.find(function(t){ return t[0] === st.prefTime; }) || null; };
+// Training times are set per day (dayTimes: {Mon:'evening', Sat:'morning', Sun:'flex'}). Older saves only had one set of times.
+const legacyTime = function(st){ if (st.prefFlex) return null; return TIMES.find(function(t){ return st.prefTimes && st.prefTimes[t[0]]; }) || TIMES.find(function(t){ return t[0] === st.prefTime; }) || null; };
+const trainDays = function(st){ if (st.routine) { const R = st.routine; return DAYS.filter(function(d){ return R[d[0]] && R[d[0]].t !== 'rest'; }).map(function(d){ return d[0]; }); } return DAYS.filter(function(d){ return st.days && st.days[d[0]]; }).map(function(d){ return d[0]; }); };
+const usualTime = function(st){ const dt = st.dayTimes || {}; const cnt = {}; let best = null; trainDays(st).concat(Object.keys(dt)).forEach(function(k){ const v = dt[k]; if (v && v !== 'flex') { cnt[v] = (cnt[v] || 0) + 1; if (!best || cnt[v] > cnt[best]) best = v; } }); return best ? TIMES.find(function(t){ return t[0] === best; }) : legacyTime(st); };
+const todayDK = function(st){ const t = (st.week || []).find(function(x){ return x.today; }); return t ? t.d : DAYS[(new Date().getDay() + 6) % 7][0]; };
+const timeFor = function(st, dk){ const v = (st.dayTimes || {})[dk]; if (v === 'flex') return null; if (v) return TIMES.find(function(t){ return t[0] === v; }) || null; if (st.dayTimes && Object.keys(st.dayTimes).length) return usualTime(st); return legacyTime(st); };
+const prefTimeObj = function(st, dk){ return timeFor(st, dk || todayDK(st)); };
+const timeKeyOf = function(st, dk){ const v = (st.dayTimes || {})[dk]; if (v) return v; const t = timeFor(st, dk); return t ? t[0] : (st.prefFlex ? 'flex' : null); };
+// "Monday and Wednesday evenings, and Saturday mornings" — or "evenings" when every day matches.
+const timeGroups = function(st, dks){ const G = []; dks.forEach(function(dk){ const k = timeKeyOf(st, dk) || 'none'; let g = G.find(function(x){ return x.k === k; }); if (!g) { g = {k:k, days:[]}; G.push(g); } g.days.push(dk); }); return G; };
+const dayFull = function(dk){ return (DAYS.find(function(x){ return x[0] === dk; }) || [0,0,dk])[2]; };
+const timePhraseOf = function(st, dks){ const G = timeGroups(st, dks).filter(function(g){ return g.k !== 'none'; }); if (!G.length) return '';
+  if (G.length === 1 && G[0].days.length === dks.length) return G[0].k === 'flex' ? 'any time that suits' : (TIMES.find(function(t){ return t[0] === G[0].k; }) || [])[3];
+  return listJoin(G.map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return listJoin(g.days.map(dayFull)) + (g.k === 'flex' ? ' whenever suits' : ' ' + T[3]); })); };
+const whenMemory = function(st, src){ src = src || 'You told Spark during setup';
+  if (!st.dayTimes || !Object.keys(st.dayTimes).length) { const T = TIMES.filter(function(t){ return st.prefTimes && st.prefTimes[t[0]]; });
+    if (st.prefFlex) return {id:'ms-when', setup:'when', data:{flex:true}, src:src, on:true, text:'You like to keep training times flexible.'};
+    return T.length ? {id:'ms-when', setup:'when', data:{times:T.map(function(t){ return t[0]; })}, src:src, on:true, text:'You usually train in the ' + listJoin(T.map(function(t){ return t[3]; })) + '.'} : null; }
+  const dks = trainDays(st); const byDay = {}; dks.forEach(function(dk){ byDay[dk] = timeKeyOf(st, dk); });
+  const G = timeGroups(st, dks).filter(function(g){ return g.k !== 'none'; }); if (!G.length) return null;
+  const times = G.map(function(g){ return g.k; }).filter(function(k){ return k !== 'flex'; });
+  const allFlex = G.length === 1 && G[0].k === 'flex';
+  const text = allFlex ? 'You like to keep training times flexible.' : G.length === 1 && G[0].days.length === dks.length ? 'You usually train in the ' + (TIMES.find(function(t){ return t[0] === G[0].k; }) || [])[3] + '.' : 'You train ' + timePhraseOf(st, dks) + '.';
+  return {id:'ms-when', setup:'when', data:{times:times, flex:allFlex, byDay:byDay}, src:src, on:true, text:text}; };
 const setupMemories = function(st){
   const out = []; const src = 'You told Spark during setup';
   const B = BARRIERS.filter(function(b){ return st.barriers && st.barriers[b]; });
   if (B.length) out.push({id:'ms-barriers', setup:'barriers', data:B, src:src, on:true, text:'Things that can get in your way: ' + listJoin(B.map(function(b){ return b.toLowerCase(); })) + '.'});
   const G = GOALS.filter(function(g){ return st.goals && st.goals[g]; });
   if (G.length) out.push({id:'ms-goals', setup:'goals', data:G, src:src, on:true, text:'You want to ' + listJoin(G.map(function(g){ return GOAL_PHRASE[g] || g.toLowerCase(); })) + '.'});
-  const T = TIMES.filter(function(t){ return st.prefTimes && st.prefTimes[t[0]]; });
-  if (st.prefFlex) out.push({id:'ms-when', setup:'when', data:{flex:true}, src:src, on:true, text:'You like to keep training times flexible.'});
-  else if (T.length) out.push({id:'ms-when', setup:'when', data:{times:T.map(function(t){ return t[0]; })}, src:src, on:true, text:'You usually train in the ' + listJoin(T.map(function(t){ return t[3]; })) + '.'});
+  const whenM = whenMemory(st, src); if (whenM) out.push(whenM);
   const W = {gym:'at the gym', home:'at home', outdoors:'outdoors', mix:'in a mix of places'}[st.where];
   const X = {'new':'you’re new to this, so you’d like clear steps', basics:'you know the basics', confident:'you’re confident and mostly want keeping on track'}[st.exp];
   if (W || X) out.push({id:'ms-where', setup:'where', data:{where:st.where || null, exp:st.exp || null}, src:src, on:true, text: W && X ? 'You mostly train ' + W + ', and ' + X + '.' : W ? 'You mostly train ' + W + '.' : X.charAt(0).toUpperCase() + X.slice(1) + '.'});
@@ -2163,7 +2214,7 @@ class Component extends DCLogic {
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -2192,7 +2243,7 @@ class Component extends DCLogic {
       s.feel = 'better';
     }
     if (/^tour\d$/.test(start)) { s.screen = 'today'; s.tour = +start.slice(4); s.tourDir = 1; }
-    if (start === 'allset') { s.screen = 'welcome'; s.onb = 10; s.nameDraft = 'Alex'; s.days = {Mon:true, Wed:true, Thu:true, Sat:true, Sun:true}; s.prefTimes = {morning:true}; s.goals = {'Get stronger':true, 'Feel calmer':true}; s.barriers = {'Getting started':true, 'Busy gyms':true}; s.where = 'gym'; s.exp = 'basics'; s.memories = s.memories.filter(function(m){ return !m.setup; }); }
+    if (start === 'allset') { s.screen = 'welcome'; s.onb = 10; s.nameDraft = 'Alex'; s.days = {Mon:true, Wed:true, Thu:true, Sat:true, Sun:true}; s.prefTimes = {morning:true}; s.dayTimes = {Mon:'morning', Wed:'evening', Thu:'morning', Sat:'morning', Sun:'flex'}; s.goals = {'Get stronger':true, 'Feel calmer':true}; s.barriers = {'Getting started':true, 'Busy gyms':true}; s.where = 'gym'; s.exp = 'basics'; s.memories = s.memories.filter(function(m){ return !m.setup; }); }
     if (start === 'todayRest') { s.screen = 'today'; s.checked = false; s.vals = {mood:0,energy:0,stress:0,motiv:0}; s.plan = 'full'; s.week = s.week.map(function(d){ return d.today ? {d:d.d, n:d.n, t:'rest', today:true} : d; }); }
     if (start === 'env' || start === 'envGo' || start === 'envPlan' || start === 'envMin') {
       s.screen = 'env'; s.back = 'today'; s.where = 'gym'; s.plan = 'full'; s.vals = {mood:3,energy:3,stress:2,motiv:3}; s.env = {}; s.envAt = 'where';
@@ -2240,13 +2291,13 @@ class Component extends DCLogic {
     const R = this.routineOf(st); const di = DAYS.findIndex(function(x){ return x[0] === t.d; });
     let nextDay = null; for (let k = 1; k <= 7; k++) { const dd = DAYS[(di + k) % 7]; const r = R[dd[0]]; if (r && r.t !== 'rest') { nextDay = {name: k === 1 ? 'tomorrow' : dd[2], focus: (focusLabel(r.focus) || 'a workout').toLowerCase()}; break; } }
     const tomorrow = DAYS[(di + 1) % 7][2];
-    const tm = prefTimeObj(st);
+    const tm = timeFor(st, DAYS[(di + 1) % 7][0]); const tmToday = timeFor(st, t.d);
     const SU = setupOf(st); const goals = SU.goals;
     const h = new Date().getHours(); const part = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
     const memOK = function(id){ return st.memoryOn && st.memories.some(function(m){ return m.id === id && m.on; }); };
     return {gym:gym, focus:focus, focusL:focus.toLowerCase(), mins:plan.mins, checked: !!st.checked && !!v.energy, energy:lvl('energy', 0), stress:lvl('stress', 2),
       lowE: v.energy && v.energy <= 2, highS: v.stress >= 4, trained:trained, summary:summary, dayOff: !!st.dayOff && !trained, last:last,
-      missed:missed, moved:moved, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !!st.prefFlex, part:part,
+      missed:missed, moved:moved, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, todayTime: tmToday ? tmToday[4] : null, todaySlot: tmToday ? tmToday[1].toLowerCase() : null, laterToday: !!(tmToday && (function(){ const p = tmToday[4].split(':'); const n = new Date(); return n.getHours() * 60 + n.getMinutes() < (+p[0]) * 60 + (+p[1]) - 30; })()), goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !tmToday, part:part,
       env: st.env && st.env.where ? st.env : null, memStress: memOK('m1'), memMorning: memOK('m2'), memWalk: memOK('m4'), memOn: !!st.memoryOn,
       jToday:jToday, sleepJ:sleepJ, stressJ:stressJ, J:J, jAck: st.jAck || {}, gymPending: gym && !trained && !st.dayOff, recentPB:recentPB, planKey: st.plan, planned: !!st.tomorrowPlanned,
       trainedAt: st.trainedAt || 0, sig: JSON.stringify([trained, summary && summary.sets, !!st.dayOff, Object.keys(J).map(function(k){ return k + J[k].id; }).join(), jl[0] && jl[0].id, jToday && jToday.id, st.checked && [v.energy, v.stress], st.env && st.env.busy, st.plan])};
@@ -2258,7 +2309,7 @@ class Component extends DCLogic {
     if (I.dayOff) return hi + 'You’re taking today off, and that’s completely fine. Anything on your mind?';
     if (!I.gym) return hi + 'Rest day today, so nothing you need to do. What’s on your mind?';
     if (I.checked && (I.lowE || I.highS)) return hi + I.focus + ' is on today, and you said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + '. Want to talk it through?';
-    return hi + I.focus + ' is on for today' + (I.recentPB ? ', and I’m still thinking about your ' + I.recentPB.txt + ' ' + I.recentPB.when : '') + '. How are you feeling about it?';
+    return hi + I.focus + ' is on for today' + (I.todayTime && I.laterToday ? ', pencilled in for ' + I.todayTime : '') + (I.recentPB ? ', and I’m still thinking about your ' + I.recentPB.txt + ' ' + I.recentPB.when : '') + '. How are you feeling about it?';
   }
 
   coachOpener(st, I, talked){
@@ -2313,9 +2364,9 @@ class Component extends DCLogic {
     if (fresh('healing') && GP) return mk('healing', welcome + 'Glad to read ' + yourPart(J.healing) + ' is feeling better. ' + I.focus + ' is on today. Ease back in: lighter than usual, and stop at the first twinge. Want the shorter version as a first step back?', [['Yes, go shorter', 'goshort'], ['I feel ready for the usual', 'healok']]);
     if (I.dayOff) return {spark:true, text: welcome + 'I see you’re taking today off. Good call if you needed it. Rest is part of the plan.', replies:[['Thanks, Spark', 'bye'], ['Actually, I’d like to move a bit', 'restmove']], src:'Today'};
     if (!I.gym) return {spark:true, text: welcome + 'Rest day today, so nothing you need to do. What’s on your mind?', replies:[['Just checking in', 'restcheck'], ['I’d like to move a bit', 'restmove'], ['Why do rest days matter?', 'restwhy']], src:'Today'};
-    if (I.part === 'evening') return {spark:true, text: welcome + 'It’s evening and ' + I.focusL + ' hasn’t happened yet. No stress at all.' + (I.checked && (I.lowE || I.highS) ? ' You said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + ' earlier, so sliding it to ' + I.tomorrow + ' might be the kind option.' : ' There’s still time if you want it, or it can slide to ' + I.tomorrow + '.'), replies: I.checked && (I.lowE || I.highS) ? [['Slide it to ' + I.tomorrow, 'slide'], ['I’ll do a short one now', 'goshort'], ['Let’s talk it through', 'talklow']] : [['I’ll go now', 'feelgood'], ['Slide it to ' + I.tomorrow, 'slide'], ['Not feeling it', 'feelmeh']], src: I.checked && (I.lowE || I.highS) ? 'Today · your check-in' : 'Today'};
+    if (I.part === 'evening' && !I.laterToday) return {spark:true, text: welcome + 'It’s evening and ' + I.focusL + ' hasn’t happened yet. No stress at all.' + (I.checked && (I.lowE || I.highS) ? ' You said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + ' earlier, so sliding it to ' + I.tomorrow + ' might be the kind option.' : ' There’s still time if you want it, or it can slide to ' + I.tomorrow + '.'), replies: I.checked && (I.lowE || I.highS) ? [['Slide it to ' + I.tomorrow, 'slide'], ['I’ll do a short one now', 'goshort'], ['Let’s talk it through', 'talklow']] : [['I’ll go now', 'feelgood'], ['Slide it to ' + I.tomorrow, 'slide'], ['Not feeling it', 'feelmeh']], src: I.checked && (I.lowE || I.highS) ? 'Today · your check-in' : 'Today'};
     if (I.checked && (I.lowE || I.highS)) return {spark:true, text: welcome + I.focus + ' is on today, and you said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + '. Want to talk it through?', replies:[['Yes please', 'talklow'], ['I’m okay, thanks', 'feelgood']], src:'Today · your check-in'};
-    return {spark:true, text: welcome + I.focus + ' is on for today' + (I.recentPB ? ', and I’m still thinking about your ' + I.recentPB.txt + ' ' + I.recentPB.when : '') + '. How are you feeling about it?' + (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ' And if starting is the hard bit, like you told me, we can make it tiny.' : ''), replies:[['Up for it', 'feelgood'], ['Not feeling it', 'feelmeh'], I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ['Help me get started', 'cant'] : ['Not sure I can today', 'cant']], src: I.recentPB ? 'Today · your progress' : (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? 'Today · your setup' : 'Today')};
+    return {spark:true, text: welcome + I.focus + ' is on for today' + (I.todayTime && I.laterToday ? ', pencilled in for ' + I.todayTime : '') + (I.recentPB ? ', and I’m still thinking about your ' + I.recentPB.txt + ' ' + I.recentPB.when : '') + '. How are you feeling about it?' + (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ' And if starting is the hard bit, like you told me, we can make it tiny.' : ''), replies:[['Up for it', 'feelgood'], ['Not feeling it', 'feelmeh'], I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ['Help me get started', 'cant'] : ['Not sure I can today', 'cant']], src: I.recentPB ? 'Today · your progress' : (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? 'Today · your setup' : 'Today')};
   }
 
   chatOnOpen(){
@@ -3384,7 +3435,7 @@ class Component extends DCLogic {
     // Routine
     const routineRows = st.week.map(function(d, k){
       const t = ROUTINE_T[d.t];
-      const tm = prefTimeObj(st);
+      const tm = prefTimeObj(st, d.d);
       const fl = d.t !== 'rest' ? focusLabel(d.focus) : '';
       const todayPlan = d.today && d.t !== 'rest' && PLANS[st.plan] && st.plan !== d.t ? (st.plan === 'short' ? 'Shorter version' : st.plan === 'min' ? 'Just the basics' : st.plan === 'plus' ? 'Extra session' : t.title) + ', ' + PLANS[st.plan].mins + ' mins' : '';
       return {d:d.d, n:d.n, title: fl || t.title, sub: (d.today ? 'Today. ' : '') + (todayPlan || (fl ? t.title + (PLANS[d.t] ? ', ' + PLANS[d.t].mins + ' mins' : '') : t.sub)) + (tm && d.t !== 'rest' ? ', ' + tm[4] : ''), moved: !!d.moved, st:t.st, aria: d.d + ' ' + d.n + ': ' + t.title + '. Tap to change.',
@@ -3469,17 +3520,28 @@ class Component extends DCLogic {
     const dayKeys = DAYS.filter(function(d){ return st.days[d[0]]; }).map(function(d){ return d[0]; });
     const onbFocusFor = function(dk){ const f = st.dayFocus && st.dayFocus[dk]; if (f && f.length) return f; const i = dayKeys.indexOf(dk); return FOCUS_ROTATION[(i < 0 ? 0 : i) % FOCUS_ROTATION.length]; };
     const focusRows = dayKeys.map(function(dk){ const full = (DAYS.find(function(x){ return x[0] === dk; }) || [0,0,dk])[2]; return {day:full, short:dk, focus: focusLabel(onbFocusFor(dk)), aria: full + ': ' + focusLabel(onbFocusFor(dk)) + '. Tap to change.', open:function(){ self.set({daySheet:{key:'setup', d:dk}}); }}; });
-    const timeObj = prefTimeObj(st);
-    const selTimes = TIMES.filter(function(t){ return st.prefTimes && st.prefTimes[t[0]]; });
-    const timePhrase = selTimes.length ? selTimes.map(function(t){ return t[3]; }).join(selTimes.length === 2 ? ' or ' : ', ') : '';
+    const timeObj = dayKeys.length ? timeFor(st, dayKeys[0]) : null;
+    const timePhrase = timePhraseOf(st, dayKeys);
+    const anyEvening = dayKeys.some(function(dk){ return timeKeyOf(st, dk) === 'evening'; });
+    const unsetDays = dayKeys.filter(function(dk){ return !(st.dayTimes || {})[dk]; });
+    const dtOpenKey = st.dtOpen === null || st.dtOpen === undefined ? (unsetDays.length === dayKeys.length ? dayKeys[0] : '') : st.dtOpen;
+    const pickDayTime = function(dk, k){ const cur = self.S(); const nt = Object.assign({}, cur.dayTimes); nt[dk] = k;
+      DAYS.forEach(function(d){ if (cur.days[d[0]] && !nt[d[0]]) nt[d[0]] = k; });
+      self.set({dayTimes:nt, dtOpen:'', lastTimePick:k}); };
+    const dayTimeRows = dayKeys.map(function(dk){ const v = (st.dayTimes || {})[dk]; const T = TIMES.find(function(t){ return t[0] === v; }); const open = dtOpenKey === dk;
+      const others = dayKeys.filter(function(x){ return x !== dk && (st.dayTimes || {})[x] !== v; }).length;
+      return {day: dayFull(dk), open:open, cls: open ? 'open' : '', unsetCls: v ? '' : 'unset', val: v === 'flex' ? 'Flexible' : T ? T[1] + ' · ' + T[2] : 'Pick a time', aria: dayFull(dk) + ': ' + (v === 'flex' ? 'flexible' : T ? T[1] + ', ' + T[2] : 'no time yet') + '. Tap to change.',
+        toggle:function(){ self.set({dtOpen: open ? '' : dk}); },
+        canAll: !!v && others > 0, all:function(){ const cur = self.S(); const nt = Object.assign({}, cur.dayTimes); DAYS.forEach(function(d){ if (cur.days[d[0]]) nt[d[0]] = v; }); self.set({dayTimes:nt, dtOpen:''}); },
+        opts: TIMES.map(function(t){ const on = v === t[0]; return {label:t[1], range:t[2], on:on, cls: on ? 'on' : '', pick:function(){ pickDayTime(dk, t[0]); }}; }).concat([{label:'Flexible', range:'Whenever suits', on: v === 'flex', cls: v === 'flex' ? 'on' : '', pick:function(){ pickDayTime(dk, 'flex'); }}])}; });
     const lenObj = LENS.find(function(l){ return l[0] === st.sessLen; }) || LENS[2];
     const remindObj = REMIND.find(function(r){ return r[0] === st.remindWhen; }) || REMIND[0];
     const busyWorry = !!(st.barriers['Busy gyms'] || st.barriers['Noise and crowds'] || st.barriers['Gym anxiety'] || st.barriers['Feeling watched']);
     let scheduleNote = 'Pick a few days and a rough time. Three days a week is a great start.';
     if (dayKeys.length) {
-      scheduleNote = dayKeys.length + (dayKeys.length === 1 ? ' day' : ' days') + ' a week' + (st.prefFlex ? ', any time that suits' : timePhrase ? ', ' + timePhrase : '') + ', about ' + lenObj[0] + ' minutes each.';
+      scheduleNote = dayKeys.length + (dayKeys.length === 1 ? ' day' : ' days') + ' a week' + (timePhrase ? ', ' + timePhrase : '') + ', about ' + lenObj[0] + ' minutes each.';
       if (dayKeys.length > 4) scheduleNote += ' That’s ambitious. Spark will happily scale it back on busy weeks.';
-      else if (st.prefTimes && st.prefTimes.evening && busyWorry) scheduleNote += ' Gyms are usually busiest 5–7pm. If crowds are hard, early mornings tend to be quieter.';
+      else if (anyEvening && busyWorry) scheduleNote += ' Gyms are usually busiest 5–7pm. If crowds are hard, early mornings tend to be quieter.';
       else scheduleNote += ' Missed one? It just slides to your next free day.';
     }
     const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still check in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Check in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
@@ -3489,7 +3551,7 @@ class Component extends DCLogic {
     const summaryRows = [
       {k:'Name', v:nameShown},
       {k:'Training days', v: dayKeys.length ? dayKeys.join(', ') : 'Flexible, no set days'},
-      {k:'Usual time', v: st.prefFlex ? 'Flexible' : selTimes.length === 1 ? selTimes[0][1] + ' (' + selTimes[0][2] + ')' : selTimes.length ? selTimes.map(function(t){ return t[1]; }).join(', ') : 'Whenever suits'},
+      {k:'Times', v: (function(){ const G = timeGroups(st, dayKeys); if (!G.length) return 'Whenever suits'; if (G.length === 1) return G[0].k === 'none' || G[0].k === 'flex' ? 'Flexible' : (function(T){ return T[1] + ' (' + T[2] + ')'; })(TIMES.find(function(t){ return t[0] === G[0].k; })); return G.map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return (T ? T[1] : 'Flexible') + ': ' + g.days.join(', '); }).join('. '); })()},
       {k:'Session length', v: lenObj[1]},
       {k:'Reminders', v: remindObj[1]},
       {k:'Spark memory', v: st.memoryOn ? 'On' : 'Off'}
@@ -3504,8 +3566,12 @@ class Component extends DCLogic {
       const week = cur.week.map(function(d){ if (d.moved) return d; return Object.assign({}, d, routine[d.d]); });
       const todayW = week.find(function(d){ return d.today; });
       const isGym = !todayW || todayW.t !== 'rest';
-      const setupMem = cur.memoryOn ? setupMemories(cur) : [];
-      self.set({basePlan: lo[2], dayKey: cur.dayKey || todayKeyNow(), memories: setupMem.concat((cur.memories || []).filter(function(m){ return !m.setup && m.src !== 'You told Spark during setup'; })), screen:'today', back:'today', tour:0, tourDir:1, checkStep:0, checked:false, dayOff:false, doneToday:false, vals:{mood:0,energy:0,stress:0,motiv:0}, onb:0, daySheet:null, userName:nm, week:week, routine:routine, plan:lo[2], reminders: cur.remindWhen !== 'none', chat:[GREET]});
+      const hasDT = !!(cur.dayTimes && Object.keys(cur.dayTimes).length);
+      const dtFin = Object.assign({}, cur.dayTimes); if (hasDT) DAYS.forEach(function(d){ if (cur.days[d[0]] && !dtFin[d[0]]) { const u = usualTime(cur); dtFin[d[0]] = u ? u[0] : 'flex'; } });
+      const ptFin = hasDT ? {} : Object.assign({}, cur.prefTimes); if (hasDT) Object.keys(dtFin).forEach(function(k){ if (cur.days[k] && dtFin[k] !== 'flex') ptFin[dtFin[k]] = true; });
+      const flexFin = hasDT ? anyDays && !Object.keys(ptFin).length : !!cur.prefFlex;
+      const setupMem = cur.memoryOn ? setupMemories(Object.assign({}, cur, {dayTimes:dtFin, prefTimes:ptFin, prefFlex:flexFin, routine:routine})) : [];
+      self.set({basePlan: lo[2], dayKey: cur.dayKey || todayKeyNow(), memories: setupMem.concat((cur.memories || []).filter(function(m){ return !m.setup && m.src !== 'You told Spark during setup'; })), screen:'today', back:'today', tour:0, tourDir:1, checkStep:0, checked:false, dayOff:false, doneToday:false, vals:{mood:0,energy:0,stress:0,motiv:0}, onb:0, daySheet:null, userName:nm, week:week, routine:routine, dayTimes:dtFin, prefTimes:ptFin, prefFlex:flexFin, plan:lo[2], reminders: cur.remindWhen !== 'none', chat:[GREET]});
     };
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
@@ -3548,7 +3614,8 @@ class Component extends DCLogic {
       goalOpts: GOALS.map(function(g){ const on = !!st.goals[g]; return {label:g, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const n = Object.keys(cur.goals).filter(function(k){ return cur.goals[k]; }).length; if (!on && n >= 3) return; const ng = Object.assign({}, cur.goals); ng[g] = !on; self.set({goals:ng}); }}; }),
       whereOpts: WHERE.map(function(w){ const on = st.where === w[0]; return {label:w[1], icon:w[2], on:on, st: on ? ON : OFF, pick:function(){ self.set({where:w[0]}); }}; }),
       expOpts: EXP.map(function(x){ const on = st.exp === x[0]; return {label:x[1], sub:x[2], on:on, st: on ? ON : OFF, pick:function(){ self.set({exp:x[0]}); }}; }),
-      dayOpts: DAYS.map(function(d){ const on = !!st.days[d[0]]; return {short:d[1], full:d[2], on:on, st: on ? 'background: #DDF58B; color: #111214; border: 1.5px solid #DDF58B' : 'background: transparent; color: #F5F5F2; border: 1.5px solid #4A4B53', pick:function(){ const cur = self.S(); const nd = Object.assign({}, cur.days); nd[d[0]] = !on; self.set({days:nd}); }}; }),
+      dayOpts: DAYS.map(function(d){ const on = !!st.days[d[0]]; return {short:d[1], full:d[2], on:on, st: on ? 'background: #DDF58B; color: #111214; border: 1.5px solid #DDF58B' : 'background: transparent; color: #F5F5F2; border: 1.5px solid #4A4B53', pick:function(){ const cur = self.S(); const nd = Object.assign({}, cur.days); nd[d[0]] = !on; const nt = Object.assign({}, cur.dayTimes); if (!on && !nt[d[0]]) { const u = cur.lastTimePick || (usualTime(cur) || [])[0]; if (u) nt[d[0]] = u; } self.set({days:nd, dayTimes:nt}); }}; }),
+      dayTimeRows:dayTimeRows, hasDayTimes: dayKeys.length > 0, noDayTimes: dayKeys.length === 0,
       timeOpts: TIMES.map(function(t){ const on = !!(st.prefTimes && st.prefTimes[t[0]]); return {label:t[1], range:t[2], on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const nt = Object.assign({}, cur.prefTimes); nt[t[0]] = !on; const keys = TIMES.filter(function(x){ return nt[x[0]]; }).map(function(x){ return x[0]; }); self.set({prefTimes:nt, prefFlex:false, prefTime: keys.length === 1 ? keys[0] : null}); }}; }),
       flexOn: !!st.prefFlex, flexCls: st.prefFlex ? 'on' : '', pickFlex:function(){ const f = !self.S().prefFlex; self.set({prefFlex:f, prefTimes: f ? {} : self.S().prefTimes, prefTime:null}); },
       lenOpts: LENS.map(function(l){ const on = st.sessLen === l[0]; return {label:l[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({sessLen:l[0]}); }}; }),
@@ -3565,7 +3632,7 @@ class Component extends DCLogic {
       styleOpts: STYLES.map(function(x){ const on = st.style === x.key; return {label:x.label, sample:x.sample, on:on, st: on ? 'background: ' + x.bg + '; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ self.set({style:x.key}); }}; }),
       daySheetOn: !!st.daySheet,
       sheet: (function(){
-        const ds = st.daySheet; if (!ds) return {title:'', note:'', showType:false, isGym:false, isRest:false, foci:[], hint:'', gymSt:'', restSt:''};
+        const ds = st.daySheet; if (!ds) return {title:'', note:'', showType:false, isGym:false, isRest:false, foci:[], hint:'', gymSt:'', restSt:'', showTime:false, timeOpts:[]};
         const setup = ds.key === 'setup';
         const wk = ds.key === 'nextWeek' ? nextWeek : st.week;
         const wDay = wk.find(function(x){ return x.d === ds.d; }) || {};
@@ -3583,6 +3650,12 @@ class Component extends DCLogic {
           const patch = {routine:R};
           if (!thisLocked) { patch.week = cur.week.map(function(x){ return x.d === ds.d ? Object.assign({}, x, {t:nr.t, focus:nr.focus}) : x; }); if (wDay.today) patch.dayOff = false; }
           self.set(patch); };
+        const tv = timeKeyOf(st, ds.d);
+        const setTime = function(k){ const cur = self.S(); const nt = Object.assign({}, cur.dayTimes); trainDays(cur).forEach(function(dk){ if (!nt[dk]) { const v0 = timeKeyOf(cur, dk); if (v0) nt[dk] = v0; } }); nt[ds.d] = k; const nx = Object.assign({}, cur, {dayTimes:nt});
+          const ptN = {}; trainDays(nx).forEach(function(dk){ const v = timeKeyOf(nx, dk); if (v && v !== 'flex') ptN[v] = true; });
+          const wm = whenMemory(nx);
+          const mem = (cur.memories || []).map(function(m){ return m.id === 'ms-when' && wm && m.src !== 'Edited by you' ? Object.assign({}, m, {text:wm.text, data:wm.data}) : m; });
+          self.set({dayTimes:nt, prefTimes:ptN, prefFlex:false, memories:mem}); };
         const lo = LENS.find(function(l){ return l[0] === st.sessLen; }) || LENS[2];
         const def = lo[2] === 'min' ? 'walk' : lo[2];
         return {
@@ -3595,6 +3668,8 @@ class Component extends DCLogic {
           setGym:function(){ update(function(x){ return Object.assign({}, x, {t: x.t === 'rest' ? def : x.t, focus: (x.focus && x.focus.length) ? x.focus : ['full']}); }); },
           setRest:function(){ update(function(x){ return Object.assign({}, x, {t:'rest'}); }); },
           hint: foci.length ? 'Session: ' + focusLabel(foci) : 'Pick one or two',
+          showTime: !setup && isGym,
+          timeOpts: TIMES.map(function(t){ const on = tv === t[0]; return {label:t[1], range:t[2], on:on, cls: on ? 'on' : '', pick:function(){ setTime(t[0]); }}; }).concat([{label:'Flexible', range:'Whenever suits', on: tv === 'flex', cls: tv === 'flex' ? 'on' : '', pick:function(){ setTime('flex'); }}]),
           foci: FOCUS.map(function(f){ const on = foci.indexOf(f[0]) >= 0; return {label:f[1], on:on, cls: on ? 'on' : '',
             pick:function(){ update(function(x){ let cur = (x.focus || []).slice(); const i = cur.indexOf(f[0]);
               if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); }
@@ -3643,12 +3718,13 @@ class Component extends DCLogic {
       skipCheck:function(){ self.set({checked:true, plan:'full'}); },
       weekDots:weekDots, movedCount:movedCount, weekRing:weekRing, quickStarts:quickStarts,
       weekLine: movedCount + ' of ' + weekPlanned + (weekPlanned === 1 ? ' session' : ' sessions') + ' this week',
-      plannedToast: (function(){ const ti = st.week.findIndex(function(x){ return x.today; }); const nd = DAYS[(ti + 1) % 7][2]; const tmo = prefTimeObj(st); return (st.fresh ? (ti >= 0 ? (ti === 6 ? 'Monday' : nd) : 'Tomorrow') : 'Monday') + (tmo ? ', ' + tmo[4] : '') + ': 15-minute session added'; })(),
+      plannedToast: (function(){ const ti = st.week.findIndex(function(x){ return x.today; }); const nd = DAYS[(ti + 1) % 7][2]; const tmo = prefTimeObj(st, DAYS[(ti + 1) % 7][0]); return (st.fresh ? (ti >= 0 ? (ti === 6 ? 'Monday' : nd) : 'Tomorrow') : 'Monday') + (tmo ? ', ' + tmo[4] : '') + ': 15-minute session added'; })(),
       checkQ:checkQ, checkDots:checkDots, checkPos: step + 1,
       checkBackLabel: step === 0 ? 'Close check-in' : 'Previous question',
       checkBack:function(){ const cur = self.S(); if ((cur.checkStep || 0) === 0) return self.go('today'); self.set({checkStep: cur.checkStep - 1}); },
       checkSkip:function(){ const cur = self.S(); if (step >= 3) return self.set({checked:true, dayOff:false, plan:self.rec(cur.vals), screen:'today', checkStep:0}); self.set({checkStep: step + 1}); },
       routineRows:routineRows, tomorrowPlanned:st.tomorrowPlanned,
+      weekTimesSummary: (function(){ const dks = st.week.filter(function(d){ return d.t !== 'rest'; }).map(function(d){ return d.d; }); if (!dks.length) return 'No training days set'; return timeGroups(st, dks).map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return g.days.join(', ') + ': ' + (T ? T[1].toLowerCase() : 'flexible'); }).join(' · '); })(),
       slide:st.slide, slideCls: st.slide ? 'on' : '', toggleSlide:function(){ self.set({slide:!self.S().slide}); },
       reminders:st.reminders, remCls: st.reminders ? 'on' : '', toggleRem:function(){ self.set({reminders:!self.S().reminders}); },
       prepList:prepList, planOpts:planOpts, memoryOn:st.memoryOn,
