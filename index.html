@@ -1393,6 +1393,22 @@ body.kb .nav{display:none!important}
   </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Training week</h3>
   <button class="card" onClick="{{nav.routine}}" style="appearance: none; cursor: pointer; font: inherit; color: inherit; border: 0; width: 100%; text-align: left; margin-top: 12px; display: flex; align-items: center; gap: 12px"><span style="flex: 1"><span style="display: block; font-weight: 600">Days and times</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{weekTimesSummary}}</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+  <h3 class="d" style="font-size: 18px; margin-top: 28px">AI coach (beta)</h3>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
+    <p class="mut" style="margin: 0; font-size: 13px; line-height: 1.5">Let Claude write the coach’s replies, using what Spark knows about you. Your key stays on this phone. Summaries of your plan and journal are sent to Anthropic to write each reply.</p>
+    <sc-if value="{{ai.noKey}}" hint-placeholder-val="{{ true }}">
+      <input class="field" type="password" placeholder="Paste your API key (sk-ant-…)" value="{{ai.draft}}" onChange="{{ai.onDraft}}" autocomplete="off" spellcheck="false" style="font-size: 15px; padding: 14px 16px">
+      <button class="btn b-lime sm full" style="{{ai.saveSt}}" onClick="{{ai.save}}">Save and connect</button>
+    </sc-if>
+    <sc-if value="{{ai.hasKey}}" hint-placeholder-val="{{ false }}">
+      <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Use the AI coach</span><span class="mut" style="font-size: 13px">Key {{ai.keyTail}}</span></span><button class="tg {{ai.cls}}" aria-pressed="{{ai.on}}" aria-label="Use the AI coach" onClick="{{ai.toggle}}"></button></div>
+      <div class="dt-grid" role="group" aria-label="AI model"><sc-for list="{{ai.models}}" as="m" hint-placeholder-count="2"><button class="dt-opt {{m.cls}}" aria-pressed="{{m.on}}" onClick="{{m.pick}}"><b>{{m.label}}</b><span>{{m.sub}}</span></button></sc-for></div>
+      <div class="row" style="gap: 8px"><button class="btn b-surf sm" style="flex: 1" onClick="{{ai.test}}">{{ai.testLabel}}</button><button class="btn sm" style="background: transparent; color: #F4A29A; border: 1.5px solid #4A4B53" onClick="{{ai.remove}}">Remove key</button></div>
+      <span class="mut" style="font-size: 13px">{{ai.usage}}</span>
+    </sc-if>
+    <sc-if value="{{ai.hasStatus}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; {{ai.statusSt}}">{{ai.status}}</span></sc-if>
+    <sc-if value="{{ai.hasErr}}" hint-placeholder-val="{{ false }}"><span class="mut" style="font-size: 13px">Last issue: {{ai.err}}</span></sc-if>
+  </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Memory and privacy</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Let Spark remember</span><span class="mut" style="font-size: 13px">{{memoryCount}} memories in use</span></span><button class="tg {{memCls}}" aria-pressed="{{memoryOn}}" aria-label="Let Spark remember" onClick="{{toggleMemory}}"></button></div>
@@ -1403,7 +1419,7 @@ body.kb .nav{display:none!important}
   <button class="btn b-surf sm full" style="margin-top: 20px" onClick="{{replayTour}}">Take the tour again</button>
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
-  <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">Prototype: coach replies and memory are simulated. Nothing leaves this session.</p>
+  <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
 </div>
 </sc-if>
 
@@ -1535,7 +1551,7 @@ body.kb .nav{display:none!important}
 // ===== Tiny runtime: renders the Spark template ({{holes}}, sc-if, sc-for) and patches the page on every state change =====
 (function(){
   const KEY = 'spark-app-state-v1';
-  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false};
+  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false, aiTesting:false, aiKeyDraft:''};
   let app = null, root = null, queued = false, saveT = null;
   window.DCLogic = class { constructor(p){ this.props = p || {}; } setState(s){ this.state = Object.assign({}, this.state, s); schedule(); } forceUpdate(){ schedule(); } };
   function schedule(){ if (queued) return; queued = true; Promise.resolve().then(function(){ queued = false; render(); }); }
@@ -2209,12 +2225,30 @@ function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function fmt(n){ return (Math.round(n*100)/100).toString(); }
 function areaText(a){ const p = a.toLowerCase().split(' · '); return p.length > 1 ? p.slice(0, -1).join(', ') + ' and ' + p[p.length - 1] : p[0]; }
 
+
+// ===== AI coach (beta): Claude writes the coach's words; the app keeps control of actions and safety =====
+const AI_MODELS = [['claude-haiku-5-5','Fast','Quick and cheapest'],['claude-sonnet-5-5','Smarter','Deeper, costs more']];
+const AI_GENERAL = ['today','hype','cant','reason','rough','over','missed','busy','short','last','restwhy','bye'];
+const AI_LABELS = {today:'What’s my plan today?', hype:'Hype me up!', cant:'I can’t get started', reason:'Give me a reason to go', rough:'Rough week. Can’t face it', over:'I feel overwhelmed', missed:'I’ve missed a few days', busy:'The gym’s too busy', short:'I’ve only got 20 minutes', last:'What did I lift last time?', restwhy:'Why do rest days matter?', bye:'Thanks, Spark', sghelp:'Show me support numbers'};
+const AI_SYSTEM = [
+  'You are Spark, the coach inside Spark!, a fitness app for adults with ADHD. Your job is encouragement, emotional check-ins and gentle coaching, not detailed programming.',
+  'VOICE: warm, calm, plain and human. British English spelling and phrasing. Short: 2 to 4 sentences, under 70 words. No emojis, no markdown, no lists, no exclamation marks except in a hype reply. Speak to the user as "you", and use their name at most once.',
+  'ADHD-AWARE: reduce decisions. Offer one small, concrete next step. Never shame, guilt or nag. Missed days are fine: nothing to catch up on. Celebrate showing up, not just numbers.',
+  'BE PERSONAL: use what the app tells you about this user (their setup, today, this week, workouts, journal and memories) when it is relevant. Refer to a journal entry or a workout specifically when it matters, but do not list everything you know. Never invent facts, numbers or history that are not in the context.',
+  'THE APP DRAFT: the app has written a draft reply. It may describe things the app has already done (for example a session moved to tomorrow, a shorter plan set, a day off logged). Keep every such fact true and do not promise anything else. You may rewrite it in your own words and make it more personal.',
+  'HEALTH: you are not a doctor. For pain or injury, advise rest and pain-free movement, and suggest a GP or physio if it is severe or not improving. Never give diet plans, calorie targets or weight-loss advice. If anything suggests the user may be at risk of harming themselves or others, respond with care, encourage talking to someone they trust or a helpline, and include the reply option sghelp.',
+  'REPLY BUTTONS: the user cannot type. They reply by tapping 2 or 3 buttons you choose. Pick kinds only from the REPLY OPTIONS list. Write each label as the user speaking, 2 to 6 words, in their voice. Usually keep the draft reply options; add a general one only if it clearly helps. Never offer to start or launch a workout.',
+  'You never mention being an AI, a model, Claude or Anthropic. You are simply Spark.',
+  'OUTPUT: only JSON, no other text: {"text":"your message","replies":[{"kind":"<kind>","label":"<label>"}]}'
+].join('\n\n');
+const aiPlain = function(t){ return String(t == null ? '' : t).replace(/[⁠]/g, '').replace(/ /g, ' ').replace(/\{name\}/g, ''); };
+
 class Component extends DCLogic {
   constructor(props){ super(props); this.state = this.preset((props && props.start) || 'welcome'); this.heroIdx = 0; this.heroSwitched = false; }
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},sessLog:[],sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -2369,6 +2403,86 @@ class Component extends DCLogic {
     return {spark:true, text: welcome + I.focus + ' is on for today' + (I.todayTime && I.laterToday ? ', pencilled in for ' + I.todayTime : '') + (I.recentPB ? ', and I’m still thinking about your ' + I.recentPB.txt + ' ' + I.recentPB.when : '') + '. How are you feeling about it?' + (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ' And if starting is the hard bit, like you told me, we can make it tiny.' : ''), replies:[['Up for it', 'feelgood'], ['Not feeling it', 'feelmeh'], I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? ['Help me get started', 'cant'] : ['Not sure I can today', 'cant']], src: I.recentPB ? 'Today · your progress' : (I.setup && I.setup.barriers.indexOf('Getting started') >= 0 ? 'Today · your setup' : 'Today')};
   }
 
+
+  aiReady(st){ return !!(st.aiOn && st.aiKey && typeof fetch === 'function' && !st.sg); }
+  aiContext(st){
+    const I = this.coachInfo(st); const L = []; const now = new Date();
+    const DN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    L.push('Name: ' + (st.userName || 'unknown') + '. Now: ' + DN[now.getDay()] + ' ' + now.getDate() + ' ' + MN[now.getMonth()] + ', ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' (' + I.part + ').');
+    const SU = I.setup || {barriers:[], goals:[]};
+    const su = [];
+    if (SU.goals && SU.goals.length) su.push('goals: ' + SU.goals.join(', '));
+    if (SU.barriers && SU.barriers.length) su.push('things that get in the way: ' + SU.barriers.join(', '));
+    if (SU.where) su.push('usually trains: ' + SU.where); if (SU.exp) su.push('experience: ' + SU.exp);
+    su.push('preferred coaching style: ' + (st.style || 'gentle')); su.push('session length: about ' + (st.sessLen || 35) + ' minutes');
+    L.push('Setup: ' + su.join('; ') + '.');
+    const t = st.week.find(function(x){ return x.today; }) || {};
+    let today = I.gym ? 'Workout day: ' + I.focus + ', ' + I.mins + ' minutes' + (I.todayTime ? ', planned for ' + I.todayTime : '') : 'Rest day';
+    today += I.trained ? '. Already trained today' + (I.summary ? ' (' + I.summary.exN + ' exercises, ' + I.summary.sets + ' sets)' : '') : I.dayOff ? '. Taking today off' : I.gym ? '. Not done yet' : '';
+    L.push('Today: ' + today + '.');
+    const v = st.vals || {};
+    if (st.checked && v.energy) L.push('Today’s check-in: ' + CHECK.map(function(c){ return c.key === 'motiv' ? 'motivation ' + (c.opts[v[c.key] - 1] || '?').toLowerCase() : c.key + ' ' + (c.opts[v[c.key] - 1] || '?').toLowerCase(); }).join(', ') + '.');
+    else L.push('Today’s check-in: not done.');
+    if (st.env && st.env.where) L.push('Gym check before training: ' + st.env.where + (st.env.busy != null ? ', busy level ' + st.env.busy + ' of 2' : '') + (st.env.gear ? ', kit ' + st.env.gear : '') + '.');
+    L.push('This week: ' + st.week.map(function(d){ const pre = st.joinKey && d.key && d.key < st.joinKey; const tm = timeFor(st, d.d); return d.d + ' ' + d.n + ' ' + (d.t === 'rest' ? 'rest' : (focusLabel(d.focus) || 'workout').toLowerCase() + (tm ? ' ' + tm[4] : '')) + (d.moved || (d.today && (st.doneToday || st.trainedToday)) ? ' (done)' : pre ? ' (before they joined)' : d.today ? ' (today)' : ''); }).join('; ') + '.');
+    const log = (st.sessLog || []).slice(-4).reverse();
+    if (log.length) L.push('Recent workouts: ' + log.map(function(w){ return whenOf({at:w.at}) + ' – ' + w.items.map(function(x){ return x.name + ' ' + (x.kg ? fmt(x.kg) + ' ' + x.unit + ' × ' : '') + x.reps + (x.bw ? ' reps' : '') + ' (' + x.sets + ' sets)'; }).join(', ') + (w.pbs && w.pbs.length ? '; personal bests: ' + w.pbs.join(', ') : ''); }).join(' | ') + '.');
+    else if (st.hist && Object.keys(st.hist).length) L.push('Last lifts: ' + Object.keys(st.hist).slice(0, 6).map(function(id){ const h = st.hist[id]; return EX[id].name + ' ' + (EX[id].bw ? h.reps + ' reps' : fmt(h.kg) + ' ' + EX[id].unit + ' × ' + h.reps); }).join(', ') + '.');
+    else L.push('Workouts: none logged yet.');
+    L.push('Sessions logged in total: ' + (st.sessCount || 0) + '.');
+    const J = (st.journal || []).slice(0, 6);
+    if (J.length) L.push('Journal, newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 320); }).join('\n'));
+    else L.push('Journal: empty.');
+    const themes = Object.keys(I.J || {}).filter(function(k){ return k !== 'sg'; });
+    if (themes.length) L.push('Journal themes the app spotted: ' + themes.join(', ') + (Object.keys(st.jAck || {}).length ? ' (some already talked about in chat)' : '') + '.');
+    if (st.memoryOn) { const M = (st.memories || []).filter(function(m){ return m.on; }).map(function(m){ return aiPlain(m.text); }); if (M.length) L.push('What Spark remembers about them:\n' + M.slice(0, 12).map(function(m){ return '- ' + m; }).join('\n')); }
+    else L.push('Memory is switched off: do not refer to past chats or memories.');
+    return L.join('\n');
+  }
+  aiFetch(st, system, user, maxTok){
+    const ctl = typeof AbortController === 'function' ? new AbortController() : null; const tm = setTimeout(function(){ if (ctl) ctl.abort(); }, 20000);
+    return fetch('https://api.anthropic.com/v1/messages', {method:'POST', signal: ctl ? ctl.signal : undefined,
+      headers:{'content-type':'application/json', 'x-api-key':st.aiKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model: st.aiModel || AI_MODELS[0][0], max_tokens: maxTok || 400, system: system, messages:[{role:'user', content:user}]})})
+      .then(function(r){ clearTimeout(tm); return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); });
+  }
+  aiCoach(st, o){
+    const self = this;
+    const allowed = {}; (o.replies || []).forEach(function(r){ if (r && r[1]) allowed[r[1]] = r[0]; });
+    const CJ = (this.coachInfo(st).J || {});
+    (CJ.crisis ? ['rough','bye','sghelp'] : AI_GENERAL).forEach(function(k){ if (!allowed[k]) allowed[k] = AI_LABELS[k]; });
+    const hist = st.chat.filter(function(m){ return m.text !== '{greet}'; }).slice(-10).map(function(m){ return (m.me ? 'User: ' : 'Spark: ') + aiPlain(m.text); }).join('\n');
+    const user = 'ABOUT THE USER (live from the app)\n' + this.aiContext(st) + '\n\nCHAT SO FAR\n' + (hist || '(nothing yet)') + '\n\n' +
+      (o.opener ? 'The user has just opened the coach. Write your opening message for right now.' : 'The user just tapped: "' + aiPlain(o.tapped) + '"') +
+      '\n\nAPP DRAFT: ' + aiPlain(o.guide) + '\n\nREPLY OPTIONS (kind: suggested label)\n' + Object.keys(allowed).map(function(k){ return k + ': ' + aiPlain(allowed[k]); }).join('\n');
+    return this.aiFetch(st, AI_SYSTEM, user, 400).then(function(res){
+      const cur = self.S(); const u = (res.j && res.j.usage) || {};
+      if (!res.ok) { self.set({aiErr: self.aiErrText(res), aiUse: cur.aiUse}); return null; }
+      const use = Object.assign({n:0, inTok:0, outTok:0}, cur.aiUse || {}); use.n += 1; use.inTok += u.input_tokens || 0; use.outTok += u.output_tokens || 0;
+      const raw = ((res.j.content || []).find(function(c){ return c.type === 'text'; }) || {}).text || '';
+      const m = raw.match(/\{[\s\S]*\}/); let p = null; try { p = m ? JSON.parse(m[0]) : null; } catch (e) { p = null; }
+      let text = p && typeof p.text === 'string' ? p.text : '';
+      text = text.replace(/\*\*?|__|#+ /g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim();
+      if (!text || text.length > 700 || /\b(as an ai|language model|anthropic|chatgpt|claude)\b/i.test(text)) { self.set({aiUse:use, aiErr:'A reply didn’t fit Spark’s rules, so the built-in coach answered.'}); return null; }
+      const seen = {}; const reps = (p.replies || []).filter(function(r){ return r && allowed[r.kind] && !seen[r.kind] && (seen[r.kind] = true); }).slice(0, 3).map(function(r){ let lb = typeof r.label === 'string' ? r.label.replace(/\s+/g, ' ').trim() : ''; if (lb.length < 2 || lb.length > 42) lb = allowed[r.kind]; return [lb, r.kind]; });
+      if (!reps.length && (o.replies || []).length) { self.set({aiUse:use, aiErr:'A reply didn’t fit Spark’s rules, so the built-in coach answered.'}); return null; }
+      self.set({aiUse:use, aiErr:''});
+      return {text:text, replies:reps, ai:true};
+    }).catch(function(e){ self.set({aiErr: e && e.name === 'AbortError' ? 'Claude took too long, so the built-in coach answered.' : 'Couldn’t reach Claude. Check your signal.'}); return null; });
+  }
+  aiErrText(res){ const t = ((res.j && res.j.error && res.j.error.message) || '').toLowerCase();
+    if (res.status === 401) return 'That key wasn’t accepted. Check you copied all of it.';
+    if (res.status === 403) return 'This key doesn’t have permission to use Claude.';
+    if (/credit|balance|billing/.test(t)) return 'Your API account is out of credit. Top up in Billing.';
+    if (res.status === 404 || /model/.test(t)) return 'That model isn’t available on your account. Try the other one.';
+    if (res.status === 429) return 'Too many requests. Wait a minute and try again.';
+    if (res.status === 529 || res.status >= 500) return 'Claude is busy right now. The built-in coach will answer meanwhile.';
+    return 'Something went wrong (' + res.status + ').'; }
+  aiTest(){ const self = this; const st = this.S(); if (!st.aiKey) return self.set({aiStatus:'Add your key first.', aiStatusOk:false});
+    self.set({aiTesting:true, aiStatus:'Testing…', aiStatusOk:false});
+    this.aiFetch(st, 'Reply with the single word OK.', 'Test', 5).then(function(res){ self.set({aiTesting:false, aiStatusOk:res.ok, aiStatus: res.ok ? 'Connected. The AI coach is ready.' : self.aiErrText(res)}); })
+      .catch(function(){ self.set({aiTesting:false, aiStatusOk:false, aiStatus:'Couldn’t reach Claude. Check your signal.'}); }); }
+
   chatOnOpen(){
     // Every time the chat opens, Spark re-reads the app first, then opens with what matters most right now.
     const self = this; const st = this.S();
@@ -2383,6 +2497,11 @@ class Component extends DCLogic {
       if (!talked) { op = self.coachOpener(cur, I, false); patch.chat = [op]; patch.convTurns = 0; }
       else if (I.sig !== cur.chatSig) { op = self.coachOpener(cur, I, true); patch.chat = cur.chat.concat([op]); patch.convTurns = 0; }
       if (op && (op.jKey || op.jKeys)) { patch.jAck = Object.assign({}, cur.jAck || {}); (op.jKeys || [op.jKey]).forEach(function(k){ patch.jAck[k] = true; }); }
+      if (op && self.aiReady(cur)) {
+        return self.aiCoach(cur, {opener:true, guide:op.text, replies:op.replies}).then(function(ai){
+          if (ai) { const merged = Object.assign({}, op, ai); patch.chat = patch.chat.slice(0, -1).concat([merged]); }
+          self.set(patch); self.scrollChat(); });
+      }
       self.set(patch); self.scrollChat();
     }, st.reducedMotion ? 600 : 1900);
   }
@@ -2780,6 +2899,15 @@ class Component extends DCLogic {
     // a short, random "thinking" pause so replies feel considered: 0.5 to 3 seconds
     const wait = 500 + Math.floor(Math.random() * 2500);
     clearTimeout(this.thinkTimer);
+    const curAI = this.S();
+    if (answer && this.aiReady(curAI)) {
+      const t0 = Date.now(); const before = st.chat;
+      this.aiCoach(Object.assign({}, curAI, {chat: before.concat([{me:true, text:text}])}), {tapped:text, guide:answer.text, replies:answer.replies}).then(function(ai){
+        const show = ai ? Object.assign({}, answer, ai) : answer;
+        self.thinkTimer = setTimeout(function(){ const cur = self.S(); self.set({chat: cur.chat.concat([show]), chatThinking:false}); self.scrollChat(); }, Math.max(0, 600 - (Date.now() - t0)));
+      });
+      return;
+    }
     this.thinkTimer = setTimeout(function(){ const cur = self.S(); self.set({chat: cur.chat.concat([answer]), chatThinking:false}); self.scrollChat(); }, wait);
   }
 
@@ -2896,7 +3024,8 @@ class Component extends DCLogic {
     const logged = st.sess && st.sess.done.some(function(x){ return x > 0; });
     const pbLog = (st.pbLog || []).concat(st.sess && st.sess.pbs ? st.sess.pbs.map(function(p){ return {name:p.name, val:p.kg + ' ' + p.unit, when:'Today'}; }) : []);
     const dd = Object.assign({}, st.doneDates || {}); if (st.fresh) dd[todayKeyNow()] = true;
-    this.set({doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
+    const sLog = (st.sessLog || []).slice(); if (logged) sLog.push({at:Date.now(), items: st.sess.ids.map(function(id, i){ return st.sess.done[i] > 0 ? {name:EX[id].name, kg: EX[id].bw ? 0 : st.sess.kg[i], reps:st.sess.reps[i], unit:EX[id].unit, bw:!!EX[id].bw, sets:st.sess.done[i]} : null; }).filter(Boolean), pbs: (st.sess.pbs || []).map(function(p){ return p.name + ' ' + p.kg + ' ' + p.unit; })});
+    this.set({sessLog: sLog.slice(-20), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
   }
 
   logSet(){
@@ -3376,7 +3505,7 @@ class Component extends DCLogic {
       yes:function(){ const cur = self.S(); self.set({journal: cur.journal.filter(function(x){ return x.id !== j.id; }), jConfirm:null, toast:'Entry deleted.'}); }}; });
 
     // Companion
-    const chatView = st.chat.map(function(m){ return {me:!!m.me, spark:!!m.spark, text: m.text === '{greet}' ? self.coachGreeting(st) : String(m.text).replace('{name}', st.userName || 'there'), src: m.text === '{greet}' ? 'Today' : (m.src || ''), hasSrc: m.text === '{greet}' || !!m.src, srcText: m.text === '{greet}' ? 'Based on today' : /^(Updated|Added|Saved)/.test(m.src || '') ? m.src : 'Based on ' + String(m.src || '').replace(/^./, function(c){ return c.toLowerCase(); }), hasAct:false, hasHelp: !!m.help, help: m.help || {rows:[]}, actLabel:m.actLabel || '', act: m.act ? function(){ self.chatAction(m.act, m.actLabel); } : null}; });
+    const chatView = st.chat.map(function(m){ return {me:!!m.me, spark:!!m.spark, text: m.text === '{greet}' ? self.coachGreeting(st) : String(m.text).replace('{name}', st.userName || 'there'), src: m.text === '{greet}' ? 'Today' : (m.src || ''), hasSrc: m.text === '{greet}' || !!m.src || !!m.ai, srcText: (m.text === '{greet}' ? 'Based on today' : /^(Updated|Added|Saved)/.test(m.src || '') ? m.src : 'Based on ' + String(m.src || '').replace(/^./, function(c){ return c.toLowerCase(); })) + (m.ai ? ' · AI coach' : ''), hasAct:false, hasHelp: !!m.help, help: m.help || {rows:[]}, actLabel:m.actLabel || '', act: m.act ? function(){ self.chatAction(m.act, m.actLabel); } : null}; });
     const CHAT_Q = {sghelp:'Show me support numbers', injwhat:'What can I still do?', today:'What’s my plan today?', howwent:'How did my workout go?', hype:'Hype me up!', cant:'I can’t get started', reason:'Give me a reason to go', rough:'Rough week. Can’t face it', over:'I feel overwhelmed', missed:'I’ve missed a few days', busy:'The gym’s too busy', short:'I’ve only got 20 minutes', last:'What did I lift last time?', restwhy:'Why do rest days matter?'};
     const CI = self.coachInfo(st);
     const CJ = CI.J || {};
@@ -3790,6 +3919,20 @@ class Component extends DCLogic {
       chart:chart, showChart: !st.fresh, chartEmpty: !!st.fresh, chartEmptyText: firstLift ? 'First session logged: ' + EX[firstLift].name.toLowerCase() + ' at ' + fmt(st.hist[firstLift].kg) + ' ' + EX[firstLift].unit + '. Your chart grows from here.' : 'Your weights will show up here after your first workout.', pbEmpty: !pbList.length, showDemoWins: !st.fresh, freshWins: !!st.fresh, sessCount: st.sessCount || 0, jCount: (st.journal || []).length, monthCells:monthCells, monthCount:movedDays.length, monthCountLabel: movedDays.length === 1 ? '1 day moved' : movedDays.length + ' days moved', weekHeads:['M','T','W','T','F','S','S'], pbList:pbList, adaptTotal:st.adaptTotal,
       memView:memView, noMemories: st.memories.length === 0, memoryCount:memoryCount,
       memCls: st.memoryOn ? 'on' : '', toggleMemory:function(){ self.set({memoryOn:!self.S().memoryOn}); },
+      privacyNote: st.aiOn && st.aiKey ? 'With the AI coach on, summaries of your plan, workouts and journal go to Anthropic to write replies. Everything else stays on this phone.' : 'Coach replies come from Spark’s built-in coach. Your data stays on this phone.',
+      ai: (function(){ const has = !!st.aiKey; const u = st.aiUse || {n:0, inTok:0, outTok:0};
+        return {hasKey:has, noKey:!has, on: !!st.aiOn, cls: st.aiOn ? 'on' : '', draft: st.aiKeyDraft || '', keyTail: has ? '•••• ' + st.aiKey.slice(-4) : '',
+          canSave: (st.aiKeyDraft || '').trim().length > 20, saveSt: (st.aiKeyDraft || '').trim().length > 20 ? '' : 'opacity: .45',
+          status: st.aiStatus || '', hasStatus: !!st.aiStatus, statusSt: st.aiStatusOk ? 'color: #DDF58B' : 'color: #F4A29A',
+          err: st.aiOn && st.aiErr ? st.aiErr : '', hasErr: !!(st.aiOn && st.aiErr),
+          usage: u.n ? u.n + (u.n === 1 ? ' AI reply' : ' AI replies') + ' so far, ' + Math.round((u.inTok + u.outTok) / 100) / 10 + 'k tokens' : 'No AI replies yet', 
+          models: AI_MODELS.map(function(mm){ const on = (st.aiModel || AI_MODELS[0][0]) === mm[0]; return {label:mm[1], sub:mm[2], on:on, cls: on ? 'on' : '', pick:function(){ self.set({aiModel:mm[0], aiStatus:''}); }}; }),
+          onDraft:function(e){ self.set({aiKeyDraft:e.target.value}); },
+          save:function(){ const k = (self.S().aiKeyDraft || '').trim(); if (k.length <= 20) return; self.set({aiKey:k, aiKeyDraft:'', aiOn:true, aiErr:''}); self.aiTest(); },
+          remove:function(){ self.set({aiKey:'', aiOn:false, aiStatus:'', aiErr:''}); },
+          toggle:function(){ const c = self.S(); if (!c.aiKey) return; self.set({aiOn:!c.aiOn, aiErr:''}); },
+          test:function(){ self.aiTest(); }, testLabel: st.aiTesting ? 'Testing…' : 'Test connection'};
+      })(),
       memoryNote: st.memoryOn ? 'Spark uses these to personalise suggestions. Only you can see them.' : 'Memory is off. Spark won’t use or add anything until you turn it back on.',
       editDraft:st.editDraft, onEdit:function(e){ self.set({editDraft:e.target.value}); }, cancelEdit:function(){ self.set({editing:null}); },
       goBack:function(){ const cur = self.S(); self.set({screen: cur.back && cur.back !== cur.screen ? cur.back : 'today', back:'today'}); },
