@@ -44,6 +44,22 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .kg-in{font-family:'Inter',system-ui,sans-serif;font-weight:700;line-height:1;color:inherit;background:transparent;border:0;border-bottom:2px dashed rgba(245,245,242,.28);border-radius:0;padding:0 0 2px;margin:0;outline:none;min-width:2ch;max-width:100%;box-sizing:content-box;-webkit-appearance:none;appearance:none;caret-color:#DDF58B}
 .kg-in:focus{border-bottom-color:#DDF58B}
 .unit-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dim-veil{position:absolute;inset:0;z-index:55;background:#000;pointer-events:none;transition:opacity .35s ease}
+.ls{position:relative;width:190px;height:290px;border-radius:30px;background:linear-gradient(160deg,#FBFBF8 0%,#ECECE6 55%,#DCDCD4 100%);box-shadow:0 22px 40px rgba(0,0,0,.5),0 4px 10px rgba(0,0,0,.35),inset 0 2px 0 #FFFFFF,inset 0 -4px 0 rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.ls-screw{position:absolute;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F4F4F0,#BDBDB5);box-shadow:inset 0 1px 1px rgba(0,0,0,.25)}
+.ls-screw::after{content:'';position:absolute;left:3px;right:3px;top:6px;height:2px;background:rgba(0,0,0,.28);border-radius:1px;transform:rotate(-30deg)}
+.ls-well{position:relative;display:block;width:108px;height:176px;border-radius:22px;background:linear-gradient(#C6C6BF,#DDDDD6);box-shadow:inset 0 4px 10px rgba(0,0,0,.32),inset 0 -1px 0 rgba(255,255,255,.75);padding:9px;box-sizing:border-box;perspective:360px}
+.ls-rocker{position:relative;display:block;width:100%;height:100%;border-radius:15px;background:linear-gradient(#F9F9F5,#E8E8E2);transform-origin:50% 50%;transition:transform .17s cubic-bezier(.3,1.5,.5,1),box-shadow .17s ease}
+.ls-rocker::before{content:'';position:absolute;inset:0;border-radius:inherit;transition:background .17s ease}
+.ls-rocker::after{content:'';position:absolute;left:10px;right:10px;top:50%;height:1px;background:rgba(0,0,0,.09);box-shadow:0 1px 0 rgba(255,255,255,.7)}
+.ls.on .ls-rocker{transform:rotateX(-18deg);box-shadow:0 -8px 0 -1px #BBBBB3,0 -12px 16px rgba(0,0,0,.26)}
+.ls.off .ls-rocker::before{background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.06) 46%,rgba(255,255,255,0) 54%,rgba(255,255,255,.55) 100%)}
+.ls.off .ls-rocker{transform:rotateX(18deg);box-shadow:0 8px 0 -1px #BBBBB3,0 14px 16px rgba(0,0,0,.3)}
+.ls.on .ls-rocker::before{background:linear-gradient(0deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.06) 46%,rgba(255,255,255,0) 54%,rgba(255,255,255,.55) 100%)}
+.ls-hit{position:absolute;left:0;right:0;height:50%;appearance:none;border:0;margin:0;padding:0;background:transparent;cursor:pointer;z-index:2;-webkit-tap-highlight-color:transparent;border-radius:22px}
+.ls-hit-top{top:0}
+.ls-hit-bot{bottom:0}
+.ls-hit:focus-visible{outline:2px solid #A6D8FA;outline-offset:-4px}
 .cf-wrap{position:absolute;inset:0;z-index:60;pointer-events:none;overflow:hidden}
 .cf{position:absolute;width:9px;height:14px;border-radius:2px;opacity:0;will-change:transform}
 .cf.dot{width:10px;height:10px;border-radius:50%}
@@ -1025,6 +1041,17 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </div>
       </sc-if>
 
+      <sc-if value="{{rest.tabSwitch}}" hint-placeholder-val="{{ false }}">
+      <div style="height: 392px; justify-content: center; display: flex; flex-direction: column; align-items: center; gap: 14px">
+        <div class="ls {{rest.lightCls}}" role="group" aria-label="Light switch">
+          <span class="ls-screw" style="top: 16px"></span>
+          <span class="ls-well"><span class="ls-rocker"></span><button class="ls-hit ls-hit-top" aria-label="Switch off" aria-pressed="{{rest.lightOff}}" onClick="{{rest.lightDown}}"></button><button class="ls-hit ls-hit-bot" aria-label="Switch on" aria-pressed="{{rest.lightOn}}" onClick="{{rest.lightUp}}"></button></span>
+          <span class="ls-screw" style="bottom: 16px"></span>
+        </div>
+        <span style="font-size: 13px; color: #9FB7C9">{{rest.lightHint}}</span>
+      </div>
+      </sc-if>
+
       <sc-if value="{{rest.tabPop}}" hint-placeholder-val="{{ false }}">
       <div style="height: 392px; justify-content: center; display: flex; flex-direction: column; align-items: center; gap: 10px">
         <div style="perspective: 800px">
@@ -1507,6 +1534,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 6px auto 0" onClick="{{rvDone}}">Done</button>
 </div>
 </sc-if>
+
+<div class="dim-veil" aria-hidden="true" style="{{dimSt}}"></div>
 
 <!-- ================= CONFETTI ================= -->
 <sc-if value="{{cfOn}}" hint-placeholder-val="{{ false }}">
@@ -2355,7 +2384,7 @@ class Component extends DCLogic {
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:'kg',kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:'kg',lightOn:true,lightFlips:0,kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -3197,6 +3226,9 @@ class Component extends DCLogic {
     this.set({sessLog: sLog.slice(-20), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
   }
 
+  setLight(on){ const c = this.S(); const now = c.lightOn !== false; if (on === now) { try { if (c.haptics && navigator.vibrate) navigator.vibrate(6); } catch (e) {} return; }
+    try { if (c.haptics && navigator.vibrate) navigator.vibrate(on ? [10, 30, 10] : [16]); } catch (e) {}
+    this.set({lightOn:on, lightFlips:(c.lightFlips || 0) + 1}); }
   burst(big){
     const self = this; const st = this.S();
     try { if (st.haptics && typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(big ? [40, 50, 40, 50, 160] : [30, 40, 70]); } catch (e) {}
@@ -3314,7 +3346,7 @@ class Component extends DCLogic {
     const patch = {sess:s, pbNow:pbNow, toast:toast};
     if (pbNow) { const self0 = this; setTimeout(function(){ self0.burst(false); }, 30); }
     if (!lastOfAll) {
-      patch.resting = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
+      patch.resting = true; patch.lightOn = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
       if (toast) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
     }
     this.set(patch);
@@ -3426,7 +3458,7 @@ class Component extends DCLogic {
 
   // Keeps the last three words of any generated copy together, so a wrapped line never ends with one or two stranded words.
   glueVals(v){
-    const SKIP = {"aSt": 1, "area": 1, "askLock": 1, "askMaxH": 1, "bSt": 1, "barsCls": 1, "breathScale": 1, "c": 1, "cls": 1, "cursor": 1, "d": 1, "draft": 1, "editDraft": 1, "chatDraftV": 1, "adaptDraftV": 1, "kgIn": 1, "kgW": 1, "cfName": 1, "cfSize": 1, "debug": 1, "aiDraft": 1, "flexCls": 1, "gridCols": 1, "gymSt": 1, "hapCls": 1, "ic": 1, "icSt": 1, "icon": 1, "journal": 1, "learnCls": 1, "lx": 1, "ly": 1, "memCls": 1, "moreIc": 1, "nameDraft": 1, "note": 1, "ph": 1, "popFlipCls": 1, "primaryCls": 1, "primaryIc": 1, "primaryIcSt": 1, "progress": 1, "pts": 1, "quietCls": 1, "remCls": 1, "restSt": 1, "ring": 1, "ringA": 1, "ringB": 1, "ringBOff": 1, "ringDash": 1, "rmClass": 1, "rmCls": 1, "routine": 1, "slideCls": 1, "st": 1, "stimCls": 1, "t": 1, "tagSt": 1, "today": 1, "weekEditCls": 1, "weekNextSt": 1, "weekPrevSt": 1, "wsBg": 1, "wsBgFade": 1, "wsCls": 1, "wsInk": 1}, TITLE = {"adaptTotal": 1, "adapted": 1, "allSetTitle": 1, "breathCount": 1, "doseShort": 1, "kg": 1, "left": 1, "n": 1, "name": 1, "pbCount": 1, "primaryLabel": 1, "q": 1, "reps": 1, "setNow": 1, "sets": 1, "title": 1, "topicHeadText": 1, "userName": 1, "val": 1}, NB = '\u00a0';
+    const SKIP = {"dimSt": 1, "aSt": 1, "area": 1, "askLock": 1, "askMaxH": 1, "bSt": 1, "barsCls": 1, "breathScale": 1, "c": 1, "cls": 1, "cursor": 1, "d": 1, "draft": 1, "editDraft": 1, "chatDraftV": 1, "adaptDraftV": 1, "kgIn": 1, "kgW": 1, "cfName": 1, "cfSize": 1, "debug": 1, "aiDraft": 1, "flexCls": 1, "gridCols": 1, "gymSt": 1, "hapCls": 1, "ic": 1, "icSt": 1, "icon": 1, "journal": 1, "learnCls": 1, "lx": 1, "ly": 1, "memCls": 1, "moreIc": 1, "nameDraft": 1, "note": 1, "ph": 1, "popFlipCls": 1, "primaryCls": 1, "primaryIc": 1, "primaryIcSt": 1, "progress": 1, "pts": 1, "quietCls": 1, "remCls": 1, "restSt": 1, "ring": 1, "ringA": 1, "ringB": 1, "ringBOff": 1, "ringDash": 1, "rmClass": 1, "rmCls": 1, "routine": 1, "slideCls": 1, "st": 1, "stimCls": 1, "t": 1, "tagSt": 1, "today": 1, "weekEditCls": 1, "weekNextSt": 1, "weekPrevSt": 1, "wsBg": 1, "wsBgFade": 1, "wsCls": 1, "wsInk": 1}, TITLE = {"adaptTotal": 1, "adapted": 1, "allSetTitle": 1, "breathCount": 1, "doseShort": 1, "kg": 1, "left": 1, "n": 1, "name": 1, "pbCount": 1, "primaryLabel": 1, "q": 1, "reps": 1, "setNow": 1, "sets": 1, "title": 1, "topicHeadText": 1, "userName": 1, "val": 1}, NB = '\u00a0';
     const cache = this._glueCache || (this._glueCache = new WeakMap());
     const g = function(str){ if (str.indexOf(' ') < 0 || /[;{}<>]/.test(str) || /^[MmLlCcAaZz]\s*-?\d/.test(str)) return str; str = str.replace(/(\d) (?=\S)/g, '$1' + NB); const w = str.split(' '); if (w.length < 4 || w.some(function(x){ return !x; })) return str; return w.slice(0, -3).join(' ') + ' ' + w.slice(-3).join(NB).replace(/-(?=\S)/g, '-\u2060'); };
     const walk = function(o, key){
@@ -3891,8 +3923,11 @@ class Component extends DCLogic {
       ring: (RC * Math.min(1, restElapsed / st.restLen)).toFixed(1) + ' ' + RC.toFixed(1),
       title: restLeft <= 0 ? 'Rest done' : 'Rest', nextLabel: 'Up next',
       label: (restLeft <= 0 ? 'Go when you’re ready. ' : '') + (act.upNext || ''),
-      tabSpin: st.stimTab === 'spin', tabPop: st.stimTab === 'pop', tabBreathe: st.stimTab === 'breathe',
-      tabs: [['spin','Spinner'],['pop','Pop it'],['breathe','Breathe']].map(function(t){ const on = st.stimTab === t[0]; return {label:t[1], on:on, st: on ? 'background: #A6D8FA; color: #0C1822' : 'background: transparent; color: #9FB7C9', pick:function(){ self.set({stimTab:t[0], breathStart:0}); }}; }),
+      tabSpin: st.stimTab === 'spin', tabSwitch: st.stimTab === 'switch', lightOn: st.lightOn !== false, lightCls: st.lightOn !== false ? 'on' : 'off', lightLabel: st.lightOn !== false ? 'Lights on' : 'Lights off. Rest easy.', lightAria: st.lightOn !== false ? 'Light switch, on. Tap to switch off.' : 'Light switch, off. Tap to switch on.', lightHint: (st.lightOn !== false ? 'Press the top to switch it off' : 'Press the bottom to switch it on') + ((st.lightFlips || 0) ? '. ' + st.lightFlips + (st.lightFlips === 1 ? ' flip' : ' flips') + ' so far' : ''),
+      lightOff: st.lightOn === false,
+      lightUp:function(){ self.setLight(true); }, lightDown:function(){ self.setLight(false); },
+      tabPop: st.stimTab === 'pop', tabBreathe: st.stimTab === 'breathe',
+      tabs: [['spin','Spinner'],['switch','Switch'],['pop','Pop it'],['breathe','Breathe']].map(function(t){ const on = st.stimTab === t[0]; return {label:t[1], on:on, st: on ? 'background: #A6D8FA; color: #0C1822' : 'background: transparent; color: #9FB7C9', pick:function(){ self.set({stimTab:t[0], breathStart:0, lightOn:true}); }}; }),
       breathLabel:bPhase[0], breathCount: breathOn ? bPhase[2] : 'Start', breathOn:breathOn, breathHint: breathOn ? 'Tap the circle to stop' : 'Box breathing: in 4, hold 4, out 4, hold 4',
       breathScale: st.reducedMotion ? 'transform: scale(.8)' : 'transform: scale(' + bPhase[1] + ')',
       toggleBreath:function(){ const cur = self.S(); self.set({breathStart: cur.breathStart ? 0 : Date.now() + 50}); },
@@ -4157,6 +4192,7 @@ class Component extends DCLogic {
           if (k === 'lost') return self.set({issue:'lost', adaptStep:'swap', swapTo: c.sess ? c.sess.ids[c.sess.cur] : 'pressup', adaptChat:[]});
           self.set({adaptChat:[]}); self.applyAdapt(k); }}; }); })(),
       adaptNewChat:function(){ self.set({adaptStep:'pick', adaptChat:[], issue:null}); },
+      dimSt: (scr === 'active' && st.resting && st.stimTab === 'switch' && st.stimOn !== false && st.lightOn === false) ? 'opacity: 0.3' : 'opacity: 0',
       cfOn: !!st.confetti, cfBig: !!(st.confetti && st.confetti.big), cfSize: Math.min(52, Math.floor(350 / (Math.max(8, ((st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!').length) * 0.6))) + 'px',
       cfName: (st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!',
       cfSub: (function(){ const s0 = st.sess; if (!s0) return 'Workout complete'; const n = s0.done.reduce(function(a, b){ return a + b; }, 0); return n + (n === 1 ? ' set' : ' sets') + ' done. Workout complete.'; })(),
