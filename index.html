@@ -1567,7 +1567,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 36</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 38</p>
 </div>
 </sc-if>
 
@@ -1595,8 +1595,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   </div>
   <sc-if value="{{rv.hasNote}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 12px; border: 1.5px solid #26272C; border-radius: 22px; padding: 14px 16px"><span class="mut" style="display: block; font-size: 13px; font-weight: 600">Your note</span><span style="display: block; font-size: 15px; line-height: 1.5; margin-top: 4px">{{rv.note}}</span></div></sc-if>
   <sc-if value="{{rv.hasFeel}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 10px 4px 0; font-size: 14px">{{rv.feel}}</p></sc-if>
-  <button class="btn b-lime full" style="margin-top: 20px" onClick="{{rvTalk}}">Talk to Spark about it</button>
-  <button class="link" style="display: flex; margin: 6px auto 0" onClick="{{rvDone}}">Done</button>
+  <button class="btn b-lime full" style="margin-top: 20px" onClick="{{rvDone}}">Done</button>
 </div>
 </sc-if>
 
@@ -1607,6 +1606,19 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="cf-wrap" aria-hidden="true">
   <sc-for list="{{cfPieces}}" as="p" hint-placeholder-count="0"><i class="cf {{p.cls}}" style="{{p.st}}"></i></sc-for>
   <sc-if value="{{cfBig}}" hint-placeholder-val="{{ false }}"><div class="cf-dim"></div><div class="cf-hero"><b style="font-size: {{cfSize}}">{{cfName}}</b><span>{{cfSub}}</span></div></sc-if>
+</div>
+</sc-if>
+
+<!-- ================= CHECK-IN FIRST? ================= -->
+<sc-if value="{{ciAskOn}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{ciAskClose}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="Quick check-in first?" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 14px">
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Quick check-in first?</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{ciAskClose}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">Four quick taps on energy, mood, stress and motivation help me pitch today’s session right. Skip it and I’ll assume you’re feeling good and up for a proper session.</p>
+    <button class="btn b-lime full" onClick="{{ciAskDo}}">Do the check-in</button>
+    <button class="btn b-ghost full" onClick="{{ciAskSkip}}">Skip, I’m good to go</button>
+  </div>
 </div>
 </sc-if>
 
@@ -2506,7 +2518,7 @@ class Component extends DCLogic {
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:'kg',progEx:null,progMode:'weight',progPick:false,progMonth:0,progDay:null,sessToday:0,addSheet:false,addFocus:'full',addLen:'full',adj:null,adjConflict:null,lightOn:true,lightFlips:0,kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:35,remindWhen:'30m',barriers:{},style:'gentle',checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:null,ciAsk:false,ciThenStart:false,ciAssumed:false,progEx:null,progMode:'weight',progPick:false,progMonth:0,progDay:null,sessToday:0,addSheet:false,addFocus:'full',addLen:'full',adj:null,adjConflict:null,lightOn:true,lightFlips:0,kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:null,remindWhen:null,barriers:{},style:null,checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -2681,7 +2693,8 @@ class Component extends DCLogic {
     L.push('Today: ' + today + '.');
     if (adjOn(st)) { const A = st.adj; const F = A.from || {}; const fo = planObj(PLANS[F.plan] ? F.plan : 'full', (st.week.find(function(d){ return d.today; }) || {}).focus || ['full'], gearOpts(Object.assign({}, st, {adj:null}))); L.push('Today’s plan was changed in a chat earlier: ' + adjLabel(A) + (A.reason ? ', because ' + A.reason : '') + '. The original plan was ' + fo.title + ', ' + fo.mins + ' minutes. They can undo it.' + (st.adjConflict ? ' Their check-in since then says they feel up for more.' : '')); }
     const v = st.vals || {};
-    if (st.checked && v.energy) L.push('Today’s check-in: ' + CHECK.map(function(c){ return c.key === 'motiv' ? 'motivation ' + (c.opts[v[c.key] - 1] || '?').toLowerCase() : c.key + ' ' + (c.opts[v[c.key] - 1] || '?').toLowerCase(); }).join(', ') + '.');
+    if (st.ciAssumed) L.push('Today’s check-in: skipped before training, so Spark assumed they feel good and full of energy.');
+    else if (st.checked && v.energy) L.push('Today’s check-in: ' + CHECK.map(function(c){ return c.key === 'motiv' ? 'motivation ' + (c.opts[v[c.key] - 1] || '?').toLowerCase() : c.key + ' ' + (c.opts[v[c.key] - 1] || '?').toLowerCase(); }).join(', ') + '.');
     else L.push('Today’s check-in: not done.');
     if (st.env && st.env.where) L.push('Gym check before training: ' + st.env.where + (st.env.busy != null ? ', busy level ' + st.env.busy + ' of 2' : '') + (st.env.gear ? ', kit ' + st.env.gear : '') + '.');
     L.push('This week: ' + st.week.map(function(d){ const pre = st.joinKey && d.key && d.key < st.joinKey; const tm = timeFor(st, d.d); return d.d + ' ' + d.n + ' ' + (d.t === 'rest' ? 'rest' : (focusLabel(d.focus) || 'workout').toLowerCase() + (tm ? ' ' + tm[4] : '')) + (d.moved || (d.today && (st.doneToday || st.trainedToday)) ? ' (done)' : pre ? ' (before they joined)' : d.today ? ' (today)' : ''); }).join('; ') + '.');
@@ -3600,7 +3613,7 @@ class Component extends DCLogic {
     const midWorkout = st.screen === 'active' && st.sess && st.sess.done && st.sess.done.some(function(x){ return x > 0; });
     const joinKey = st.joinKey || (function(){ let t = Date.now(); (st.journal || []).forEach(function(j){ const a = j.at || (/^j\d{12,}$/.test(j.id || '') ? +j.id.slice(1) : 0); if (a && a < t) t = a; }); if (st.trainedAt && st.trainedAt < t) t = st.trainedAt; return dkey(new Date(t)); })();
     const patch = {joinKey:joinKey, dayKey:tk, doneDates:doneDates, plannedDates:plannedDates, week:week, weekOffset:0,
-      checked:false, checkStep:0, vals:{mood:0,energy:0,stress:0,motiv:0}, plan: plannedDates[tk] || st.basePlan || 'full', dayOff:false, doneToday:false, trainedToday:false, extraToday:false, sessToday:0, addSheet:false,
+      checked:false, checkStep:0, vals:{mood:0,energy:0,stress:0,motiv:0}, plan: plannedDates[tk] || st.basePlan || 'full', dayOff:false, doneToday:false, trainedToday:false, extraToday:false, sessToday:0, addSheet:false, ciAsk:false, ciThenStart:false, ciAssumed:false,
       env:{}, envAt:'where', envLadder:false, envEnergy:false, tomorrowPlanned:false, swAsk:null, swOpen:false, toast:'', note:'', feel:null, daySheet:null,
       chat:[GREET], convTurns:0, askCount:{}, startStep:0, chatSig:'', chatMenu:false, chatThinking:false};
     if (!midWorkout) { patch.sess = null; if (['active','complete','adapt','env','checkin','calm'].indexOf(st.screen) >= 0) patch.screen = 'today'; }
@@ -3857,7 +3870,7 @@ class Component extends DCLogic {
       env.coach = bz === 2 ? 'It’s packed, so machines are usually the easiest to grab. Your call though.' : bz === 1 ? 'A little busy. Pick whatever you fancy and I’ll work around it.' : 'The gym’s on your side. What do you fancy today?';
       env.q = 'What would you like to use?';
       const GEAR = [['machine','Machines', bz ? 'Simple to set up, and easy to grab when it’s busy' : 'Simple to set up and steady'], ['cable','Cables','Smooth, and easy to adjust'], ['free','Free weights','Dumbbells and a bench'], ['mix','Mix it up','Spark picks the best of each']];
-      env.opts = GEAR.map(function(o){ const on = (E.gear || st.gear) === o[0]; return optRow(o[1], o[2], on, function(){ const ne = setEnv('gear', o[0]); envAdvance({env:ne, gear:o[0]}); }); }); }
+      env.opts = GEAR.map(function(o){ const on = E.gear === o[0]; return optRow(o[1], o[2] + (!E.gear && st.gear === o[0] && st.sessCount ? ' · Last time' : ''), on, function(){ const ne = setEnv('gear', o[0]); envAdvance({env:ne, gear:o[0]}); }); }); }
     if (envAt === 'noise') { env.coach = 'Nearly there.'; env.q = 'How noisy is it?';
       env.opts = ENV_NOISE.map(function(o, idx){ return optRow(o[1], '', E.noise === o[0], function(){ envAdvance({env:setEnv('noise', o[0])}); }, segsFor(idx + 1, 3)); }); }
     if (envAt === 'temp') { env.coach = 'Last one.'; env.q = 'How does the temperature feel?';
@@ -3889,7 +3902,7 @@ class Component extends DCLogic {
         return {label:label, on:on, cls: on ? 'on' : '', segs:segs,
           pick:function(){
             const cur = self.S(); const v = Object.assign({}, cur.vals); v[cq.key] = lv;
-            if (step >= 3) return self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0}, self.ciPatch(v)));
+            if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v))); if (go) self.renderVals().startWorkout(); return; }
             self.set({vals:v, checkStep: step + 1});
           }};
       })};
@@ -4361,7 +4374,7 @@ class Component extends DCLogic {
       goalCount:goalCount,
       goalOpts: GOALS.map(function(g){ const on = !!st.goals[g]; return {label:g, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const n = Object.keys(cur.goals).filter(function(k){ return cur.goals[k]; }).length; if (!on && n >= 3) return; const ng = Object.assign({}, cur.goals); ng[g] = !on; self.set({goals:ng}); }}; }),
       whereOpts: WHERE.map(function(w){ const on = st.where === w[0]; return {label:w[1], icon:w[2], on:on, st: on ? ON : OFF, pick:function(){ self.set({where:w[0]}); }}; }),
-      unitOpts: [['kg','Kilograms','kg'],['lb','Pounds','lbs']].map(function(u){ const on = (st.units || 'kg') === u[0]; return {label:u[1], sub:u[2], on:on, cls: on ? 'on' : '', pick:function(){ self.set({units:u[0], kgEdit:false, kgDraft:null}); }}; }),
+      unitOpts: [['kg','Kilograms','kg'],['lb','Pounds','lbs']].map(function(u){ const on = st.units === u[0]; return {label:u[1], sub:u[2], on:on, cls: on ? 'on' : '', pick:function(){ self.set({units:u[0], kgEdit:false, kgDraft:null}); }}; }),
       expOpts: EXP.map(function(x){ const on = st.exp === x[0]; return {label:x[1], sub:x[2], on:on, st: on ? ON : OFF, pick:function(){ self.set({exp:x[0]}); }}; }),
       dayOpts: DAYS.map(function(d){ const on = !!st.days[d[0]]; return {short:d[1], full:d[2], on:on, st: on ? 'background: #DDF58B; color: #111214; border: 1.5px solid #DDF58B' : 'background: transparent; color: #F5F5F2; border: 1.5px solid #4A4B53', pick:function(){ const cur = self.S(); const nd = Object.assign({}, cur.days); nd[d[0]] = !on; const nt = Object.assign({}, cur.dayTimes); if (!on && !nt[d[0]]) { const u = cur.lastTimePick || (usualTime(cur) || [])[0]; if (u) nt[d[0]] = u; } self.set({days:nd, dayTimes:nt}); }}; }),
       dayTimeRows:dayTimeRows, hasDayTimes: dayKeys.length > 0, noDayTimes: dayKeys.length === 0,
@@ -4447,7 +4460,11 @@ class Component extends DCLogic {
       noteHowItWent:function(){ self.set({screen:'journal', back:'today', composing:true, draft:'Today’s workout ', toast:''}); },
       todayTrain:todayTrain, todayRest:todayRest, todayAfter:todayAfter, todayMeta:todayMeta, checkRow:checkRow, restTiles:restTiles,
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
-      startWorkout:function(){ const cur = self.S(); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
+      ciAskOn: !!st.ciAsk,
+      ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
+      ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, self.ciPatch(v))); self.renderVals().startWorkout(); },
+      ciAskClose:function(){ self.set({ciAsk:false}); },
+      startWorkout:function(){ const cur = self.S(); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
       extraWorkout:function(){ const cur = self.S(); beginEnv({extraToday:true, dayOff:false, plan: cur.checked ? self.rec(cur.vals) : 'full'}); },
       env:env, ep:ep,
       calmWorkout: !st.calmFrom, calmOther: !!st.calmFrom,
@@ -4487,7 +4504,7 @@ class Component extends DCLogic {
       checkQ:checkQ, checkDots:checkDots, checkPos: step + 1,
       checkBackLabel: step === 0 ? 'Close check-in' : 'Previous question',
       checkBack:function(){ const cur = self.S(); if ((cur.checkStep || 0) === 0) return self.go('today'); self.set({checkStep: cur.checkStep - 1}); },
-      checkSkip:function(){ const cur = self.S(); if (step >= 3) return self.set(Object.assign({checked:true, screen:'today', checkStep:0}, self.ciPatch(cur.vals))); self.set({checkStep: step + 1}); },
+      checkSkip:function(){ const cur = self.S(); if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false}, self.ciPatch(cur.vals))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
       routineRows:routineRows, tomorrowPlanned:st.tomorrowPlanned,
       weekTimesSummary: (function(){ const dks = st.week.filter(function(d){ return d.t !== 'rest'; }).map(function(d){ return d.d; }); if (!dks.length) return 'No training days set'; return timeGroups(st, dks).map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return g.days.join(', ') + ': ' + (T ? T[1].toLowerCase() : 'flexible'); }).join(' · '); })(),
       slide:st.slide, slideCls: st.slide ? 'on' : '', toggleSlide:function(){ self.set({slide:!self.S().slide}); },
@@ -4538,7 +4555,7 @@ class Component extends DCLogic {
         return {on:true, title:title, sub:R.w.focus + (R.w.mins ? ' · ' + R.w.mins + ' minutes' : '') + ' · ' + aiPlain(whenOf({at:R.w.at})), rows:R.rows, ins:R.ins.map(function(t){ return {line:t}; }), volTxt:R.volTxt, volUnit:R.volUnit, sets:R.sets, changeTxt:R.changeTxt, changeSub:R.changeSub,
           loading: !!rv0.loading, hasCoach: !rv0.loading && !!(rv0.coach && rv0.coach.text), coachText: rv0.coach ? rv0.coach.text : '', coachSrc: rv0.coach && rv0.coach.ai ? 'Spark’s take · AI coach' : 'Spark’s take',
           hasNote: !!rv0.note, note: rv0.note || '', feel: rv0.feel ? 'You said you feel ' + rv0.feel + '.' : '', hasFeel: !!rv0.feel}; })(),
-      rvTalk:function(){ self.set({screen:'companion', back:'review'}); }, rvDone:function(){ self.set({screen:'journal', back:'today', toast:'Saved to your journal.'}); },
+      rvTalk:function(){ self.set({screen:'companion', back:'review'}); }, rvDone:function(){ self.set({screen:'today', back:null, toast:'Saved to your journal.'}); },
       goCalm:function(){ self.set({screen:'calm', back:'active'}); },
       adaptReset:function(){ self.set({adaptStep:'pick', issue:null}); },
       adaptRetry:function(){ self.set({adaptStep:'talk', issue:'equip'}); },
