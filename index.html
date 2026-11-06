@@ -1573,7 +1573,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 44</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 45</p>
 </div>
 </sc-if>
 
@@ -1636,6 +1636,25 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Choose an exercise</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{strength.closePick}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     <div style="overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px">
       <sc-for list="{{strength.picks}}" as="p" hint-placeholder-count="6"><button class="ex-row {{p.cls}}" aria-pressed="{{p.on}}" onClick="{{p.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{p.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{p.sub}}</span></span><svg class="ex-tick" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></button></sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{moreSheet}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{closeMore}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="More questions" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 16px; max-height: 86%; box-sizing: border-box">
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">More questions</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{closeMore}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div style="overflow-y: auto; display: flex; flex-direction: column; gap: 16px; margin: 0 -4px; padding: 0 4px">
+      <sc-for list="{{moreGroups}}" as="g" hint-placeholder-count="4">
+        <div>
+          <span style="display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8B8B95; margin: 0 2px 8px">{{g.title}}</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <sc-for list="{{g.items}}" as="q" hint-placeholder-count="3"><button class="chip" style="min-height: 44px; font-size: 15px; padding: 0 16px; {{q.st}}" onClick="{{q.pick}}">{{q.label}}</button></sc-for>
+          </div>
+        </div>
+      </sc-for>
     </div>
   </div>
 </div>
@@ -2605,6 +2624,12 @@ class Component extends DCLogic {
     const last = {first: !!L.first, id:fid, name:fx.name.toLowerCase(), txt: fx.bw ? L.reps + ' ' + (fx.repUnit || 'reps') : wt(L.kg) + ' ' + uu(fx.unit) + ' × ' + L.reps, up: fx.bw ? (L.reps + 2) + ' ' + (fx.repUnit || 'reps') : wt(L.kg + (fx.step || 1)) + ' ' + uu(fx.unit), bw: !!fx.bw};
     const missed = st.week.filter(function(d, i){ return i < ti && d.t !== 'rest' && !d.moved && !(st.joinKey ? (d.key && d.key < st.joinKey) : (st.joinN && d.n < st.joinN)); }).map(function(d){ return (DAYS.find(function(x){ return x[0] === d.d; }) || [0, 0, d.d])[2]; });
     const moved = st.week.filter(function(d){ return d.moved || (d.today && trained); }).length;
+    const LOG = (st.sessLog || []).slice().sort(function(a, b){ return b.at - a.at; });
+    const total = Math.max(LOG.length, st.sessCount || 0);
+    const todayK = dkey(new Date());
+    const prevLog = LOG.filter(function(w){ return dkey(new Date(w.at)) !== todayK; });
+    const lastSame = prevLog.find(function(w){ return (w.focus || '').toLowerCase() === focus.toLowerCase(); }) || prevLog.find(function(w){ return (w.items || []).some(function(it){ return plan.ids.indexOf(it.id) >= 0; }); }) || null;
+    const lastAny = LOG[0] || null;
     const plannedN = st.week.filter(function(d){ return d.t !== 'rest' && !(st.joinKey ? (d.key && d.key < st.joinKey) : (st.joinN && d.n < st.joinN)); }).length;
     const R = this.routineOf(st); const di = DAYS.findIndex(function(x){ return x[0] === t.d; });
     let nextDay = null; for (let k = 1; k <= 7; k++) { const dd = DAYS[(di + k) % 7]; const r = R[dd[0]]; if (r && r.t !== 'rest') { nextDay = {name: k === 1 ? 'tomorrow' : dd[2], focus: (focusLabel(r.focus) || 'a workout').toLowerCase()}; break; } }
@@ -2615,7 +2640,7 @@ class Component extends DCLogic {
     const memOK = function(id){ return st.memoryOn && st.memories.some(function(m){ return m.id === id && m.on; }); };
     return {gym:gym, focus:focus, focusL:focus.toLowerCase(), mins:plan.mins, checked: !!st.checked && !!v.energy, energy:lvl('energy', 0), stress:lvl('stress', 2),
       lowE: v.energy && v.energy <= 2, highS: v.stress >= 4, trained:trained, summary:summary, dayOff: !!st.dayOff && !trained, last:last,
-      missed:missed, moved:moved, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, todayTime: tmToday ? tmToday[4] : null, todaySlot: tmToday ? tmToday[1].toLowerCase() : null, laterToday: !!(tmToday && (function(){ const p = tmToday[4].split(':'); const n = new Date(); return n.getHours() * 60 + n.getMinutes() < (+p[0]) * 60 + (+p[1]) - 30; })()), goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !tmToday, part:part,
+      missed:missed, moved:moved, total:total, lastSame:lastSame, lastAny:lastAny, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, todayTime: tmToday ? tmToday[4] : null, todaySlot: tmToday ? tmToday[1].toLowerCase() : null, laterToday: !!(tmToday && (function(){ const p = tmToday[4].split(':'); const n = new Date(); return n.getHours() * 60 + n.getMinutes() < (+p[0]) * 60 + (+p[1]) - 30; })()), goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !tmToday, part:part,
       env: st.env && st.env.where ? st.env : null, memStress: memOK('m1'), memMorning: memOK('m2'), memWalk: memOK('m4'), memOn: !!st.memoryOn,
       jToday:jToday, sleepJ:sleepJ, stressJ:stressJ, J:J, jAck: st.jAck || {}, gymPending: gym && !trained && !st.dayOff, recentPB:recentPB, planKey: st.plan, planned: !!st.tomorrowPlanned,
       trainedAt: st.trainedAt || 0, sig: JSON.stringify([trained, summary && summary.sets, !!st.dayOff, Object.keys(J).map(function(k){ return k + J[k].id; }).join(), jl[0] && jl[0].id, jToday && jToday.id, st.checked && [v.energy, v.stress], st.env && st.env.busy, st.plan])};
@@ -2973,8 +2998,7 @@ class Component extends DCLogic {
     const t = (ctx && ctx.turns) || 0;
     const ladder = ['cant','step','stuck','restart','hypeno','trainers'].indexOf(kind) >= 0;
     const closing = msg.replies.some(function(r){ return r[1] === 'bye'; }) || !msg.replies.length;
-    if (!closing && t >= (ladder ? 9 : 7)) { msg.text += ' Let’s leave it there for today. You’ve done plenty just by checking in.'; msg.replies = [['Thanks, Spark', 'bye']]; }
-    else if (!closing && t >= (ladder ? 6 : 4)) { msg.replies = msg.replies.slice(0, 2).concat([['That’s enough for now, thanks', 'bye']]); }
+    if (!closing && t >= (ladder ? 6 : 4)) { msg.replies = msg.replies.slice(0, 2).concat([['That’s enough for now, thanks', 'bye']]); }
     return msg;
   }
 
@@ -3116,12 +3140,12 @@ class Component extends DCLogic {
         return M('Done. I’ve marked today as a rest day on your Today screen, so there’s nothing hanging over you. Rest is part of the plan.' + (ctx.planned ? '' : ' Want me to pencil in something small for ' + I.tomorrow + '?'), pencil, 'Updated your Today screen');
       case 'hype': {
         const pb = I.summary && I.summary.pbs.length ? I.summary.pbs[0] : null;
-        const lines = memOn && I.fresh && !I.moved ? [
+        const lines = memOn && !I.total ? [
           'Right then. This could be your very first session with Spark, and that’s a big deal. Trainers on, headphones in, first set only. You’ve got this.',
           'Every strong habit started with one session that didn’t feel ready. This is that one. Go!',
           'You don’t need to be good at this yet. You just need to turn up once. I’ll handle the rest.'
         ] : memOn ? [
-          'Right then. You’ve moved ' + I.moved + (I.moved === 1 ? ' time' : ' times') + ' this week already' + (I.memMorning ? ', and you hit 80 kg on bench on a quiet morning' : '') + '. That person is still you. Trainers on, headphones in, first set only. You’ve got this.',
+          'Right then. ' + (I.moved ? 'You’ve moved ' + I.moved + (I.moved === 1 ? ' time' : ' times') + ' this week already' : 'You’ve done ' + I.total + (I.total === 1 ? ' workout' : ' workouts') + ' with Spark already') + (I.memMorning ? ', and you hit 80 kg on bench on a quiet morning' : '') + '. That person is still you. Trainers on, headphones in, first set only. You’ve got this.',
           'Last time you did ' + I.last.txt + ' on the ' + I.last.name + '. Today’s just about showing up for it again. You don’t need to feel ready. Go!',
           'Every single session you’ve done started exactly like this, not feeling it. Then you did it anyway. Let’s make it one more.'
         ] : [
@@ -3139,7 +3163,7 @@ class Component extends DCLogic {
         if (ctx.n >= 3) return M('Honestly? You don’t need to be convinced. You just need to start, or to rest without guilt. Either is a good choice today.', [['Fair enough', 'bye'], ['Help me start', 'cant']]);
         const g = I.goals[0];
         const first = g ? 'When you started, you told me you wanted to ' + g.charAt(0).toLowerCase() + g.slice(1) + '. Every session moves you towards that' + (I.moved ? ', and you’ve already moved ' + I.moved + (I.moved === 1 ? ' time' : ' times') + ' this week.' : ', starting with this one.')
-          : I.moved ? 'You’ve already moved ' + I.moved + (I.moved === 1 ? ' time' : ' times') + ' this week. Even 10 minutes today keeps that going.' : 'Even 10 minutes today is a brilliant first step.';
+          : I.moved ? 'You’ve already moved ' + I.moved + (I.moved === 1 ? ' time' : ' times') + ' this week. Even 10 minutes today keeps that going.' : I.total ? 'You’ve done ' + I.total + (I.total === 1 ? ' workout' : ' workouts') + ' with Spark so far. Even 10 minutes today keeps that going.' : 'Even 10 minutes today is a brilliant first step.';
         return M(pick([first, 'You always feel better after, never worse. That’s the reason.', 'Because future you will thank you. Every time.']),
           ctx.n >= 2 ? [['You’re right', 'reasonyes'], ['Still not convinced', 'reason']] : [['You’re right', 'reasonyes'], ['Not convinced', 'reason']], ctx.n ? '' : (g ? 'Your goals · this week' : 'This week'));
       }
@@ -3165,10 +3189,10 @@ class Component extends DCLogic {
       case 'busyyes': return M('Nice. Headphones in, one spot, one exercise at a time. You’ve got this.', [['Thanks, Spark', 'bye']]);
       case 'leave': return M('That’s allowed. Getting there was a win in itself. Rest today and we’ll go again.', ctx.planned ? [['Thanks, Spark', 'bye']] : [['Pencil in ' + I.tomorrow, 'planTomorrow'], ['Thanks, Spark', 'bye']]);
       case 'short': return M(pick(['A shorter ' + (I.gym ? I.focusL + ' session' : 'session') + ' still counts. About 20 minutes, fewer sets, then head home proud.', 'Even shorter works. Ten minutes, or just one exercise. It all counts.', 'Honestly? Even five minutes is a win today. Do one thing, then decide.']),
-        ctx.n >= 2 ? [['Sounds doable', 'shortyes'], ['Maybe not today', 'restok']] : [['Sounds doable', 'shortyes'], ['I’ve got even less time', 'short']]);
+        I.gym && !I.trained ? [['Make today shorter', 'goshort'], ['Maybe not today', 'restok']] : ctx.n >= 2 ? [['Sounds doable', 'shortyes'], ['Maybe not today', 'restok']] : [['Sounds doable', 'shortyes'], ['I’ve got even less time', 'short']]);
       case 'shortyes': return M('Brilliant. Short and done beats long and skipped. When you press Start workout, pick the shorter version and it’s all set up.', [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']]);
       case 'missed':
-        if (!I.missed.length) return M(I.fresh && !I.moved ? 'You haven’t missed anything. You’ve only just started with Spark, so every session from here is a win.' : 'Actually, you haven’t missed anything this week. You’ve done ' + I.moved + ' of ' + I.plannedN + ' sessions so far. That’s going really well.', [['Oh, nice', 'bye'], ['Help me keep it going', 'hype']], 'Your week');
+        if (!I.missed.length) return M(!I.total && !I.moved ? 'You haven’t missed anything. You’ve only just started with Spark, so every session from here is a win.' : (I.moved ? 'Actually, you haven’t missed anything this week. You’ve done ' + I.moved + ' of ' + I.plannedN + ' sessions so far. That’s going really well.' : 'You haven’t missed anything. Nothing was planned before today this week, so you’re right on track.' + (I.total ? ' You’ve done ' + I.total + (I.total === 1 ? ' workout' : ' workouts') + ' with Spark in total.' : '')), [['Oh, nice', 'bye'], ['Help me keep it going', 'hype']], 'Your week');
         return M(pick(['This week you didn’t train on ' + I.missed.join(' or ') + ', and that’s fine. Nothing to make up. Your routine just picks up from today.', 'Honestly, it’s fine. Today is a fresh start, same as any other day.']),
           [['Okay, thanks', 'missedyes'], ['I still feel guilty', 'guilt']], ctx.n ? '' : 'Your week');
       case 'missedyes': return M('Any time. Want a hand getting today started?', [['Yes please', 'cant'], ['Not right now', 'bye']]);
@@ -3176,7 +3200,19 @@ class Component extends DCLogic {
       case 'restwhy': return M(ctx.n ? 'When you train, you make tiny tears in the muscle. Rest and sleep repair them stronger. Skip the rest and you skip the gains.' : 'Muscles get stronger while you rest, not while you train. A rest day is part of the plan, not a break from it.',
         ctx.n ? [['Makes sense', 'restyes'], ['Thanks, Spark', 'bye']] : [['Makes sense', 'restyes'], ['Tell me more', 'restwhy']]);
       case 'restyes': return M('Exactly. So if today’s a rest day, enjoy it guilt-free.', [['Thanks, Spark', 'bye']]);
-      case 'last': if (I.last.first) return M('We haven’t logged a session together yet, so there’s nothing to beat. Start light on your first one, and I’ll remember it for next time.', [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']]);
+      case 'last': {
+        const sess = I.gym && !I.trained && I.lastSame ? I.lastSame : I.lastAny;
+        if (sess && (sess.items || []).length) {
+          const d0 = new Date(sess.at); const dayTxt = dkey(d0) === dkey(new Date()) ? 'today' : DAYS[(d0.getDay() + 6) % 7][2] + ' ' + d0.getDate() + ' ' + MONTHS_LONG[d0.getMonth()];
+          const lines = sess.items.filter(function(it){ return it.reps || it.kg; }).map(function(it){ return '• ' + it.name + ': ' + (it.bw || !it.kg ? it.reps + ' ' + (it.repUnit || 'reps') : wt(it.kg) + '\u00a0' + uu(it.unit || 'kg') + '\u00a0×\u00a0' + it.reps) + (it.sets ? ', ' + it.sets + (it.sets === 1 ? ' set' : ' sets') : ''); });
+          const same = sess === I.lastSame && I.gym && !I.trained;
+          const head = same ? 'Last time you did ' + (sess.focus || I.focus).toLowerCase() + ' was ' + dayTxt + ':' : 'Your last workout was ' + (sess.focus || 'a workout').toLowerCase() + (dayTxt === 'today' ? ', today:' : ' on ' + dayTxt + ':');
+          const firstIt = sess.items.find(function(it){ return it.id === I.last.id; });
+          const ask = same && firstIt && !I.last.bw ? '\nFancy stepping the ' + I.last.name + ' up to ' + I.last.up + ' today?' : '';
+          return M(head + '\n' + lines.join('\n') + ask, ask ? [['Step it up', 'lastup'], ['Keep it the same', 'lastsame']] : [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']], 'Your workout log');
+        }
+      }
+      if (I.last.first) return M('We haven’t logged a session together yet, so there’s nothing to beat. Start light on your first one, and I’ll remember it for next time.', [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']]);
         return M(ctx.n ? 'Same as before: ' + I.last.txt + ' on the ' + I.last.name + '. Same again, or a little more? Your call.'
           : 'Last time on the ' + I.last.name + ' you did ' + I.last.txt + '.' + (I.memMorning ? ' And on 8 Oct, in a quiet morning session, you hit 80 kg on bench.' : '') + ' Fancy stepping it up to ' + I.last.up + ' today?',
         [['Step it up', 'lastup'], ['Keep it the same', 'lastsame']], 'Last session');
@@ -4137,15 +4173,20 @@ class Component extends DCLogic {
     const aiChat = self.aiReady(st) && !CJ.crisis;
     const CHAT_ACTS = {restup:1, airetry:1, checkin:1, calm:1, goshort:1, injshort:1, injoff:1, illoff:1, sleepshort:1, lowrest:1, shorternext:1, restok:1, slide:1, lastup:1, drop:1, easier:1, quiet:1, finish:1, quitover:1, step:1, trainers:1, restart:1};
     const isAct = function(k){ return /^(adj_|sg)/.test(k || '') || !!CHAT_ACTS[k]; };
-    const sugg = !st.chatThinking ? (lastSpark.replies || []).filter(function(r){ return !aiChat || isAct(r[1]); }) : [];
+    const sugg = !st.chatThinking ? (lastSpark.replies || []).filter(function(r){ return aiChat ? isAct(r[1]) : (st.sg || ['hype','cant','reason'].indexOf(r[1]) < 0); }) : [];
     const follow = null;
     const quickReplies = [];
-    const topicGroups = (aiChat ? [['Get me moving', ['hype','cant','reason']]] : GROUPS).map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return aiChat || !started || !asked[k]; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
-    const showTopics = aiChat || !!st.chatMenu || (!sugg.length && !st.chatThinking);
-    const suggest = sugg.length ? [{title: st.sg ? 'Choose one' : 'Suggested replies', items: sugg.map(function(r, i){ const neg = i === sugg.length - 1 && sugg.length > 1; return {label:r[0], st: i === 0 ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : neg ? 'color: #A1A1AA' : 'border-color: #B7A6F6; color: #F5F5F2', pick:function(){ self.say(r[1], r[0]); }}; })}] : [];
+    const mkChip = function(k, hi){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : hi ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.set({chatMenu:false}); self.say(k, CHAT_Q[k]); }}; };
+    const MORE = [['For today', sugg.length ? forYou.filter(function(k){ return ['hype','cant','reason'].indexOf(k) < 0; }) : []], ['Tough day',['rough','over','missed','sghelp']], ['At the gym',['busy','short','last']], ['Good to know',['restwhy']]];
+    const moreGroups = (aiChat || CJ.crisis) ? [] : MORE.map(function(g, gi){ return {title:g[0], items:g[1].filter(function(k){ return gi === 0 || forYou.indexOf(k) < 0; }).map(function(k){ return mkChip(k, false); })}; }).filter(function(g){ return g.items.length; });
+    const topicGroups = (aiChat ? [['Get me moving', ['hype','cant','reason']]] : GROUPS).map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return true; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
+    const showTopics = true;
+    const suggest = sugg.length ? [{title: st.sg ? 'Choose one' : aiChat ? 'Suggested' : 'Suggested for you', items: sugg.map(function(r, i){ const neg = i === sugg.length - 1 && sugg.length > 1; return {label:r[0], st: i === 0 ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : neg ? 'color: #A1A1AA' : 'border-color: #B7A6F6; color: #F5F5F2', pick:function(){ self.say(r[1], r[0]); }}; })}] : [];
     const askGroups = suggest;
-    const topicList = showTopics && !st.sg ? topicGroups : [];
-    const topicHead = !aiChat && (started || sugg.length > 0) && showTopics && topicGroups.length > 0;
+    const GM = ['hype','cant','reason'];
+    const fyKeys = forYou.filter(function(k){ return GM.indexOf(k) < 0; });
+    const topicList = st.sg ? [] : aiChat ? topicGroups : [{title:'Suggested for you', items: sugg.length ? [] : fyKeys.map(function(k){ return mkChip(k, true); })}, {title:'Get me moving', items: GM.map(function(k){ return mkChip(k, false); })}].filter(function(g){ return g.items.length; });
+    const topicHead = false;
 
     // Progress
     const base = [40, 42.5, 42.5, 45, 47.5, 50];
@@ -4661,7 +4702,7 @@ class Component extends DCLogic {
       todayDateLabel: st.fresh ? (function(){ const n = new Date(); return DAYS[(n.getDay() + 6) % 7][2] + ', ' + n.getDate() + ' ' + MONTHS_LONG[n.getMonth()]; })() : 'Sunday, 11 October', monthLabel: st.fresh ? MONTHS_LONG[new Date().getMonth()] : 'October',
       journalView:journalView, journalEmpty: !st.journal.length, showInsights: !st.fresh, insightsEmpty: !!st.fresh, memberSince: st.fresh ? 'Joined Spark today' : 'Training with Spark since August',
       chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #71717A' : ''}; }),
-      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: !aiChat && sugg.length > 0 && !st.sg, moreLabel: st.chatMenu ? 'Hide other questions' : 'Or ask something else', moreOpen: !!st.chatMenu, moreIc: st.chatMenu ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore:function(){ self.set({chatMenu:!self.S().chatMenu}); self.scrollChat(); }, noTopicsLeft: !aiChat && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: aiChat ? '260px' : showTopics ? '520px' : '220px', chatPad: showTopics ? '640px' : '320px',
+      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: moreGroups.length > 0 && !st.sg, moreLabel: 'More questions', moreOpen: !!st.chatMenu, moreGroups:moreGroups, moreSheet: !!st.chatMenu && st.screen === 'companion' && moreGroups.length > 0 && !st.sg, closeMore:function(){ self.set({chatMenu:false}); }, moreIc: 'M6 15l6-6 6 6', toggleMore:function(){ self.set({chatMenu:true}); }, noTopicsLeft: false && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: '300px', chatPad: showTopics ? '640px' : '320px',
  promptsAll:function(){ self.set({promptsMenu:true}); },
       memoryStatus: st.memoryOn ? 'Your AI coach. Memory on.' : 'Your AI coach. Memory off.',
       onChat:function(e){ self.set({chatDraft:e.target.value}); },
