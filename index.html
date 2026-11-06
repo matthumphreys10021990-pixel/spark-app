@@ -311,7 +311,7 @@ button.dc.d-tap{cursor:pointer}
 .toast{background:#DDF58B;color:#111214;border-radius:18px;padding:12px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px}
 .coach{background:#1C1D21;border-radius:24px;padding:16px;display:flex;gap:12px;align-items:flex-start}
 .av{width:42px;height:42px;flex:none;border-radius:50%;background:#111214;box-shadow:inset 0 0 0 1.5px #34353B;display:flex;align-items:center;justify-content:center}
-.bub{background:#1C1D21;border-radius:22px 22px 22px 6px;padding:14px 16px;font-size:16px;line-height:1.45}
+.bub{background:#1C1D21;border-radius:22px 22px 22px 6px;padding:14px 16px;font-size:16px;line-height:1.45;white-space:pre-line}
 .mine{align-self:flex-end;background:#DDF58B;color:#111214;border-radius:22px 22px 6px 22px;padding:12px 16px;font-size:15px;line-height:1.4;max-width:280px;font-weight:500}
 @keyframes breathe{0%,100%{transform:scale(.72)}45%{transform:scale(1)}}
 .breathe{animation:breathe 10s ease-in-out infinite}
@@ -1573,7 +1573,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 42</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 43</p>
 </div>
 </sc-if>
 
@@ -2509,10 +2509,11 @@ const AI_GENERAL = ['today','hype','cant','reason','rough','over','missed','busy
 const AI_LABELS = {today:'What’s my plan today?', hype:'Hype me up!', cant:'I can’t get started', reason:'Give me a reason to go', rough:'Rough week. Can’t face it', over:'I feel overwhelmed', missed:'I’ve missed a few days', busy:'The gym’s too busy', short:'I’ve only got 20 minutes', last:'What did I lift last time?', restwhy:'Why do rest days matter?', bye:'Thanks, Spark', sghelp:'Show me support numbers'};
 const AI_SYSTEM = [
   'You are Spark, the coach inside Spark!, a fitness app for adults with ADHD. Your job is encouragement, emotional check-ins and gentle coaching, not detailed programming.',
-  'VOICE: warm, calm, plain and human. British English spelling and phrasing. Usually short: 2 to 4 sentences, under 70 words. When the user types a real question (about their training, an exercise, their data or how they feel), answer it properly, up to about 130 words. No emojis, no markdown, no lists, no exclamation marks except in a hype reply. Speak to the user as "you", and use their name at most once.',
+  'VOICE: warm, calm, plain and human. British English spelling and phrasing. For everyday chat, keep it short: 2 to 4 sentences. When the user asks a real question, especially about their own data (a summary of their week, their workouts, journal, mood, progress or personal bests), answer it fully and accurately, up to about 250 words. For summaries you may use short bullet lines, each starting with "• " on its own line (use \n for new lines). No emojis, no markdown symbols, no exclamation marks except in a hype reply. Speak to the user as "you", and use their name at most once.',
   'ADHD-AWARE: reduce decisions. Offer one small, concrete next step. Never shame, guilt or nag. Missed days are fine: nothing to catch up on. Celebrate showing up, not just numbers.',
+  'ANSWERING FROM DATA: the data block includes THIS WEEK and LAST WEEK laid out day by day (check-in, every workout with exercises, journal entries), plus older history. When they ask what they did, how their week went, what they wrote, how their mood has been or how they are progressing, build the answer from those sections: be concrete (days, exercises, weights, reps, words they used) and complete. If something was not recorded, say so plainly. Never guess or fill gaps.',
   'YOU KNOW THEM: you are given everything Spark has stored about this user: their setup answers, weekly routine and times, every logged workout with weights, reps and personal bests, their whole recent journal, check-ins and memories. Treat it as your own memory of them. When they ask about their own data (what they lifted, what they wrote, how many sessions, how their week went), answer precisely and specifically from it. If something is genuinely not in the data, say so honestly.',
-  'BE PERSONAL: use what the app tells you about this user (their setup, today, this week, workouts, journal and memories) when it is relevant. Refer to a journal entry or a workout specifically when it matters, but do not list everything you know. Never invent facts, numbers or history that are not in the context.',
+  'BE PERSONAL: use what the app tells you about this user (their setup, today, this week, workouts, journal and memories) when it is relevant. Refer to specific workouts, check-ins and journal entries by day and detail. Never invent facts, numbers or history that are not in the context.',
   'FACTS FIRST: the data block (especially TODAY SO FAR and the week’s logged workouts) is the truth. Never mention a workout, walk, PB or feeling that is not in it. If anything in the APP DRAFT conflicts with the data, trust the data and ignore that part of the draft.',
   'THE APP DRAFT: the app has written a draft reply. It may describe things the app has already done (for example a session moved to tomorrow, a shorter plan set, a day off logged). Keep every such fact true and do not promise anything else. You may rewrite it in your own words and make it more personal.',
   'HEALTH: you are not a doctor. For pain or injury, advise rest and pain-free movement, and suggest a GP or physio if it is severe or not improving. Never give diet plans, calorie targets or weight-loss advice. If anything suggests the user may be at risk of harming themselves or others, respond with care, encourage talking to someone they trust or a helpline, and include the reply option sghelp.',
@@ -2530,7 +2531,7 @@ class Component extends DCLogic {
 
 
   preset(start){
-    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:null,ciAsk:false,ciThenStart:false,ciAssumed:false,progEx:null,progMode:'weight',progPick:false,progMonth:0,progDay:null,sessToday:0,addSheet:false,addFocus:'full',addLen:'full',adj:null,adjConflict:null,lightOn:true,lightFlips:0,kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:null,remindWhen:null,barriers:{},style:null,checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
+    const b = {screen:'welcome',back:'today',onb:0,swOpen:false,swReason:null,swAsk:null,gear:'mix',exPrefs:{},exAvoid:{},tour:null,tourDir:1,tourN:0,hist:null,chatThinking:false,startStep:0,askCount:{},chatMenu:false,convTurns:0,chatAck:{},stepUpNext:null,trainedToday:false,chatSync:false,chatSig:'',env:{},envAt:'where',envEnergy:false,envLadder:false,envHot:false,calmFrom:null,tipIdx:0,dayFocus:{},routine:null,daySheet:null,weekEditing:false,weekOffset:0,nextWeek:null,breathStart:0,extraToday:false,resting:false,restStart:0,restLen:60,stimTab:'spin',popped:[],popRound:0,sips:0,waterDue:false,stimOn:true,haptics:true,signMode:'new',gPicker:false,userName:'Alex',nameDraft:'',nameTried:false,goals:{},where:null,exp:null,days:{},prefTime:null,prefTimes:{},prefFlex:false,dayTimes:{},dtOpen:null,aiOn:false,aiKey:'',aiKeyDraft:'',aiModel:'claude-haiku-5-5',aiStatus:'',aiStatusOk:false,aiTesting:false,aiErr:'',aiUse:{n:0,inTok:0,outTok:0},aiDay:{d:'',n:0},sessLog:[],units:null,ciLog:{},ciAsk:false,ciThenStart:false,ciAssumed:false,progEx:null,progMode:'weight',progPick:false,progMonth:0,progDay:null,sessToday:0,addSheet:false,addFocus:'full',addLen:'full',adj:null,adjConflict:null,lightOn:true,lightFlips:0,kgEdit:false,kgDraft:null,confetti:null,adaptChat:[],adaptDraft:'',adaptThinking:false,review:null,sessLen:null,remindWhen:null,barriers:{},style:null,checked:false,checkStep:0,vals:{mood:0,energy:0,stress:0,motiv:0},
       plan:'full',dayOff:false,sess:null,showCues:false,paused:false,quiet:false,toast:'',pbNow:null,
       issue:null,swapTo:null,adaptStep:'pick',feel:null,note:'',doneToday:false,
       journal:clone(SEED_J),composing:false,draft:'',draftMood:null,learn:true,listening:false,
@@ -2724,7 +2725,32 @@ class Component extends DCLogic {
       const planned = d.t === 'rest' ? 'rest day' : (focusLabel(d.focus) || 'workout').toLowerCase() + (tm ? ' ' + tm[4] : '');
       const W = d.key ? logOn(d.key) : []; const doneTxt = W.length ? 'DID ' + W.map(function(w){ return (w.focus || 'a workout').toLowerCase(); }).join(' + ') : (d.moved || (d.today && (st.doneToday || st.trainedToday))) ? 'trained' : '';
       return d.d + ' ' + d.n + ': ' + planned + (doneTxt ? ' → ' + doneTxt : pre ? ' (before they joined)' : d.today ? ' → today, nothing done yet' : (st.joinKey && d.key && d.key < dkey(new Date())) ? ' → nothing logged' : ''); }).join('; ') + '.');
-    const log = (st.sessLog || []).slice(-10).reverse();
+    // ===== DATA PACK: day-by-day for this week and last week, then older history in summary =====
+    const lv = function(c, n){ return n ? (CHECK.find(function(x){ return x.key === c; }).opts[n - 1] || '?').toLowerCase() : '?'; };
+    const ciTxt = function(e){ if (!e) return 'no check-in'; if (e.assumed) return 'check-in skipped (assumed feeling good)'; const v0 = e.v || {}; return 'check-in: energy ' + lv('energy', v0.energy) + ', mood ' + lv('mood', v0.mood) + ', stress ' + lv('stress', v0.stress) + ', motivation ' + lv('motiv', v0.motiv); };
+    const wTxt = function(w){ const t0 = new Date(w.at); return (w.focus || 'Workout') + ' at ' + String(t0.getHours()).padStart(2, '0') + ':' + String(t0.getMinutes()).padStart(2, '0') + (w.mins ? ', ' + w.mins + ' min' : '') + ': ' + (w.items || []).map(function(it){ return it.name + ' ' + (it.bw ? it.reps + ' ' + (it.repUnit || 'reps') : wt(it.kg) + ' ' + uu(it.unit) + ' × ' + it.reps) + ' × ' + it.sets + ' sets' + (it.prevKg != null && !it.bw ? ' (last time ' + wt(it.prevKg) + ' × ' + it.prevReps + ')' : ''); }).join('; ') + (w.pbs && w.pbs.length ? '. Personal bests: ' + w.pbs.join(', ') : '') + (w.adapted ? '. Adapted ' + w.adapted + ' time(s)' : ''); };
+    const jAt = function(j){ return j.at || (/^j(\d{12,})/.test(j.id || '') ? +j.id.slice(1, 14) : 0); };
+    const dayBlock = function(key){ const d0 = keyDate(key); const name = DAYS[(d0.getDay() + 6) % 7][2] + ' ' + d0.getDate() + ' ' + MONTHS_LONG[d0.getMonth()];
+      const W = (st.sessLog || []).filter(function(w){ return dkey(new Date(w.at)) === key; });
+      const JJ = (st.journal || []).filter(function(j){ const t1 = jAt(j); return t1 && dkey(new Date(t1)) === key; }).sort(function(a, b){ return jAt(a) - jAt(b); });
+      const R0 = (st.routine || {})[DAYS[(d0.getDay() + 6) % 7][0]] || {}; const planned = R0.t === 'rest' ? 'rest day' : R0.t ? (focusLabel(R0.focus) || 'workout').toLowerCase() : '';
+      const trainedNoLog = !W.length && (st.doneDates || {})[key];
+      const bits = [ciTxt((st.ciLog || {})[key])];
+      if (W.length) W.forEach(function(w){ bits.push('WORKOUT ' + wTxt(w)); }); else bits.push(trainedNoLog ? 'trained (details not recorded)' : (key === todayKeyNow() ? 'no workout yet today' : 'no workout'));
+      JJ.forEach(function(j){ const t1 = new Date(jAt(j)); bits.push('JOURNAL ' + String(t1.getHours()).padStart(2, '0') + ':' + String(t1.getMinutes()).padStart(2, '0') + ' "' + aiPlain(j.text) + '"'); });
+      return '- ' + name + (planned ? ' (planned: ' + planned + ')' : '') + ': ' + bits.join('; '); };
+    const today0 = keyDate(todayKeyNow()); const mon0 = new Date(today0.getFullYear(), today0.getMonth(), today0.getDate() - ((today0.getDay() + 6) % 7));
+    const weekKeys = function(start, upto){ const out = []; for (let k = 0; k < 7; k++) { const d1 = new Date(start.getFullYear(), start.getMonth(), start.getDate() + k); if (upto && d1 > upto) break; const kk = dkey(d1); if (st.joinKey && kk < st.joinKey) continue; out.push(kk); } return out; };
+    const thisW = weekKeys(mon0, today0); const lastMon = new Date(mon0.getFullYear(), mon0.getMonth(), mon0.getDate() - 7); const lastW = weekKeys(lastMon, null);
+    const wkSum = function(keys){ const W = (st.sessLog || []).filter(function(w){ return keys.indexOf(dkey(new Date(w.at))) >= 0; }); const sets = W.reduce(function(a, w){ return a + (w.items || []).reduce(function(b, it){ return b + it.sets; }, 0); }, 0); const vol = W.reduce(function(a, w){ return a + (w.items || []).reduce(function(b, it){ return b + (it.bw ? 0 : it.kg * it.reps * it.sets); }, 0); }, 0); return W.length + (W.length === 1 ? ' workout' : ' workouts') + ', ' + sets + ' sets, ' + wtBig(vol) + (WU === 'lb' ? ' lbs' : ' kg') + ' lifted in total'; };
+    L.push('THIS WEEK (Monday ' + mon0.getDate() + ' ' + MONTHS_LONG[mon0.getMonth()] + ' to today), day by day. Totals: ' + wkSum(thisW) + '.\n' + (thisW.length ? thisW.map(dayBlock).join('\n') : '- (joined today)'));
+    if (lastW.length) L.push('LAST WEEK, day by day. Totals: ' + wkSum(lastW) + '.\n' + lastW.map(dayBlock).join('\n'));
+    const olderW = (st.sessLog || []).filter(function(w){ return dkey(new Date(w.at)) < dkey(lastMon); });
+    if (olderW.length) { const byM = {}; olderW.forEach(function(w){ const d2 = new Date(w.at); const mk = MONTHS_LONG[d2.getMonth()] + ' ' + d2.getFullYear(); (byM[mk] = byM[mk] || []).push(w); });
+      L.push('EARLIER WORKOUTS by month: ' + Object.keys(byM).map(function(mk){ const W = byM[mk]; const fc = {}; W.forEach(function(w){ fc[w.focus || 'Workout'] = (fc[w.focus || 'Workout'] || 0) + 1; }); return mk + ': ' + W.length + ' workouts (' + Object.keys(fc).map(function(f){ return f.toLowerCase() + ' ×' + fc[f]; }).join(', ') + ')' + (W.some(function(w){ return w.pbs && w.pbs.length; }) ? ', personal bests: ' + [].concat.apply([], W.map(function(w){ return w.pbs || []; })).join(', ') : ''); }).join(' | ') + '.'); }
+    const ciKeys = Object.keys(st.ciLog || {}).filter(function(k){ return k < dkey(lastMon); }).sort();
+    if (ciKeys.length) L.push('EARLIER CHECK-INS: ' + ciKeys.slice(-30).map(function(k){ return k + ' ' + ciTxt(st.ciLog[k]).replace('check-in: ', ''); }).join('; ') + '.');
+    const log = [];
     if (log.length) L.push('Recent workouts: ' + log.map(function(w){ return whenOf({at:w.at}) + ' – ' + w.items.map(function(x){ return x.name + ' ' + (x.kg ? wt(x.kg) + ' ' + uu(x.unit) + ' × ' : '') + x.reps + (x.bw ? ' reps' : '') + ' (' + x.sets + ' sets)'; }).join(', ') + (w.pbs && w.pbs.length ? '; personal bests: ' + w.pbs.join(', ') : ''); }).join(' | ') + '.');
     else if (st.hist && Object.keys(st.hist).length) L.push('Last lifts: ' + Object.keys(st.hist).slice(0, 6).map(function(id){ const h = st.hist[id]; return EX[id].name + ' ' + (EX[id].bw ? h.reps + ' reps' : wt(h.kg) + ' ' + uu(EX[id].unit) + ' × ' + h.reps); }).join(', ') + '.');
     else L.push('Workouts: none logged yet.');
@@ -2741,9 +2767,9 @@ class Component extends DCLogic {
     const avoid = Object.keys(st.exAvoid || {}).filter(function(id){ return st.exAvoid[id] && EX[id]; }).map(function(id){ return EX[id].name; });
     if (prefs.length || avoid.length) L.push('Exercise preferences: ' + (prefs.length ? 'prefers ' + prefs.join(', ') : '') + (prefs.length && avoid.length ? '; ' : '') + (avoid.length ? 'swapped away from ' + avoid.join(', ') : '') + '.');
     L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes. Reminders: ' + (st.reminders ? 'on' : 'off') + '.');
-    const J = (st.journal || []).slice(0, 25);
-    if (J.length) L.push('Journal (' + (st.journal || []).length + ' entries), newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 500) + (j.tags && j.tags.length ? ' (tags: ' + j.tags.join(', ') + ')' : ''); }).join('\n'));
-    else L.push('Journal: empty.');
+    const J = (st.journal || []).filter(function(j){ const t1 = jAt(j); return !t1 || dkey(new Date(t1)) < dkey(lastMon); }).slice(0, 30);
+    if (J.length) L.push('OLDER JOURNAL ENTRIES (before last week, ' + (st.journal || []).length + ' entries in total), newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 500) + (j.tags && j.tags.length ? ' (tags: ' + j.tags.join(', ') + ')' : ''); }).join('\n'));
+    else L.push('Older journal entries: none (this week and last week are listed above).');
     const themes = Object.keys(I.J || {}).filter(function(k){ return k !== 'sg'; });
     if (themes.length) L.push('Journal themes the app spotted: ' + themes.join(', ') + (Object.keys(st.jAck || {}).length ? ' (some already talked about in chat)' : '') + '.');
     if (st.memoryOn) { const M = (st.memories || []).filter(function(m){ return m.on; }).map(function(m){ return aiPlain(m.text); }); if (M.length) L.push('What Spark remembers about them:\n' + M.slice(0, 40).map(function(m){ return '- ' + m; }).join('\n')); }
@@ -2769,7 +2795,9 @@ class Component extends DCLogic {
       const cm = js.match(/"concern"\s*:\s*"(self|others|abuse)"/); if (cm) out.concern = cm[1];
       const rs = []; js.replace(/\{\s*"kind"\s*:\s*"([^"]+)"\s*,\s*"label"\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g, function(_, k, l){ rs.push({kind:k, label:l}); return _; }); out.replies = rs;
       if (out.text || out.concern) return out; }
-    if (t && t.indexOf('{') < 0) return {text:t, replies:[]};
+      if (t && t.indexOf('{') < 0) return {text:t, replies:[]};
+    const part = t.match(/"text"\s*:\s*"((?:[^"\\]|\\.)*)/);
+    if (part && part[1].length > 40) { let tx = part[1]; try { tx = JSON.parse('"' + tx.replace(/\\$/, '') + '"'); } catch (e) { tx = tx.replace(/\\n/g, '\n').replace(/\\"/g, '"'); } return {text: tx.replace(/\s+\S*$/, '') + '…', replies:[], partial:true}; }
     return null;
   }
   aiCoach(st, o){
@@ -2791,7 +2819,7 @@ class Component extends DCLogic {
         (adjOpts.length ? '\n\nTODAY’S PLAN CHANGES you may offer as buttons (adj_ kinds above), what each does:\n' + adjOpts.map(function(x){ return x[0] + ': ' + aiPlain(x[2]); }).join('\n') : '');
     } catch (e) { self.set({aiErr:'Spark couldn’t gather your data (' + (e && e.message) + ').', aiDebug:String(e && e.stack || e).slice(0, 400)}); return Promise.resolve(null); }
     const attempt = function(n){
-      return self.aiFetch(self.S(), AI_SYSTEM, user, o.typed ? 1200 : 900).then(function(res){
+      return self.aiFetch(self.S(), AI_SYSTEM, user, o.typed ? 4096 : 2048).then(function(res){
         if (!res.ok && n < 1 && (res.status === 429 || res.status === 529 || res.status >= 500)) return new Promise(function(r){ setTimeout(r, 1500); }).then(function(){ return attempt(n + 1); });
         return res; });
     };
@@ -2803,9 +2831,9 @@ class Component extends DCLogic {
       const p = self.aiParse(raw);
       if (p && ['self','others','abuse'].indexOf(p.concern) >= 0) { self.set({aiUse:use, aiErr:''}); return {concern:p.concern}; }
       let text = p && typeof p.text === 'string' ? p.text : '';
-      text = text.replace(/\*\*?|__|^#+ /gm, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/\s+/g, ' ').trim().replace(/\b(Claude|Anthropic)\b/g, 'Spark');
+      text = text.replace(/\*\*?|__|^#+ /gm, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/^\s*[-*]\s+/gm, '• ').replace(/[ \t]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim().replace(/\b(Claude|Anthropic)\b/g, 'Spark');
       if (!text) { const why = res.j.stop_reason === 'max_tokens' ? 'The reply was cut off before it finished.' : 'The reply came back empty.'; self.set({aiUse:use, aiErr:why, aiDebug:'stop_reason ' + res.j.stop_reason + ' · raw: ' + raw.slice(0, 300)}); return {fail:why}; }
-      if (text.length > 1400) text = text.slice(0, 1400).replace(/\s+\S*$/, '') + '…';
+      if (text.length > 3200) text = text.slice(0, 3200).replace(/\s+\S*$/, '') + '…';
       const seen = {}; const reps = ((p && p.replies) || []).filter(function(r){ return r && allowed[r.kind] && !seen[r.kind] && (seen[r.kind] = true); }).slice(0, 3).map(function(r){ let lb = typeof r.label === 'string' ? r.label.replace(/\s+/g, ' ').trim() : ''; if (lb.length < 2 || lb.length > 42) lb = allowed[r.kind]; return [lb, r.kind]; });
       const finalReps = reps.length ? reps : (o.replies && o.replies.length ? o.replies : []);
       self.set({aiUse:use, aiErr:'', aiDebug:''});
@@ -3291,6 +3319,7 @@ class Component extends DCLogic {
     this.set(patch); return a;
   }
   undoAdj(){ const st = this.S(); const f = (st.adj && st.adj.from) || {}; const back = {adj:null, adjConflict:null, plan: f.plan || 'full', dayOff: !!f.dayOff, tomorrowPlanned: !!f.tomorrowPlanned, extraToday: !!f.extraToday}; if (f.doneToday != null) { back.doneToday = !!f.doneToday; back.trainedToday = !!f.trainedToday; if (f.sess) back.sess = f.sess; } this.set(back); }
+  ciLogPatch(v, assumed){ const st = this.S(); const k = todayKeyNow(); const L = Object.assign({}, st.ciLog || {}); L[k] = {v:Object.assign({}, v), assumed: !!assumed, at:Date.now()}; const keys = Object.keys(L).sort(); while (keys.length > 120) delete L[keys.shift()]; return {ciLog:L}; }
   ciPatch(v){
     // Check-in finished. If today was already adjusted in a chat, the check-in never silently undoes it.
     const st = this.S(); const rec = this.rec(v);
@@ -3889,7 +3918,7 @@ class Component extends DCLogic {
       back:function(){ const i = envSteps.indexOf(envAt); if (i <= 0) return self.set({screen:'today'}); self.set({envAt: envSteps[i - 1]}); },
       skip:function(){ self.set({envAt:'plan'}); }};
     if (envAt === 'energy') { env.coach = 'You skipped the check-in earlier, so just this one.'; env.q = 'First, how’s your energy?';
-      env.opts = CHECK[0].opts.map(function(label, idx){ const lv = idx + 1; return optRow(label, '', v.energy === lv, function(){ const cur = self.S(); const nv = Object.assign({}, cur.vals, {energy:lv}); envAdvance({vals:nv, plan: self.rec(nv)}); }, segsFor(lv, 5)); }); }
+      env.opts = CHECK[0].opts.map(function(label, idx){ const lv = idx + 1; return optRow(label, '', v.energy === lv, function(){ const cur = self.S(); const nv = Object.assign({}, cur.vals, {energy:lv}); envAdvance(Object.assign({vals:nv, plan: self.rec(nv)}, self.ciLogPatch(nv, false))); }, segsFor(lv, 5)); }); }
     if (envAt === 'where') { env.coach = 'Quick check before we start. Just a few taps.'; env.q = 'Where are you working out today?';
       env.where = ENV_WHERE.map(function(w){ const on = E.where === w[0]; return {label:w[1], ic:IC[w[2]], on:on, usual: usualWhere === w[0], st: on ? 'background: #DDF58B; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ const ne = setEnv('where', w[0]); delete ne.busy; delete ne.kit; delete ne.bench; envAdvance({env:ne}); }}; }); }
     if (envAt === 'space') { const sp = ENV_SPACE[E.where] || ENV_SPACE.gym; env.coach = sp.coach; env.q = sp.q;
@@ -3930,7 +3959,7 @@ class Component extends DCLogic {
         return {label:label, on:on, cls: on ? 'on' : '', segs:segs,
           pick:function(){
             const cur = self.S(); const v = Object.assign({}, cur.vals); v[cq.key] = lv;
-            if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v))); if (go) self.renderVals().startWorkout(); return; }
+            if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v), self.ciLogPatch(v, false))); if (go) self.renderVals().startWorkout(); return; }
             self.set({vals:v, checkStep: step + 1});
           }};
       })};
@@ -4491,7 +4520,7 @@ class Component extends DCLogic {
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
       ciAskOn: !!st.ciAsk,
       ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
-      ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, self.ciPatch(v))); self.renderVals().startWorkout(); },
+      ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, self.ciPatch(v), self.ciLogPatch(v, true))); self.renderVals().startWorkout(); },
       ciAskClose:function(){ self.set({ciAsk:false}); },
       startWorkout:function(){ const cur = self.S(); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
       extraWorkout:function(){ const cur = self.S(); beginEnv({extraToday:true, dayOff:false, plan: cur.checked ? self.rec(cur.vals) : 'full'}); },
@@ -4533,7 +4562,7 @@ class Component extends DCLogic {
       checkQ:checkQ, checkDots:checkDots, checkPos: step + 1,
       checkBackLabel: step === 0 ? 'Close check-in' : 'Previous question',
       checkBack:function(){ const cur = self.S(); if ((cur.checkStep || 0) === 0) return self.go('today'); self.set({checkStep: cur.checkStep - 1}); },
-      checkSkip:function(){ const cur = self.S(); if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false}, self.ciPatch(cur.vals))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
+      checkSkip:function(){ const cur = self.S(); if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false}, self.ciPatch(cur.vals), self.ciLogPatch(cur.vals, false))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
       routineRows:routineRows, tomorrowPlanned:st.tomorrowPlanned,
       weekTimesSummary: (function(){ const dks = st.week.filter(function(d){ return d.t !== 'rest'; }).map(function(d){ return d.d; }); if (!dks.length) return 'No training days set'; return timeGroups(st, dks).map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return g.days.join(', ') + ': ' + (T ? T[1].toLowerCase() : 'flexible'); }).join(' · '); })(),
       slide:st.slide, slideCls: st.slide ? 'on' : '', toggleSlide:function(){ self.set({slide:!self.S().slide}); },
