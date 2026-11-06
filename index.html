@@ -1573,7 +1573,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 43</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 44</p>
 </div>
 </sc-if>
 
@@ -4132,15 +4132,20 @@ class Component extends DCLogic {
     const asked = st.askCount || {};
     const started = st.chat.some(function(m){ return m.me; });
     const lastSpark = st.chat.slice().reverse().find(function(m){ return m.spark; }) || {};
-    const sugg = !st.chatThinking ? (lastSpark.replies || []) : [];
+    // With the AI coach connected the user can just type, so only buttons that DO something stay (plan changes, safety, starting a check-in…),
+    // plus the 'Get me moving' trio. Without AI, the full set of suggested replies drives the conversation.
+    const aiChat = self.aiReady(st) && !CJ.crisis;
+    const CHAT_ACTS = {restup:1, airetry:1, checkin:1, calm:1, goshort:1, injshort:1, injoff:1, illoff:1, sleepshort:1, lowrest:1, shorternext:1, restok:1, slide:1, lastup:1, drop:1, easier:1, quiet:1, finish:1, quitover:1, step:1, trainers:1, restart:1};
+    const isAct = function(k){ return /^(adj_|sg)/.test(k || '') || !!CHAT_ACTS[k]; };
+    const sugg = !st.chatThinking ? (lastSpark.replies || []).filter(function(r){ return !aiChat || isAct(r[1]); }) : [];
     const follow = null;
     const quickReplies = [];
-    const topicGroups = GROUPS.map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return !started || !asked[k]; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
-    const showTopics = !!st.chatMenu || (!sugg.length && !st.chatThinking);
+    const topicGroups = (aiChat ? [['Get me moving', ['hype','cant','reason']]] : GROUPS).map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return aiChat || !started || !asked[k]; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
+    const showTopics = aiChat || !!st.chatMenu || (!sugg.length && !st.chatThinking);
     const suggest = sugg.length ? [{title: st.sg ? 'Choose one' : 'Suggested replies', items: sugg.map(function(r, i){ const neg = i === sugg.length - 1 && sugg.length > 1; return {label:r[0], st: i === 0 ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : neg ? 'color: #A1A1AA' : 'border-color: #B7A6F6; color: #F5F5F2', pick:function(){ self.say(r[1], r[0]); }}; })}] : [];
     const askGroups = suggest;
     const topicList = showTopics && !st.sg ? topicGroups : [];
-    const topicHead = (started || sugg.length > 0) && showTopics && topicGroups.length > 0;
+    const topicHead = !aiChat && (started || sugg.length > 0) && showTopics && topicGroups.length > 0;
 
     // Progress
     const base = [40, 42.5, 42.5, 45, 47.5, 50];
@@ -4656,7 +4661,7 @@ class Component extends DCLogic {
       todayDateLabel: st.fresh ? (function(){ const n = new Date(); return DAYS[(n.getDay() + 6) % 7][2] + ', ' + n.getDate() + ' ' + MONTHS_LONG[n.getMonth()]; })() : 'Sunday, 11 October', monthLabel: st.fresh ? MONTHS_LONG[new Date().getMonth()] : 'October',
       journalView:journalView, journalEmpty: !st.journal.length, showInsights: !st.fresh, insightsEmpty: !!st.fresh, memberSince: st.fresh ? 'Joined Spark today' : 'Training with Spark since August',
       chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #71717A' : ''}; }),
-      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: sugg.length > 0 && !st.sg, moreLabel: st.chatMenu ? 'Hide other questions' : 'Or ask something else', moreOpen: !!st.chatMenu, moreIc: st.chatMenu ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore:function(){ self.set({chatMenu:!self.S().chatMenu}); self.scrollChat(); }, noTopicsLeft: started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: showTopics ? '520px' : '220px', chatPad: showTopics ? '640px' : '320px',
+      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: !aiChat && sugg.length > 0 && !st.sg, moreLabel: st.chatMenu ? 'Hide other questions' : 'Or ask something else', moreOpen: !!st.chatMenu, moreIc: st.chatMenu ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMore:function(){ self.set({chatMenu:!self.S().chatMenu}); self.scrollChat(); }, noTopicsLeft: !aiChat && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: aiChat ? '260px' : showTopics ? '520px' : '220px', chatPad: showTopics ? '640px' : '320px',
  promptsAll:function(){ self.set({promptsMenu:true}); },
       memoryStatus: st.memoryOn ? 'Your AI coach. Memory on.' : 'Your AI coach. Memory off.',
       onChat:function(e){ self.set({chatDraft:e.target.value}); },
