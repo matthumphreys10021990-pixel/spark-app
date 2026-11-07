@@ -23,6 +23,9 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .d,.d8,h1,h2,h3{text-wrap:balance}
 .d8{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0}
 .brand-hero{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.03em;line-height:1;margin:0}
+.rw-ring{appearance:none;border:0;background:transparent;padding:0;cursor:pointer;position:relative;width:58px;height:58px;flex:none;display:flex;align-items:center;justify-content:center;color:#F5F5F2}
+.rw-ring svg:first-child{position:absolute;inset:0}
+.rw-medal{position:relative}
 .rw-bar{appearance:none;border:0;cursor:pointer;font:inherit;text-align:left;width:100%;background:transparent;color:#F5F5F2;box-shadow:inset 0 0 0 1.5px #2A2B30;border-radius:22px;padding:12px 16px 13px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box}
 .rw-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .rw-k{font-size:13px;font-weight:600;color:#B7A6F6}
@@ -585,9 +588,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="scroll" style="padding: 22px 0 124px">
   <div class="row" style="justify-content: space-between; padding: 0 20px">
     <div class="row" style="gap: 12px">
-      <button class="ib" aria-label="Profile and settings" onClick="{{nav.settings}}" style="width: 48px; height: 48px; background: #B7A6F6; color: #111214; font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 18px">{{userInitial}}</button>
       <span><span class="d" style="font-size: 22px; display: block">Hi {{userName}}</span><span class="mut" style="font-size: 14px">{{todayDateLabel}}</span></span>
     </div>
+    <button class="rw-ring" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><svg width="58" height="58" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="25" fill="none" stroke="#26272C" stroke-width="5"></circle><circle cx="29" cy="29" r="25" fill="none" stroke="{{rw.ringCol}}" stroke-width="5" stroke-linecap="round" stroke-dasharray="157.08" stroke-dashoffset="{{rw.ringOff}}" transform="rotate(-90 29 29)" style="transition: stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)"></circle></svg><svg class="rw-medal" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="color: {{rw.medalCol}}"><path fill="currentColor" d="M7.6 12.6 5.4 21.2l3.3-1.3 1.9 2.8 1.7-7.4z"></path><path fill="currentColor" d="M16.4 12.6l2.2 8.6-3.3-1.3-1.9 2.8-1.7-7.4z"></path><circle cx="12" cy="9" r="7" fill="currentColor"></circle><path fill="#111214" d="M12 4.9l1.25 2.55 2.8.4-2.03 1.97.48 2.79L12 11.3l-2.5 1.31.48-2.79-2.03-1.97 2.8-.4z"></path></svg></button>
   </div>
 
   <div style="padding: 0 20px; margin-top: 24px">
@@ -623,11 +626,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <!-- ---------- Training day ---------- -->
   <sc-if value="{{todayTrain}}" hint-placeholder-val="{{ true }}">
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
-    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
-      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
-    </div>
-    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <sc-if value="{{adjShow}}" hint-placeholder-val="{{ false }}">
     <div class="adj-note">
       <span style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path></svg><span style="flex: 1; font-size: 14px; line-height: 1.45">{{adjNote}}</span></span>
@@ -646,30 +644,33 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <span class="d" style="font-size: 26px">Start workout</span>
       </button>
     </section>
+    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
+      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
+    </div>
 
     <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
       <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
       <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
     </button>
-    <button class="link" style="align-self: center" onClick="{{notToday}}">Not today</button>
   </div>
   </sc-if>
 
   <!-- ---------- Rest day ---------- -->
   <sc-if value="{{todayRest}}" hint-placeholder-val="{{ false }}">
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
-    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
-      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
-    </div>
-    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <section style="position: relative; overflow: hidden; isolation: isolate; background: #A6D8FA; color: #111214; border-radius: 30px; padding: 22px">
       <svg class="rings" viewBox="0 0 200 200" width="240" height="240" aria-hidden="true" style="right: -80px; top: -70px; z-index: -1"><g fill="none" stroke="#111214" stroke-opacity=".07" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <span style="font-size: 14px; font-weight: 600">Rest day</span>
       <h2 class="d" style="font-size: 30px; margin-top: 6px">Recovery is part of the plan.</h2>
       <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.45">Your muscles rebuild on days like this. Everything below is optional.</p>
+      <button class="btn sm" style="margin-top: 16px; background: transparent; color: #111214; box-shadow: inset 0 0 0 1.5px rgba(17,18,20,.4); gap: 8px" onClick="{{openAdd}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a workout</button>
     </section>
+    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
+      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
+    </div>
     <div class="row" style="justify-content: space-between; margin-top: 6px; padding: 0 2px"><h3 class="d" style="font-size: 20px">If you fancy it</h3><span class="mut" style="font-size: 13px">No pressure</span></div>
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
       <sc-for list="{{restTiles}}" as="r" hint-placeholder-count="4">
@@ -689,18 +690,12 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">Check in</span>
     </button>
     </sc-if>
-    <button class="add-tile" onClick="{{openAdd}}"><span class="add-plus" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 700; font-size: 16px">{{addTitle}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{addSub}}</span></span></button>
   </div>
   </sc-if>
 
   <!-- ---------- Rested instead / done ---------- -->
   <sc-if value="{{todayAfter}}" hint-placeholder-val="{{ false }}">
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
-    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
-      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
-    </div>
-    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <sc-if value="{{adjShow}}" hint-placeholder-val="{{ false }}">
     <div class="adj-note">
       <span style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path></svg><span style="flex: 1; font-size: 14px; line-height: 1.45">{{adjNote}}</span></span>
@@ -719,10 +714,13 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="background: #DDF58B; color: #111214; border-radius: 30px; padding: 22px; display: flex; flex-direction: column; gap: 10px">
       <h2 class="d" style="font-size: 28px">You moved today.</h2>
       <p style="margin: 0; font-size: 15px; line-height: 1.5">That's banked, whichever version you did. Anything else is a bonus, never a requirement.</p>
-      <button class="btn b-dark sm" style="align-self: flex-start" onClick="{{noteHowItWent}}">Note how it went</button>
+      <div class="row" style="gap: 8px; flex-wrap: wrap; margin-top: 2px"><button class="btn b-dark sm" onClick="{{noteHowItWent}}">Note how it went</button><button class="btn sm" style="background: transparent; color: #111214; box-shadow: inset 0 0 0 1.5px rgba(17,18,20,.4); gap: 8px" onClick="{{openAdd}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add another</button></div>
     </div>
-    <button class="add-tile" onClick="{{openAdd}}"><span class="add-plus" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 700; font-size: 16px">{{addTitle}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{addSub}}</span></span></button>
     </sc-if>
+    <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
+      <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
+    </div>
   </div>
   </sc-if>
 
@@ -736,19 +734,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </div>
     </sc-if>
     <sc-if value="{{progHas}}" hint-placeholder-val="{{ true }}">
-  <div class="card" style="margin-top: 14px">
-    <span style="display: block; font-weight: 600; font-size: 17px">Workout consistency</span>
-    <div class="row" style="justify-content: space-between; margin-top: 10px; background: #111214; border-radius: 999px; padding: 4px">
-      <span class="row" style="gap: 4px; width: 100%; justify-content: space-between"><button class="mnav" aria-label="Previous month" style="{{progNav.prevSt}}" onClick="{{progNav.prev}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size: 15px; font-weight: 600; text-align: center" aria-live="polite">{{progNav.label}}</span><button class="mnav" aria-label="Next month" style="{{progNav.nextSt}}" onClick="{{progNav.next}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></span></div>
-    <p style="margin: 12px 0 16px; font-size: 14px"><span style="color: #DDF58B; font-weight: 600">{{monthCountLabel}}</span> <span class="mut">{{progNav.suffix}}</span></p>
-    <div class="cal">
-      <sc-for list="{{weekHeads}}" as="h" hint-placeholder-count="7"><span class="mut" style="text-align: center; font-size: 12px">{{h}}</span></sc-for>
-      <sc-for list="{{monthCells}}" as="c" hint-placeholder-count="31"><button class="dc {{c.cls}}" aria-label="{{c.aria}}" onClick="{{c.pick}}">{{c.n}}</button></sc-for>
-    </div>
-    <p class="mut" style="margin: 14px 2px 0; font-size: 13px">Tap a green day to see that day’s workout.</p>
-  </div>
   <sc-if value="{{showStrength}}" hint-placeholder-val="{{ false }}">
-  <div class="card" style="margin-top: 12px">
+  <div class="card" style="margin-top: 14px">
     <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
       <span style="min-width: 0"><span style="display: block; font-weight: 600; font-size: 17px">Your strength</span><span class="mut" style="font-size: 14px">{{strength.sub}}</span></span>
       <span class="row" style="flex: none; gap: 6px"><sc-for list="{{strength.pills}}" as="p" hint-placeholder-count="1"><span style="border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; {{p.st}}">{{p.txt}}</span></sc-for></span>
@@ -776,6 +763,17 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{strength.single}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 8px 0 0; font-size: 13px; line-height: 1.45">{{strength.hint}}</p></sc-if>
   </div>
   </sc-if>
+  <div class="card" style="margin-top: 12px">
+    <span style="display: block; font-weight: 600; font-size: 17px">Workout consistency</span>
+    <div class="row" style="justify-content: space-between; margin-top: 10px; background: #111214; border-radius: 999px; padding: 4px">
+      <span class="row" style="gap: 4px; width: 100%; justify-content: space-between"><button class="mnav" aria-label="Previous month" style="{{progNav.prevSt}}" onClick="{{progNav.prev}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size: 15px; font-weight: 600; text-align: center" aria-live="polite">{{progNav.label}}</span><button class="mnav" aria-label="Next month" style="{{progNav.nextSt}}" onClick="{{progNav.next}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></span></div>
+    <p style="margin: 12px 0 16px; font-size: 14px"><span style="color: #DDF58B; font-weight: 600">{{monthCountLabel}}</span> <span class="mut">{{progNav.suffix}}</span></p>
+    <div class="cal">
+      <sc-for list="{{weekHeads}}" as="h" hint-placeholder-count="7"><span class="mut" style="text-align: center; font-size: 12px">{{h}}</span></sc-for>
+      <sc-for list="{{monthCells}}" as="c" hint-placeholder-count="31"><button class="dc {{c.cls}}" aria-label="{{c.aria}}" onClick="{{c.pick}}">{{c.n}}</button></sc-for>
+    </div>
+    <p class="mut" style="margin: 14px 2px 0; font-size: 13px">Tap a green day to see that day’s workout.</p>
+  </div>
   <sc-if value="{{showChart}}" hint-placeholder-val="{{ true }}">
   <div class="card" style="margin-top: 12px">
     <div class="row" style="justify-content: space-between; align-items: flex-start">
@@ -1554,8 +1552,16 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <p class="mut" style="margin: 8px 0 0; font-size: 15px">Your training week, coach and privacy.</p>
   <div class="row" style="gap: 16px; margin-top: 24px">
     <span style="width: 68px; height: 68px; border-radius: 50%; background: #B7A6F6; color: #111214; display: flex; align-items: center; justify-content: center; font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 28px; flex: none">{{userInitial}}</span>
-    <span><span class="d" style="font-size: 26px; display: block">{{userName}}</span><span class="mut" style="font-size: 14px">{{memberSince}}</span></span>
+    <span style="flex: 1; min-width: 0"><span class="d" style="font-size: 26px; display: block; overflow-wrap: anywhere">{{userName}}</span><span class="mut" style="font-size: 14px">{{memberSince}}</span></span>
+    <sc-if value="{{nameNotEditing}}" hint-placeholder-val="{{ true }}"><button class="link" style="padding: 0 4px; min-height: 44px; color: #B7A6F6" aria-label="Change your name" onClick="{{nameEditOpen}}">Edit</button></sc-if>
   </div>
+  <sc-if value="{{nameEditing}}" hint-placeholder-val="{{ false }}">
+  <div class="card rise" style="margin-top: 14px; display: flex; flex-direction: column; gap: 12px">
+    <label for="sp-name-edit" style="font-weight: 600">What should Spark call you?</label>
+    <input id="sp-name-edit" class="field" style="font-size: 18px; padding: 14px 16px" placeholder="Your name" maxlength="30" value="{{nameEditDraft}}" onChange="{{onNameEdit}}" autocomplete="given-name">
+    <div class="row" style="gap: 8px"><button class="btn b-lime sm" style="flex: 1" onClick="{{nameEditSave}}">Save</button><button class="btn b-ghost sm" style="flex: 1" onClick="{{nameEditCancel}}">Cancel</button></div>
+  </div>
+  </sc-if>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Comfort</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 18px">
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Daily coach line</span><span class="mut" style="font-size: 13px">One line on Today, built from your own workouts and journal.</span></span><button class="tg {{clCls}}" aria-pressed="{{clOn}}" aria-label="Daily coach line" onClick="{{toggleCL}}"></button></div>
@@ -1610,7 +1616,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 49</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 56</p>
 </div>
 </sc-if>
 
@@ -1910,7 +1916,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 // ===== Tiny runtime: renders the Spark template ({{holes}}, sc-if, sc-for) and patches the page on every state change =====
 (function(){
   const KEY = 'spark-app-state-v1';
-  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false, aiTesting:false, aiKeyDraft:'', confetti:null, adaptThinking:false, kgEdit:false, kgDraft:null, rwSheet:null, planSheet:false, rwPop:null, planMsg:''};
+  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false, aiTesting:false, aiKeyDraft:'', confetti:null, adaptThinking:false, kgEdit:false, kgDraft:null, rwSheet:null, planSheet:false, rwPop:null, planMsg:'', nameEdit:false, nameEditDraft:null};
   let app = null, root = null, queued = false, saveT = null;
   window.DCLogic = class { constructor(p){ this.props = p || {}; } setState(s){ this.state = Object.assign({}, this.state, s); schedule(); } forceUpdate(){ schedule(); } };
   function schedule(){ if (queued) return; queued = true; Promise.resolve().then(function(){ queued = false; render(); }); }
@@ -2256,11 +2262,13 @@ const ISSUES = [
   ['easy','Make it easier','M4 17l5-5 4 4 7-8M15 8h5v5','#B7A6F6']
 ];
 const CHECK = [
-  {key:'energy',q:'How is your energy?',aside:'Question 1 of 4',opts:['Empty','Low','Okay','Good','Full']},
-  {key:'mood',q:'How is your mood?',aside:'Question 2 of 4',opts:['Low','Meh','Okay','Good','Great']},
-  {key:'stress',q:'How stressed are you?',aside:'Question 3 of 4',opts:['Calm','A bit','Some','High','Very']},
-  {key:'motiv',q:'How up for it are you?',aside:'Question 4 of 4',opts:['Not at all','A bit','Maybe','Keen','Very']}
+  {key:'energy',best:'high',q:'How is your energy?',aside:'Question 1 of 4',opts:['Empty','Low','Okay','Good','Full']},
+  {key:'mood',best:'high',q:'How is your mood?',aside:'Question 2 of 4',opts:['Low','Meh','Okay','Good','Great']},
+  {key:'stress',best:'low',q:'How stressed are you?',aside:'Question 3 of 4',opts:['Calm','A bit','Some','High','Very']},
+  {key:'motiv',best:'high',q:'How up for it are you?',aside:'Question 4 of 4',opts:['Not at all','A bit','Maybe','Keen','Very']}
 ];
+// Positives at the top: list each question's options from its best answer down.
+const bestFirst = function(c, arr){ return c.best === 'high' ? arr.slice().reverse() : arr; };
 const GOALS = ['Feel calmer','Get stronger','More energy','Build a routine','Sleep better','Feel more confident','Lose weight','Just move more'];
 const WHERE = [['gym','A gym','M6 7v10M9 5v14M15 5v14M18 7v10M9 12h6'],['home','At home','M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'],['outdoors','Outdoors','M12 3l7 12H5zM12 15v6M8 21h8'],['mix','A mix','M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3']];
 const EXP = [['new','New to this','Show me exactly what to do'],['basics','I know the basics','A few pointers now and then'],['confident','Pretty confident','Mostly just keep me on track']];
@@ -4191,7 +4199,9 @@ class Component extends DCLogic {
           : nextM + ' so far: ' + money(PRICING.price - rwOff) + ' instead of ' + money(PRICING.price) + '.'; }
       else { kicker = 'Rewards preview'; value = money(rwOff); sub = rwPts ? 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. You’d have ' + money(rwOff) + ' off so far.' : 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. Workouts, check-ins and journal entries all count.'; }
       const mode = st.rwSheet;
-      return {kicker:kicker, value:value, bigValue: PL === 'paused' ? 'Paused' : value, sub:sub, pct: PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100),
+      const pctR = PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100);
+      return {ringOff: (157.08 * (1 - pctR / 100)).toFixed(1), ringCol: PL === 'paid' ? '#DDF58B' : '#B7A6F6', medalCol: PL === 'paused' ? '#71717A' : PL === 'paid' ? '#DDF58B' : '#B7A6F6', short: PL === 'paused' ? 'II' : rwFull && PL === 'paid' ? '✓' : money(rwOff),
+        kicker:kicker, value:value, bigValue: PL === 'paused' ? 'Paused' : value, sub:sub, pct: PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100),
         fillSt: PL === 'paid' ? 'background: #DDF58B' : 'background: #B7A6F6', aria: kicker + '. ' + value + '. ' + sub,
         priceTxt: money(PRICING.price), rewardTxt: money(PRICING.rewardPrice),
         fullTxt: PRICING.barMax + ' points fills the bar: ' + money(PRICING.maxOff) + ' off, so next month is ' + money(PRICING.rewardPrice) + '.',
@@ -4327,7 +4337,7 @@ class Component extends DCLogic {
       back:function(){ const i = envSteps.indexOf(envAt); if (i <= 0) return self.set({screen:'today'}); self.set({envAt: envSteps[i - 1]}); },
       skip:function(){ self.set({envAt:'plan'}); }};
     if (envAt === 'energy') { env.coach = 'You skipped the check-in earlier, so just this one.'; env.q = 'First, how’s your energy?';
-      env.opts = CHECK[0].opts.map(function(label, idx){ const lv = idx + 1; return optRow(label, '', v.energy === lv, function(){ const cur = self.S(); const nv = Object.assign({}, cur.vals, {energy:lv}); envAdvance(Object.assign({vals:nv, plan: self.rec(nv)}, self.ciLogPatch(nv, false))); }, segsFor(lv, 5)); }); }
+      env.opts = bestFirst(CHECK[0], CHECK[0].opts.map(function(label, idx){ const lv = idx + 1; return Object.assign(optRow(label, '', v.energy === lv, function(){ const cur = self.S(); const nv = Object.assign({}, cur.vals, {energy:lv}); envAdvance(Object.assign({vals:nv, plan: self.rec(nv)}, self.ciLogPatch(nv, false))); }, segsFor(lv, 5)), {val:lv}); })); }
     if (envAt === 'where') { env.coach = 'Quick check before we start. Just a few taps.'; env.q = 'Where are you working out today?';
       env.where = ENV_WHERE.map(function(w){ const on = E.where === w[0]; return {label:w[1], ic:IC[w[2]], on:on, usual: usualWhere === w[0], st: on ? 'background: #DDF58B; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ const ne = setEnv('where', w[0]); delete ne.busy; delete ne.kit; delete ne.bench; envAdvance({env:ne}); }}; }); }
     if (envAt === 'space') { const sp = ENV_SPACE[E.where] || ENV_SPACE.gym; env.coach = sp.coach; env.q = sp.q;
@@ -4362,16 +4372,16 @@ class Component extends DCLogic {
     const step = Math.min(st.checkStep || 0, 3);
     const cq = CHECK[step];
     const checkQ = {q:cq.q, aside:cq.aside,
-      opts: cq.opts.map(function(label, idx){
+      opts: bestFirst(cq, cq.opts.map(function(label, idx){
         const lv = idx + 1; const on = st.vals[cq.key] === lv;
         const segs = []; for (let k = 0; k < 5; k++) segs.push({c: k < lv ? 'f' : ''});
-        return {label:label, on:on, cls: on ? 'on' : '', segs:segs,
+        return {label:label, val:lv, on:on, cls: on ? 'on' : '', segs:segs,
           pick:function(){
             const cur = self.S(); const v = Object.assign({}, cur.vals); v[cq.key] = lv;
             if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v), self.ciLogPatch(v, false))); if (go) self.renderVals().startWorkout(); return; }
             self.set({vals:v, checkStep: step + 1});
           }};
-      })};
+      }))};
     const checkDots = CHECK.map(function(_, k){ return {st: k <= step ? 'background: #DDF58B' : 'background: #34353B'}; });
 
     // Prep
@@ -4833,6 +4843,11 @@ class Component extends DCLogic {
       clOn: st.coachLineOn !== false, clCls: st.coachLineOn !== false ? 'on' : '', toggleCL:function(){ self.set({coachLineOn: self.S().coachLineOn === false}); },
       stimOn:st.stimOn, stimCls: st.stimOn ? 'on' : '', toggleStim:function(){ self.set({stimOn:!self.S().stimOn}); },
       haptics:st.haptics, hapCls: st.haptics ? 'on' : '', toggleHaptics:function(){ self.set({haptics:!self.S().haptics}); },
+      nameEditing: !!st.nameEdit, nameNotEditing: !st.nameEdit, nameEditDraft: st.nameEditDraft == null ? (st.userName || '') : st.nameEditDraft,
+      nameEditOpen:function(){ self.set({nameEdit:true, nameEditDraft: self.S().userName || ''}); setTimeout(function(){ try { const el = document.getElementById('sp-name-edit'); if (el) { el.focus(); el.select(); } } catch (e) {} }, 60); },
+      onNameEdit:function(e){ self.set({nameEditDraft: e.target.value.slice(0, 30)}); },
+      nameEditSave:function(){ const cur = self.S(); let n = String(cur.nameEditDraft == null ? cur.userName : cur.nameEditDraft).replace(/\s+/g, ' ').trim().slice(0, 30); if (n) n = n.charAt(0).toUpperCase() + n.slice(1); self.set(Object.assign({nameEdit:false, nameEditDraft:null}, n ? {userName:n} : {})); },
+      nameEditCancel:function(){ self.set({nameEdit:false, nameEditDraft:null}); },
       userName: st.userName, userInitial: (st.userName || 'A').charAt(0).toUpperCase(), userTimeLbl:userTimeLbl,
       onb0: o === 0, onbSign: o === 1, onbSetup: o >= 2 && o <= 9, onbDone: o === 10,
       onbName: o === 2, onbBarriers: o === 3, onbGoals: o === 4, onbWhere: o === 5, onbSchedule: o === 6, onbFocus: o === 7, onbRemind: o === 8, onbMemory: o === 9, focusRows:focusRows, noFocusDays: !dayKeys.length,
