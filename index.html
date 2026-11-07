@@ -23,6 +23,20 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .d,.d8,h1,h2,h3{text-wrap:balance}
 .d8{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0}
 .brand-hero{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.03em;line-height:1;margin:0}
+.rw-bar{appearance:none;border:0;cursor:pointer;font:inherit;text-align:left;width:100%;background:transparent;color:#F5F5F2;box-shadow:inset 0 0 0 1.5px #2A2B30;border-radius:22px;padding:12px 16px 13px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box}
+.rw-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.rw-k{font-size:13px;font-weight:600;color:#B7A6F6}
+.rw-v{font-size:17px}
+.rw-track{display:block;height:8px;border-radius:999px;background:#26272C;overflow:hidden}
+.rw-fill{display:block;height:100%;border-radius:999px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.rw-sub{font-size:13px;line-height:1.4;color:#A1A1AA}
+.rw-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #26272C}
+.rw-row:last-child{border-bottom:0}
+.rw-popw{position:absolute;left:0;right:0;top:20px;z-index:40;display:flex;justify-content:center;pointer-events:none;padding:0 16px}
+.rw-pop{background:#DDF58B;color:#111214;font-weight:700;border-radius:999px;padding:11px 18px;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,.5);text-align:center}
+.plan-box{border-radius:24px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:inset 0 0 0 1.5px #2A2B30}
+.plan-box.hi{box-shadow:inset 0 0 0 2px #DDF58B}
+.plan-li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -177,7 +191,10 @@ button.dc.d-tap{cursor:pointer}
 .nav.tour-nav .nv,.nav.tour-nav .nv-c{opacity:.22;filter:grayscale(1)}
 .nav.tour-nav .nv.on{background:#E4E4DE}
 .nav.tour-nav .nv.tour-on,.nav.tour-nav .nv-c.tour-on{opacity:1;filter:none}
-.nav.tour-nav .nv.tour-on{background:#B7A6F6}
+.nav.tour-nav .nv.tour-on{background:#B7A6F6;animation:tourPulse 1.8s ease-out infinite}
+.nav.tour-nav .nv-c.tour-on{animation:tourPulseC 1.8s ease-out infinite}
+@keyframes tourPulse{0%{box-shadow:0 0 0 0 rgba(183,166,246,.75);transform:scale(1)}35%{transform:scale(1.08)}70%{box-shadow:0 0 0 14px rgba(183,166,246,0);transform:scale(1)}100%{box-shadow:0 0 0 0 rgba(183,166,246,0);transform:scale(1)}}
+@keyframes tourPulseC{0%{box-shadow:0 0 0 0 rgba(221,245,139,.7);transform:scale(1)}35%{transform:scale(1.06)}70%{box-shadow:0 0 0 14px rgba(221,245,139,0);transform:scale(1)}100%{box-shadow:0 0 0 0 rgba(221,245,139,0);transform:scale(1)}}
 .nv.tour-on,.nv-c.tour-on{z-index:1;position:relative}
 @keyframes tourRing{0%,100%{box-shadow:0 0 0 3px #111214,0 0 0 7px #DDF58B}50%{box-shadow:0 0 0 3px #111214,0 0 0 11px rgba(221,245,139,.55)}}
 .rm .nv.tour-on,.rm .nv-c.tour-on{animation:none}
@@ -608,8 +625,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; font-size: 16px; line-height: 1.45; padding-top: 2px">{{todayBubble}}</span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
+    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <sc-if value="{{adjShow}}" hint-placeholder-val="{{ false }}">
     <div class="adj-note">
       <span style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path></svg><span style="flex: 1; font-size: 14px; line-height: 1.45">{{adjNote}}</span></span>
@@ -643,8 +661,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; font-size: 16px; line-height: 1.45; padding-top: 2px">{{todayBubble}}</span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
+    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <section style="position: relative; overflow: hidden; isolation: isolate; background: #A6D8FA; color: #111214; border-radius: 30px; padding: 22px">
       <svg class="rings" viewBox="0 0 200 200" width="240" height="240" aria-hidden="true" style="right: -80px; top: -70px; z-index: -1"><g fill="none" stroke="#111214" stroke-opacity=".07" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <span style="font-size: 14px; font-weight: 600">Rest day</span>
@@ -679,8 +698,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
-      <span style="flex: 1; font-size: 16px; line-height: 1.45; padding-top: 2px">{{todayBubble}}</span>
+      <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
+    <button class="rw-bar" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rw.kicker}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button>
     <sc-if value="{{adjShow}}" hint-placeholder-val="{{ false }}">
     <div class="adj-note">
       <span style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"></path></svg><span style="flex: 1; font-size: 14px; line-height: 1.45">{{adjNote}}</span></span>
@@ -1444,6 +1464,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </sc-if>
   </div>
 <div style="flex: none; padding: 14px 16px 14px; border-top: 1px solid #1C1D21; background: #111214; transition: opacity .2s ease; {{askLock}}">
+  <sc-if value="{{planNote.on}}" hint-placeholder-val="{{ false }}"><div style="margin: 0 2px 12px; display: flex; flex-direction: column; gap: 4px"><span class="mut" style="font-size: 13px; line-height: 1.45">{{planNote.text}}</span><sc-if value="{{planNote.link}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; padding: 0; min-height: 30px; font-size: 14px; color: #B7A6F6" onClick="{{spl.open}}">See Spark AI</button></sc-if></div></sc-if>
   <div style="max-height: {{askMaxH}}; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 14px">
     <sc-for list="{{askGroups}}" as="g" hint-placeholder-count="4">
       <div>
@@ -1537,6 +1558,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Comfort</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 18px">
+    <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Daily coach line</span><span class="mut" style="font-size: 13px">One line on Today, built from your own workouts and journal.</span></span><button class="tg {{clCls}}" aria-pressed="{{clOn}}" aria-label="Daily coach line" onClick="{{toggleCL}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Fidget tools between sets</span><span class="mut" style="font-size: 13px">Spinner, pop-it and breathing during rests.</span></span><button class="tg {{stimCls}}" aria-pressed="{{stimOn}}" aria-label="Fidget tools between sets" onClick="{{toggleStim}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Vibration</span><span class="mut" style="font-size: 13px">Little buzzes when you pop or spin.</span></span><button class="tg {{hapCls}}" aria-pressed="{{haptics}}" aria-label="Vibration" onClick="{{toggleHaptics}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Reduce motion</span><span class="mut" style="font-size: 13px">Turns off animations.</span></span><button class="tg {{rmCls}}" aria-pressed="{{reducedMotion}}" aria-label="Reduce motion" onClick="{{toggleRM}}"></button></div>
@@ -1546,6 +1568,14 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Training week</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px"><span style="font-weight: 600">Weights in</span><div class="unit-seg" role="group" aria-label="Weight units"><sc-for list="{{unitOpts}}" as="u" hint-placeholder-count="2"><button class="dt-opt {{u.cls}}" aria-pressed="{{u.on}}" onClick="{{u.pick}}"><b>{{u.label}}</b><span>{{u.sub}}</span></button></sc-for></div></div>
   <button class="card" onClick="{{nav.routine}}" style="appearance: none; cursor: pointer; font: inherit; color: inherit; border: 0; width: 100%; text-align: left; margin-top: 12px; display: flex; align-items: center; gap: 12px"><span style="flex: 1"><span style="display: block; font-weight: 600">Days and times</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{weekTimesSummary}}</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+  <h3 class="d" style="font-size: 18px; margin-top: 28px">Your plan</h3>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
+    <div class="row" style="align-items: flex-start; gap: 12px"><span style="flex: 1"><span class="d" style="display: block; font-size: 20px">{{spl.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 4px">{{spl.price}}</span></span><button class="link" style="padding: 0; min-height: 32px; color: #B7A6F6" onClick="{{spl.open}}">{{spl.cta}}</button></div>
+    <sc-for list="{{spl.rows}}" as="r" hint-placeholder-count="2"><div style="border-top: 1px solid #26272C; padding-top: 12px"><span class="mut" style="display: block; font-size: 13px">{{r.label}}</span><span style="display: block; font-weight: 600; font-size: 15px; margin-top: 2px">{{r.value}}</span><sc-if value="{{r.hasSub}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{r.sub}}</span></sc-if></div></sc-for>
+    <button class="btn b-surf sm full" onClick="{{rw.open}}">See your rewards</button>
+    <sc-if value="{{spl.paused}}" hint-placeholder-val="{{ false }}"><button class="btn b-lime sm full" onClick="{{spl.resume}}">Resume Spark AI</button></sc-if>
+    <sc-if value="{{spl.testing}}" hint-placeholder-val="{{ true }}"><span class="mut" style="font-size: 12px; line-height: 1.45">Testing: the AI coach switch below sets your plan. On is Spark AI, off is the free plan.</span></sc-if>
+  </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">AI coach (beta)</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <p class="mut" style="margin: 0; font-size: 13px; line-height: 1.5">Let Claude write the coach’s replies, using what Spark knows about you. Your key stays on this phone. Summaries of your plan and journal are sent to Anthropic to write each reply.</p>
@@ -1573,7 +1603,14 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button class="link" style="display: flex; margin: 8px auto 0" onClick="{{restart}}">Replay the intro</button>
   <button class="link" style="display: flex; margin: 4px auto 0; color: #F4A29A" data-action="start-again">Start again from scratch</button>
   <p class="mut" style="margin: 20px 4px 0; font-size: 12px; line-height: 1.5">{{privacyNote}}</p>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 45</p>
+  <sc-if value="{{spl.testing}}" hint-placeholder-val="{{ true }}">
+  <h3 class="d" style="font-size: 18px; margin-top: 28px">Test tools</h3>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px">
+    <span class="mut" style="font-size: 13px; line-height: 1.45">For testing plans and rewards on this phone. Hidden when Spark launches.</span>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
+  </div>
+  </sc-if>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 49</p>
 </div>
 </sc-if>
 
@@ -1588,6 +1625,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="background: #B7A6F6; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 24px; display: block">{{rv.sets}}</span><span style="font-size: 12px; font-weight: 500">Sets done</span></div>
     <div style="background: #F5F5F2; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 24px; display: block">{{rv.changeTxt}}</span><span style="font-size: 12px; font-weight: 500">{{rv.changeSub}}</span></div>
   </div>
+  <sc-if value="{{rv.hasGain}}" hint-placeholder-val="{{ false }}"><button class="rw-bar" style="margin-top: 14px" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><span class="rw-top"><span class="rw-k">{{rv.gainTxt}}</span><span class="n9 rw-v">{{rw.value}}</span></span><span class="rw-track"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub">{{rw.sub}}</span></button></sc-if>
   <div class="card" style="margin-top: 14px; padding: 16px 18px">
     <sc-for list="{{rv.rows}}" as="r" hint-placeholder-count="4"><div class="rv-row"><span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{r.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{r.detail}}</span></span><span class="rv-tag" style="{{r.tagSt}}">{{r.tag}}</span></div></sc-for>
   </div>
@@ -1597,7 +1635,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div style="margin-top: 20px; background: #1C1D21; border-radius: 26px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
     <div class="row" style="gap: 10px"><span class="av" style="width: 36px; height: 36px"><img src="img/logo.png" alt="" style="width: 22px; height: auto"></span><span style="font-weight: 700; font-size: 16px">{{rv.coachSrc}}</span></div>
     <sc-if value="{{rv.loading}}" hint-placeholder-val="{{ false }}"><div class="row" role="status" aria-live="polite" style="gap: 10px"><svg class="think-spin" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#34353B" stroke-width="3"></circle><path d="M12 3a9 9 0 0 1 9 9" fill="none" stroke="#DDF58B" stroke-width="3" stroke-linecap="round"></path></svg><span class="mut" style="font-size: 15px">Spark is looking at your workout…</span></div></sc-if>
-    <sc-if value="{{rv.hasCoach}}" hint-placeholder-val="{{ true }}"><p class="rise" style="margin: 0; font-size: 16px; line-height: 1.55">{{rv.coachText}}</p></sc-if>
+    <sc-if value="{{rv.offer}}" hint-placeholder-val="{{ false }}"><div class="rise" style="display: flex; flex-direction: column; gap: 10px"><span style="font-size: 17px; font-weight: 700">Use your free Spark AI debrief?</span><span class="mut" style="font-size: 14px; line-height: 1.5">It reads this workout alongside everything you’ve logged, so it’s best once you’ve done a few sessions. You have one to use whenever you like.</span><div class="row" style="gap: 8px; margin-top: 4px"><button class="btn b-lime sm" style="flex: 1" onClick="{{rvUseTrial}}">Use it now</button><button class="btn b-ghost sm" style="flex: 1" onClick="{{rvDecline}}">Not this time</button></div></div></sc-if>
+    <sc-if value="{{rv.showCoach}}" hint-placeholder-val="{{ true }}"><p class="rise" style="margin: 0; font-size: 16px; line-height: 1.55; white-space: pre-line">{{rv.coachText}}</p></sc-if>
+    <sc-if value="{{rv.trialDone}}" hint-placeholder-val="{{ false }}"><div style="border-top: 1px solid #2A2B30; padding-top: 12px; display: flex; flex-direction: column; gap: 6px"><span class="mut" style="font-size: 14px; line-height: 1.5">That was your free Spark AI debrief. Spark AI gives you one after every workout, plus a coach to talk to, for {{rw.priceTxt}} a month.</span><button class="link" style="align-self: flex-start; padding: 0; min-height: 32px; color: #B7A6F6" onClick="{{spl.open}}">See Spark AI</button></div></sc-if>
   </div>
   <sc-if value="{{rv.hasNote}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 12px; border: 1.5px solid #26272C; border-radius: 22px; padding: 14px 16px"><span class="mut" style="display: block; font-size: 13px; font-weight: 600">Your note</span><span style="display: block; font-size: 15px; line-height: 1.5; margin-top: 4px">{{rv.note}}</span></div></sc-if>
   <sc-if value="{{rv.hasFeel}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 10px 4px 0; font-size: 14px">{{rv.feel}}</p></sc-if>
@@ -1659,6 +1699,46 @@ body.kb [data-chat-wrap]{bottom:0!important}
   </div>
 </div>
 </sc-if>
+
+<sc-if value="{{rw.sheet}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{rw.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="Your rewards" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 14px; max-height: 88%; overflow-y: auto; box-sizing: border-box">
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Your rewards</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{rw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <sc-if value="{{rw.notAsk}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 8px"><span class="rw-k">{{rw.kicker}}</span><span class="n9" style="font-size: 40px">{{rw.bigValue}}</span><span class="rw-track" style="height: 10px"><span class="rw-fill" style="width: {{rw.pct}}%; {{rw.fillSt}}"></span></span><span class="rw-sub" style="font-size: 14px">{{rw.sub}}</span></div>
+    <div><span class="d" style="display: block; font-size: 18px">How it fills</span><span class="mut" style="display: block; font-size: 13px; margin-top: 4px">Each one counts once a day. {{rw.fullTxt}}</span>
+      <div style="margin-top: 6px"><sc-for list="{{rw.rows}}" as="x" hint-placeholder-count="4"><div class="rw-row"><span style="width: 26px; height: 26px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{x.icSt}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span><span style="flex: 1; font-size: 15px">{{x.label}}</span><span class="n9" style="font-size: 15px; {{x.ptsSt}}">{{x.pts}}</span></div></sc-for></div>
+      <span class="mut" style="display: block; font-size: 12px; margin-top: 4px">Ticks show what’s counted today.</span></div>
+    <sc-if value="{{rw.hasLast}}" hint-placeholder-val="{{ false }}"><span class="mut" style="font-size: 14px">{{rw.lastTxt}}</span></sc-if>
+    <sc-if value="{{rw.isFree}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><span style="font-size: 15px; line-height: 1.5">Spark AI is {{rw.priceTxt}} a month, or {{rw.rewardTxt}} when you fill the bar.</span><button class="btn b-lime full" onClick="{{spl.open}}">See Spark AI</button></div></sc-if>
+    <sc-if value="{{rw.canPause}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; padding: 0; min-height: 36px; color: #B7A6F6" onClick="{{rw.askPause}}">Life happened? Pause Spark AI for a month</button></sc-if>
+    <sc-if value="{{spl.paused}}" hint-placeholder-val="{{ false }}"><button class="btn b-lime full" onClick="{{spl.resume}}">Resume Spark AI</button></sc-if>
+    </sc-if>
+    <sc-if value="{{rw.ask}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 12px"><span class="d" style="font-size: 20px">Pause Spark AI for a month?</span><span style="font-size: 15px; line-height: 1.5">{{rw.pauseTxt}}</span>
+      <button class="btn b-lime full" onClick="{{rw.pause}}">Pause for a month</button><button class="btn b-ghost full" onClick="{{rw.noPause}}">Keep Spark AI</button></div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{spl.sheet}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 21; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{spl.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="Spark AI" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 14px; max-height: 90%; overflow-y: auto; box-sizing: border-box">
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Spark AI</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{spl.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="plan-box {{spl.freeHi}}"><span class="d" style="font-size: 18px">Free</span><span class="mut" style="font-size: 14px; line-height: 1.5">Everything in Spark: workouts, check-ins, your journal, progress, fidget tools and the standard coach. Plus a one-off taste of Spark AI: 5 coach messages and 1 debrief.</span></div>
+    <div class="plan-box {{spl.paidHi}}"><div class="row" style="justify-content: space-between; align-items: baseline; gap: 10px"><span class="d" style="font-size: 18px">Spark AI</span><span class="n9" style="font-size: 18px">{{rw.priceTxt}}<span class="mut" style="font-size: 13px; font-weight: 500"> a month</span></span></div>
+      <sc-for list="{{spl.perks}}" as="k" hint-placeholder-count="5"><span class="plan-li"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DDF58B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5 9-10"></path></svg><span>{{k.line}}</span></span></sc-for></div>
+    <sc-if value="{{spl.canStart}}" hint-placeholder-val="{{ true }}"><button class="btn b-lime full" onClick="{{spl.start}}">Start Spark AI · {{rw.priceTxt}} a month</button></sc-if>
+    <sc-if value="{{spl.isPaid}}" hint-placeholder-val="{{ false }}"><span style="text-align: center; font-weight: 600; color: #DDF58B">You’re on Spark AI</span></sc-if>
+    <sc-if value="{{spl.hasMsg}}" hint-placeholder-val="{{ false }}"><span class="mut" style="font-size: 13px; line-height: 1.45">{{spl.msg}}</span></sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{rwPopOn}}" hint-placeholder-val="{{ false }}"><div class="rw-popw" role="status" aria-live="polite"><span class="rw-pop rise">{{rwPopText}}</span></div></sc-if>
 
 <!-- ================= PROGRESS DAY ================= -->
 <sc-if value="{{progDayV.on}}" hint-placeholder-val="{{ false }}">
@@ -1830,7 +1910,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 // ===== Tiny runtime: renders the Spark template ({{holes}}, sc-if, sc-for) and patches the page on every state change =====
 (function(){
   const KEY = 'spark-app-state-v1';
-  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false, aiTesting:false, aiKeyDraft:'', confetti:null, adaptThinking:false, kgEdit:false, kgDraft:null};
+  const TRANSIENT = {chatThinking:false, chatSync:false, toast:'', tour:null, paused:false, aiTesting:false, aiKeyDraft:'', confetti:null, adaptThinking:false, kgEdit:false, kgDraft:null, rwSheet:null, planSheet:false, rwPop:null, planMsg:''};
   let app = null, root = null, queued = false, saveT = null;
   window.DCLogic = class { constructor(p){ this.props = p || {}; } setState(s){ this.state = Object.assign({}, this.state, s); schedule(); } forceUpdate(){ schedule(); } };
   function schedule(){ if (queued) return; queued = true; Promise.resolve().then(function(){ queued = false; render(); }); }
@@ -1930,7 +2010,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
       if (!saved || !saved.screen) { try { saved = JSON.parse((await idbGet()) || 'null'); } catch (e) {} }
     }
-    if (saved && saved.screen) { const HOME = saved.screen !== 'welcome' ? {screen:'today', back:null, daySheet:null, addSheet:false, progDay:null, progPick:false, ciAsk:false, ciThenStart:false, swOpen:false, swReason:null, adaptStep:'pick', resting:false, composing:false, chatMenu:false} : {}; app.state = Object.assign({}, app.state, saved, TRANSIENT, HOME); ['dayKey','joinKey','doneDates','plannedDates'].forEach(function(k){ if (!(k in saved)) delete app.state[k]; }); }
+    if (saved && saved.screen) { const HOME = saved.screen !== 'welcome' ? {screen:'today', back:null, daySheet:null, addSheet:false, progDay:null, progPick:false, ciAsk:false, ciThenStart:false, swOpen:false, swReason:null, adaptStep:'pick', resting:false, composing:false, chatMenu:false, rwSheet:null, planSheet:false} : {}; app.state = Object.assign({}, app.state, saved, TRANSIENT, HOME); ['dayKey','joinKey','doneDates','plannedDates'].forEach(function(k){ if (!(k in saved)) delete app.state[k]; }); }
     render();
     if (app.componentDidMount) app.componentDidMount();
   };
@@ -2521,6 +2601,25 @@ function areaText(a){ const p = a.toLowerCase().split(' · '); return p.length >
 
 
 // ===== AI coach (beta): Claude writes the coach's words; the app keeps control of actions and safety =====
+// ---------------------------------------------------------------------------------------------
+// PLANS, CREDITS AND REWARDS. Everything about pricing lives here, so launching is a config change.
+// live:false = testing. The plan follows the AI switch in Settings (on = Spark AI, off = Free) and
+// AI calls use the key saved on this phone. When Spark launches: set live:true, take the plan from
+// the app store subscription (st.subPlan), and point aiFetch at Spark's own server instead of a key.
+const PRICING = {
+  live: false,
+  price: 6.99, rewardPrice: 4.99, currency: '£',
+  credits: 100,                          // AI credits each month. Back to 100 on the 1st, no roll-over.
+  cost: {msg: 1, debrief: 2, opener: 0, line: 0},
+  trial: {msg: 5, debrief: 1},            // one-off free Spark AI trial on the free plan
+  points: {workout: 10, checkin: 3, journal: 3, coach: 2},
+  dayCap: 18, barMax: 100, maxOff: 2.00, // 100 points = £2 off next month. Every point is 2p.
+  milestones: [25, 50, 75, 100]
+};
+const money = function(n){ const v = Math.round(n * 100) / 100; return PRICING.currency + (v % 1 === 0 ? String(v) : v.toFixed(2)); };
+const monthKeyOf = function(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); };
+const firstOfNext = function(d, k){ return new Date(d.getFullYear(), d.getMonth() + (k || 1), 1); };
+const longDate = function(d){ return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()]; };
 const AI_MODELS = [['claude-haiku-5-5','Fast','Quick and cheapest'],['claude-sonnet-5-5','Smarter','Deeper, costs more']];
 const AI_DAY_CAP = 60;
 const ADAPT_ACTS = {back:'Back to my workout', easier:'Make it easier', drop:'Drop a set', swap:'Switch exercise', later:'Move this exercise to the end', skipEx:'Skip this exercise', oneSpot:'Stay in one spot', quiet:'Turn on quiet mode', calm:'I need a breather', lost:'Show me how to do it', minPlan:'Just do the minimum', finish:'Finish for today'};
@@ -2640,7 +2739,7 @@ class Component extends DCLogic {
     const memOK = function(id){ return st.memoryOn && st.memories.some(function(m){ return m.id === id && m.on; }); };
     return {gym:gym, focus:focus, focusL:focus.toLowerCase(), mins:plan.mins, checked: !!st.checked && !!v.energy, energy:lvl('energy', 0), stress:lvl('stress', 2),
       lowE: v.energy && v.energy <= 2, highS: v.stress >= 4, trained:trained, summary:summary, dayOff: !!st.dayOff && !trained, last:last,
-      missed:missed, moved:moved, total:total, lastSame:lastSame, lastAny:lastAny, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, todayTime: tmToday ? tmToday[4] : null, todaySlot: tmToday ? tmToday[1].toLowerCase() : null, laterToday: !!(tmToday && (function(){ const p = tmToday[4].split(':'); const n = new Date(); return n.getHours() * 60 + n.getMinutes() < (+p[0]) * 60 + (+p[1]) - 30; })()), goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !tmToday, part:part,
+      missed:missed, moved:moved, total:total, planIds:plan.ids, lastSame:lastSame, lastAny:lastAny, plannedN:plannedN, nextDay:nextDay, tomorrow:tomorrow, time: tm ? tm[4] : null, todayTime: tmToday ? tmToday[4] : null, todaySlot: tmToday ? tmToday[1].toLowerCase() : null, laterToday: !!(tmToday && (function(){ const p = tmToday[4].split(':'); const n = new Date(); return n.getHours() * 60 + n.getMinutes() < (+p[0]) * 60 + (+p[1]) - 30; })()), goals:goals, setup:SU, fresh: !!st.fresh, sessions: st.sessCount || 0, flexTime: !tmToday, part:part,
       env: st.env && st.env.where ? st.env : null, memStress: memOK('m1'), memMorning: memOK('m2'), memWalk: memOK('m4'), memOn: !!st.memoryOn,
       jToday:jToday, sleepJ:sleepJ, stressJ:stressJ, J:J, jAck: st.jAck || {}, gymPending: gym && !trained && !st.dayOff, recentPB:recentPB, planKey: st.plan, planned: !!st.tomorrowPlanned,
       trainedAt: st.trainedAt || 0, sig: JSON.stringify([trained, summary && summary.sets, !!st.dayOff, Object.keys(J).map(function(k){ return k + J[k].id; }).join(), jl[0] && jl[0].id, jToday && jToday.id, st.checked && [v.energy, v.stress], st.env && st.env.busy, st.plan])};
@@ -2713,7 +2812,187 @@ class Component extends DCLogic {
   }
 
 
-  aiReady(st){ return !!(st.aiOn && st.aiKey && typeof fetch === 'function' && !st.sg); }
+  coachLine(st, slot){
+    // One line for the top of Today, built only from the user's own data. Returns null when there's nothing worth saying.
+    const I = this.coachInfo(st);
+    const DAYMS = 86400000; const now = new Date(); const tk = dkey(now);
+    const day0 = function(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
+    const dayIdx = Math.round(day0(now) / DAYMS);
+    const pickW = function(arr){ return arr[((dayIdx % arr.length) + arr.length) % arr.length]; };
+    const LOG = (st.sessLog || []).slice().sort(function(a, b){ return b.at - a.at; });
+    const keyOf = function(w){ return dkey(new Date(w.at)); };
+    const setsOf = function(ws){ return ws.reduce(function(a, w){ return a + (w.items || []).reduce(function(b, it){ return b + (it.sets || 0); }, 0); }, 0); };
+    const fl = function(w){ return String((w && w.focus) || 'workout').toLowerCase(); };
+    const NW = ['no','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+    const nw = function(n){ return n < NW.length ? NW[n] : String(n); };
+    const cap = function(x){ return x.charAt(0).toUpperCase() + x.slice(1); };
+    const kgT = function(kg, unit){ return wt(kg) + ' ' + uu(unit || 'kg'); };
+    const dayName = function(at){ const d = new Date(at); const diff = Math.round((day0(now) - day0(d)) / DAYMS); return diff === 0 ? 'today' : diff === 1 ? 'yesterday' : DAYS[(d.getDay() + 6) % 7][2]; };
+    const pbName = function(w){ const x = (w.pbs || [])[0]; return x ? String(x).replace(/\s+[\d.]+\s*\S+$/, '').toLowerCase() : ''; };
+    const mon = new Date(day0(now) - ((now.getDay() + 6) % 7) * DAYMS).getTime();
+    const thisWeek = LOG.filter(function(w){ return w.at >= mon; });
+    const lastWeek = LOG.filter(function(w){ return w.at >= mon - 7 * DAYMS && w.at < mon; });
+    // Journal: only entries Spark is allowed to learn from.
+    const JL = st.memoryOn ? (st.journal || []).filter(function(j){ return j.learned && j.at; }) : [];
+    const NEG = /pain|hurt|injur|\bill\b|sick|stress|anxious|awful|rubbish|terrible|\bbad\b|worse|low|sad|cry|tired|exhausted|knackered/i;
+    const posQuote = function(j){ if (!j || j.auto || !POS_RE.test(j.text || '') || NEG.test(j.text || '')) return ''; const q = jQuote(j.text, POS_RE); return q && q.length <= 70 ? q : ''; };
+    const FEEL = ['Better than before','About the same','Tired but okay','Rough, honestly'];
+    const felt = JL.concat(st.memoryOn ? [] : []).filter(function(j){ return (j.tags || []).some(function(t){ return FEEL.indexOf(t) >= 0; }); }).sort(function(a, b){ return b.at - a.at; }).slice(0, 10);
+    const better = felt.filter(function(j){ return (j.tags || []).indexOf('Better than before') >= 0; }).length;
+    const moodLine = felt.length >= 3 && better / felt.length >= 0.6 ? (better === felt.length
+      ? pickW(['You’ve left all of your last ' + nw(felt.length) + ' sessions feeling better than you arrived.', 'Your last ' + nw(felt.length) + ' sessions all ended with you feeling better than when you started.'])
+      : pickW([cap(nw(better)) + ' of your last ' + nw(felt.length) + ' sessions ended with you feeling better than you arrived.', 'You’ve felt better afterwards in ' + nw(better) + ' of your last ' + nw(felt.length) + ' sessions.'])) : '';
+    const trendFor = function(ids){
+      const out = [];
+      ids.forEach(function(id){ const hist = LOG.slice().reverse().map(function(w){ const it = (w.items || []).find(function(x){ return x.id === id && !x.bw && x.kg > 0; }); return it ? {at:w.at, kg:it.kg, name:it.name, unit:it.unit} : null; }).filter(Boolean);
+        if (hist.length >= 3) { const a = hist[0], b = hist[hist.length - 1]; const gain = Math.round((b.kg - a.kg) * 10) / 10; if (gain > 0 && b.at - a.at >= 10 * DAYMS) { const d = new Date(a.at); out.push({name:a.name, unit:a.unit, gain:gain, since: d.getDate() + ' ' + MONTHS_LONG[d.getMonth()]}); } } });
+      if (!out.length) return '';
+      const t = pickW(out);
+      return pickW([t.name + ' is up ' + kgT(t.gain, t.unit) + ' since ' + t.since + '.', 'Since ' + t.since + ', your ' + t.name.toLowerCase() + ' has gone up ' + kgT(t.gain, t.unit) + '.']);
+    };
+    const C = [];
+    const add = function(k, src, text){ if (text) C.push({k:k, src:src, text:text}); };
+    const SRC = {log:'From your workout log', journal:'From your journal', mood:'From how you felt after your workouts', week:'From your week'};
+
+    if (slot === 'low') return moodLine ? {k:'mood', src:SRC.mood, text:moodLine} : null;
+
+    if (slot === 'post') {
+      const TS = LOG.filter(function(w){ return keyOf(w) === tk; });
+      if (!TS.length) return null;
+      const sets = setsOf(TS); const pb = TS.map(pbName).filter(Boolean)[0];
+      const wk = thisWeek.length;
+      const txt = (TS.length >= 2 ? cap(nw(TS.length)) + ' sessions today, ' + sets + ' sets in all' : 'Done: ' + sets + ' sets of ' + fl(TS[0])) + (pb ? ', and a new best on the ' + pb : '') + '.' + (wk >= 2 ? ' That’s ' + nw(wk) + ' sessions this week.' : '');
+      return {k:'post', src:SRC.log, text:txt};
+    }
+
+    if (slot === 'pre') {
+      const ls = I.lastSame; const focusL = I.focusL;
+      if (ls) {
+        const gap = Math.round((day0(now) - day0(new Date(ls.at))) / DAYMS);
+        if (gap >= 8) add('gap', SRC.log, pickW(['First ' + focusL + ' day in ' + gap + ' days. Strength holds longer than you think, so pick up where you left off.', 'It’s been ' + gap + ' days since your last ' + focusL + ' session. Your strength is still there. Pick up where you left off.']));
+        const its = (ls.items || []).filter(function(x){ return !x.bw && x.kg > 0 && (I.planIds || []).indexOf(x.id) >= 0; });
+        if (its.length) { its.sort(function(x, y){ return (I.planIds || []).indexOf(x.id) - (I.planIds || []).indexOf(y.id); }); const it = pickW(its.slice(0, 2)); const up = it.kg + ((EX[it.id] && EX[it.id].step) || 1);
+          add('pb', SRC.log, pickW([it.name + ': ' + kgT(it.kg, it.unit) + ' × ' + it.reps + ' last time. ' + kgT(up, it.unit) + ' is on the table today.', 'Last ' + focusL + ' day you did ' + kgT(it.kg, it.unit) + ' × ' + it.reps + ' on the ' + it.name.toLowerCase() + '. Today, ' + kgT(up, it.unit) + ' is within reach.'])); }
+        const jw = JL.filter(function(j){ return dkey(new Date(j.at)) === keyOf(ls); }).map(posQuote).filter(Boolean)[0];
+        if (jw) add('words', SRC.journal, pickW(['Last ' + focusL + ' day you wrote ‘' + jw + '’. Same again today.', 'After your last ' + focusL + ' session you wrote ‘' + jw + '’. That’s today’s target.']));
+      }
+      add('mood', SRC.mood, moodLine);
+      add('trend', SRC.log, trendFor(I.planIds || []));
+      if (I.moved >= 1) add('week', SRC.week, pickW([cap(nw(I.moved)) + ' down this week. Today makes it ' + nw(I.moved + 1) + '.', 'You’ve trained ' + nw(I.moved) + (I.moved === 1 ? ' time' : ' times') + ' this week. Today makes it ' + nw(I.moved + 1) + '.']));
+      if (!ls) add('first', SRC.log, !LOG.length ? 'First session with Spark. Today sets the numbers you’ll beat next time.' : 'First ' + focusL + ' day with Spark. Today sets the numbers you’ll beat next time.');
+    }
+
+    if (slot === 'rest') {
+      const recent = LOG.filter(function(w){ return day0(now) - day0(new Date(w.at)) <= 14 * DAYMS && keyOf(w) !== tk; });
+      if (!recent.length) return null;
+      const yk = dkey(new Date(day0(now) - DAYMS));
+      const Y = recent.filter(function(w){ return keyOf(w) === yk; });
+      if (Y.length) { const pb = Y.map(pbName).filter(Boolean)[0];
+        add('yesterday', SRC.log, 'Yesterday: ' + setsOf(Y) + ' sets of ' + (Y.length >= 2 ? 'training across ' + nw(Y.length) + ' sessions' : fl(Y[0])) + (pb ? ', and a new best on the ' + pb : '') + '. ' + pickW(['Today’s rest is what turns that into strength.', 'Today is when that turns into strength.'])); }
+      if (thisWeek.length >= 2) add('week', SRC.week, cap(nw(thisWeek.length)) + ' sessions this week, ' + setsOf(thisWeek) + ' sets in total.' + (lastWeek.length && thisWeek.length > lastWeek.length ? ' More than last week.' : ''));
+      else if (!thisWeek.length && lastWeek.length >= 2) add('week', SRC.week, 'Last week: ' + nw(lastWeek.length) + ' sessions and ' + setsOf(lastWeek) + ' sets. A solid base for this one.');
+      const jr = JL.filter(function(j){ return day0(now) - day0(new Date(j.at)) <= 7 * DAYMS; }).sort(function(a, b){ return b.at - a.at; }).map(function(j){ return {j:j, q:posQuote(j)}; }).filter(function(x){ return x.q; })[0];
+      if (jr) { const dn = dayName(jr.j.at); add('words', SRC.journal, (dn === 'today' ? 'Earlier today' : dn === 'yesterday' ? 'Yesterday' : 'On ' + dn) + ' you wrote ‘' + jr.q + '’. Rest well and keep that going.'); }
+      add('mood', SRC.mood, moodLine);
+      add('trend', SRC.log, trendFor(recent.reduce(function(a, w){ (w.items || []).forEach(function(it){ if (a.indexOf(it.id) < 0) a.push(it.id); }); return a; }, [])));
+    }
+
+    if (!C.length) return null;
+    // Never the same kind of line two days running if there's an alternative.
+    const yKind = (st.lineLog || {})[dkey(new Date(day0(now) - DAYMS))];
+    return C.find(function(c){ return c.k !== yKind; }) || C[0];
+  }
+  coachLineAI(st, slot, CL){
+    // With the AI connected, Claude writes the line once per situation per day. Until it arrives (or if it fails) the rule-based line shows.
+    const key = dkey(new Date()) + '|' + slot + '|' + (st.plan || '') + '|' + (st.sessToday || 0) + '|' + ((st.vals || {}).energy || 0) + '|' + (st.extraToday ? 1 : 0) + '|' + ((st.sessLog || []).length);
+    const c = st.coachLineAI;
+    if (c && c.key === key) return c.text || null;
+    if (this._clPending === key || st.screen !== 'today' || st.tour) return null;
+    this._clPending = key; const self = this;
+    setTimeout(function(){ self.fetchCoachLine(key, slot, CL); }, 0);
+    return null;
+  }
+  fetchCoachLine(key, slot, CL){
+    const self = this; const st = this.S(); const I = this.coachInfo(st);
+    const low = (st.vals || {}).energy && st.vals.energy <= 2;
+    const sys = ['You are Spark, a fitness coach for adults with ADHD. Write ONE line for the top of their Today screen.',
+      'Use only facts that are in the data. Include at least one specific fact: a weight, a number of sets or sessions, a date, or a short quote from their own journal.',
+      'At most 30 words, one or two sentences.',
+      'Sound like a coach who has looked at their numbers: direct, confident and warm. No exclamation marks, no emojis, no words like amazing, smash or crush.',
+      'Never patronise. No reminders about water, food, sleep or packing a bag. No “you can do it”. No praise for small things. These are capable adults.',
+      'Never mention missed days or gaps in a negative way.',
+      'If their check-in shows low energy, reassure rather than push for more.',
+      'If you mention a target weight, use the same number as the rule-based line.',
+      'British English. Reply with JSON only: {"line":"..."}'].join('\n');
+    const task = slot === 'pre' ? 'It’s a training day (' + I.focusL + ') and they haven’t trained yet. Write a push for today’s session.'
+      : slot === 'post' ? 'They’ve finished training today. Write a one-line summary of what they did today.'
+      : 'It’s a rest day. Reflect on their recent training, looking back rather than pushing forward.';
+    const user = this.aiContext(st) + '\n\nTASK: ' + task + (low ? ' Their check-in says energy is low today.' : '') + '\nRULE-BASED LINE (accurate, improve on it if you can): ' + CL.text;
+    return this.aiFetch(st, sys, user, 300).then(function(res){
+      const cur = self.S(); const j = res.j || {}; const u = j.usage || {};
+      const use = Object.assign({n:0, inTok:0, outTok:0}, cur.aiUse || {}); use.n += 1; use.inTok += u.input_tokens || 0; use.outTok += u.output_tokens || 0;
+      let line = null;
+      if (res.ok) { const raw = ((j.content || []).find(function(b){ return b.type === 'text'; }) || {}).text || ''; const p = self.aiParse(raw);
+        let t = p && (p.line || p.text); if (t) { t = String(t).replace(/\s+/g, ' ').replace(/!+/g, '.').replace(/\.{2,}/g, '.').trim(); if (t.length >= 15 && t.length <= 260 && !/as an ai|language model|^\{/i.test(t)) line = t; } }
+      self._clPending = null; self.set({coachLineAI:{key:key, text:line}, aiUse:use});
+    }).catch(function(){ self._clPending = null; self.set({coachLineAI:{key:key, text:null}}); });
+  }
+  // ---- plans ----
+  planOf(st){
+    if (st.planPause && st.planPause.until && dkey(new Date()) < st.planPause.until) return 'paused';
+    return PRICING.live ? (st.subPlan === 'paid' ? 'paid' : 'free') : (st.aiOn ? 'paid' : 'free');
+  }
+  creditsLeft(st){ const c = st.credits; const used = c && c.m === monthKeyOf(new Date()) ? c.used : 0; return Math.max(0, PRICING.credits - used); }
+  trialLeft(st, k){ return Math.max(0, (PRICING.trial[k] || 0) - ((st.trial || {})[k] || 0)); }
+  aiReady(st, kind){
+    // Can the AI be used right now, for this kind of call? (Testing: needs the key on this phone.)
+    if (!(st.aiKey && typeof fetch === 'function' && !st.sg)) return false;
+    const k = kind || 'msg'; const pl = this.planOf(st);
+    if (pl === 'paid') return this.creditsLeft(st) >= (PRICING.cost[k] || 0);
+    if (pl === 'free') return (k === 'msg' || k === 'debrief') && this.trialLeft(st, k) > 0;
+    return false;
+  }
+  charge(kind){
+    const st = this.S(); const pl = this.planOf(st);
+    if (pl === 'paid') { const cost = PRICING.cost[kind] || 0; if (!cost) return; const m = monthKeyOf(new Date()); const c = st.credits && st.credits.m === m ? st.credits : {m:m, used:0}; this.set({credits:{m:m, used: Math.min(PRICING.credits, c.used + cost)}}); }
+    else if (pl === 'free' && PRICING.trial[kind]) { const t = Object.assign({msg:0, debrief:0}, st.trial || {}); t[kind] += 1; this.set({trial:t}); }
+  }
+  // ---- rewards bar ----
+  rewardsOf(st){ const m = monthKeyOf(new Date()); const r = st.rewards; return r && r.m === m ? r : {m:m, pts:0, days:{}, ms:[]}; }
+  offFor(pts){ return Math.min(PRICING.maxOff, Math.min(PRICING.barMax, pts) * PRICING.maxOff / PRICING.barMax); }
+  rewardsRollPatch(st){
+    const m = monthKeyOf(new Date()); const r = st.rewards;
+    if (!r || r.m === m) return null;
+    const pl = this.planOf(st);
+    return {rewards:{m:m, pts:0, days:{}, ms:[]}, rewardsLast: r.pts > 0 || pl === 'paid' ? {m:r.m, pts:r.pts, off:this.offFor(r.pts)} : null};
+  }
+  award(kind){
+    const self = this; let st = this.S();
+    if (this.planOf(st) === 'paused') return;
+    const roll = this.rewardsRollPatch(st); if (roll) { this.set(roll); st = this.S(); }
+    const r = this.rewardsOf(st); const day = dkey(new Date());
+    const d = Object.assign({}, r.days[day] || {}); if (d[kind]) return;
+    const dayTot = Object.keys(d).reduce(function(a, k){ return a + (d[k] || 0); }, 0);
+    const add = Math.max(0, Math.min(PRICING.points[kind] || 0, PRICING.dayCap - dayTot, PRICING.barMax - r.pts));
+    d[kind] = add || 0.0001;
+    const days = Object.assign({}, r.days); days[day] = d;
+    const pts = r.pts + add; const ms = (r.ms || []).slice();
+    const hit = PRICING.milestones.filter(function(x){ return r.pts < x && pts >= x && ms.indexOf(x) < 0; }).pop();
+    if (hit) PRICING.milestones.forEach(function(x){ if (x <= hit && ms.indexOf(x) < 0) ms.push(x); });
+    const paid = this.planOf(st) === 'paid';
+    const patch = {rewards:{m:r.m, pts:pts, days:days, ms:ms}};
+    if (kind === 'workout') patch.rewardGain = {kind:kind, add:add, at:Date.now()};
+    if (hit && add) {
+      const off = this.offFor(pts);
+      patch.rwPop = {at:Date.now(), full: hit >= PRICING.barMax, text: hit >= PRICING.barMax
+        ? (paid ? money(PRICING.rewardPrice) + ' next month. Earned.' : 'Bar full. That’s ' + money(PRICING.maxOff) + ' off with Spark AI.')
+        : (hit === 25 ? 'Quarter full' : hit === 50 ? 'Halfway' : 'Three-quarters full') + ' · ' + money(off) + ' off' + (paid ? ' next month' : ' with Spark AI')};
+      if (hit >= PRICING.barMax) { const hero = paid ? {name: money(PRICING.rewardPrice) + ' next month', sub:'Rewards bar full. Earned.'} : {name:'Bar full', sub: money(PRICING.maxOff) + ' off with Spark AI'}; patch.rwPop = null; setTimeout(function(){ self.burst(true, hero); }, 120); }
+      if (patch.rwPop) setTimeout(function(){ const c = self.S(); if (c.rwPop && patch.rwPop && c.rwPop.at === patch.rwPop.at) self.set({rwPop:null}); }, 3600);
+    }
+    this.set(patch);
+  }
+  awardLater(kind){ const self = this; setTimeout(function(){ self.award(kind); }, 0); }
   aiContext(st){
     const I = this.coachInfo(st); const L = []; const now = new Date();
     const DN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -2862,6 +3141,7 @@ class Component extends DCLogic {
       const seen = {}; const reps = ((p && p.replies) || []).filter(function(r){ return r && allowed[r.kind] && !seen[r.kind] && (seen[r.kind] = true); }).slice(0, 3).map(function(r){ let lb = typeof r.label === 'string' ? r.label.replace(/\s+/g, ' ').trim() : ''; if (lb.length < 2 || lb.length > 42) lb = allowed[r.kind]; return [lb, r.kind]; });
       const finalReps = reps.length ? reps : (o.replies && o.replies.length ? o.replies : []);
       self.set({aiUse:use, aiErr:'', aiDebug:''});
+      if (!o.opener) self.charge(o.mode === 'review' ? 'debrief' : 'msg');
       const reason = p && typeof p.reason === 'string' ? p.reason.replace(/\s+/g, ' ').trim().slice(0, 80) : '';
       return {text:text, replies:finalReps, ai:true, adjReason:reason};
     }).catch(function(e){ const why = e && e.name === 'AbortError' ? 'Claude took too long to answer.' : 'Couldn’t reach Claude. Check your signal.'; self.set({aiErr:why, aiDebug:String(e && (e.message || e)).slice(0, 300)}); return {fail:why}; });
@@ -2870,6 +3150,8 @@ class Component extends DCLogic {
     const self = this; const st = this.S();
     const text = String(st.chatDraft || '').replace(/\s+/g, ' ').trim().slice(0, 600);
     if (!text || st.chatThinking || st.sg) return;
+    if (!this.aiReady(st)) return this.sendFree();
+    this.awardLater('coach');
     const chat1 = st.chat.concat([{me:true, text:text}]);
     const toSG = function(base, cat){ const p = self.sgStart(Object.assign({}, base, {chat:chat1}), cat, 'c' + Date.now(), false); p.chat = p.chat.map(function(m){ return m.src === 'Your journal' ? Object.assign({}, m, {src:'What you wrote', text: m.text.replace('I’ve read what you wrote', 'Thank you for telling me')}) : m; }); p.chatDraft = ''; self.set(p); self.scrollChat(); };
     const cat = detectSG(text); if (cat) return toSG(st, cat);
@@ -2911,7 +3193,7 @@ class Component extends DCLogic {
       if (!talked) { op = self.coachOpener(cur, I, false); patch.chat = [op]; patch.convTurns = 0; }
       else if (I.sig !== cur.chatSig) { op = self.coachOpener(cur, I, true); patch.chat = cur.chat.concat([op]); patch.convTurns = 0; }
       if (op && (op.jKey || op.jKeys)) { patch.jAck = Object.assign({}, cur.jAck || {}); (op.jKeys || [op.jKey]).forEach(function(k){ patch.jAck[k] = true; }); }
-      if (op && self.aiReady(cur)) {
+      if (op && self.aiReady(cur, 'opener')) {
         return self.aiCoach(cur, {opener:true, guide:op.text, replies:op.replies}).then(function(ai){
           if (ai && ai.text) { const merged = Object.assign({}, op, ai); patch.chat = patch.chat.slice(0, -1).concat([merged]); }
           self.set(patch); self.scrollChat(); });
@@ -2971,7 +3253,15 @@ class Component extends DCLogic {
     const r = {}; (st.week || []).forEach(function(d){ r[d.d] = {t:d.t, focus:d.focus}; }); return r;
   }
   S(){ const st = (this.state && this.state.screen) ? this.state : this.preset((this.props && this.props.start) || 'welcome'); WU = (st && st.units === 'lb') ? 'lb' : 'kg'; return st; }
-  set(patch){ this.setState(Object.assign({}, this.S(), patch)); }
+  set(patch){
+    const was = this.S();
+    this.setState(Object.assign({}, was, patch));
+    // Switching between a set and its rest always starts at the top of the page.
+    if (patch && 'resting' in patch && !!patch.resting !== !!was.resting) {
+      const top = function(){ try { document.querySelectorAll('.scroll.ws').forEach(function(el){ el.scrollTop = 0; }); } catch (e) {} };
+      top(); setTimeout(top, 0); setTimeout(top, 60);
+    }
+  }
   go(screen){ const st = this.S(); const extra = screen === 'checkin' ? {checkStep:0, jConfirm:null, tour:null} : {jConfirm:null, tour:null}; this.set(Object.assign({screen:screen, back: st.screen === screen ? st.back : st.screen, toast:'', paused:false, confirmWipe:false}, extra)); }
 
   reply(kind, memOn, ctx){
@@ -3355,7 +3645,7 @@ class Component extends DCLogic {
     this.set(patch); return a;
   }
   undoAdj(){ const st = this.S(); const f = (st.adj && st.adj.from) || {}; const back = {adj:null, adjConflict:null, plan: f.plan || 'full', dayOff: !!f.dayOff, tomorrowPlanned: !!f.tomorrowPlanned, extraToday: !!f.extraToday}; if (f.doneToday != null) { back.doneToday = !!f.doneToday; back.trainedToday = !!f.trainedToday; if (f.sess) back.sess = f.sess; } this.set(back); }
-  ciLogPatch(v, assumed){ const st = this.S(); const k = todayKeyNow(); const L = Object.assign({}, st.ciLog || {}); L[k] = {v:Object.assign({}, v), assumed: !!assumed, at:Date.now()}; const keys = Object.keys(L).sort(); while (keys.length > 120) delete L[keys.shift()]; return {ciLog:L}; }
+  ciLogPatch(v, assumed){ if (!assumed) this.awardLater('checkin'); const st = this.S(); const k = todayKeyNow(); const L = Object.assign({}, st.ciLog || {}); L[k] = {v:Object.assign({}, v), assumed: !!assumed, at:Date.now()}; const keys = Object.keys(L).sort(); while (keys.length > 120) delete L[keys.shift()]; return {ciLog:L}; }
   ciPatch(v){
     // Check-in finished. If today was already adjusted in a chat, the check-in never silently undoes it.
     const st = this.S(); const rec = this.rec(v);
@@ -3384,6 +3674,7 @@ class Component extends DCLogic {
   say(kind, text){
     const st = this.S(); const self = this;
     if (st.chatThinking) return;
+    if (kind !== 'bye') this.awardLater('coach');
     if (kind.indexOf('adj_') === 0) return this.sayAdj(kind, text);
     if (kind === 'restup') {
       const rr = this.restAddReplies(st, ''); const base = {spark:true, text:'Love that you’re feeling up for it. Rest helps too, so no pressure either way. What do you fancy? I’ll set it up on your Today screen.', replies:rr, src:'Today', adjReason:'you felt up for training'};
@@ -3453,6 +3744,7 @@ class Component extends DCLogic {
 
   sendFree(){
     const st = this.S(); const t = (st.chatDraft || '').trim(); if (!t) return;
+    this.awardLater('coach');
     const l = t.toLowerCase(); let k = 'free';
     if (/tired|rough|week|stress|hard|can.?t face|down/.test(l)) k = 'rough';
     else if (/start|motivat|get going/.test(l)) k = 'cant';
@@ -3563,16 +3855,17 @@ class Component extends DCLogic {
     const selfF = this; setTimeout(function(){ selfF.burst(true); }, 60);
     const sessToday = (st.sessToday || 0) + (logged ? 1 : 0);
     this.set({sessToday:sessToday, sessLog: sLog.slice(-600), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
+    if (logged) this.awardLater('workout');
   }
 
   setLight(on){ const c = this.S(); const now = c.lightOn !== false; if (on === now) { try { if (c.haptics && navigator.vibrate) navigator.vibrate(6); } catch (e) {} return; }
     try { if (c.haptics && navigator.vibrate) navigator.vibrate(on ? [10, 30, 10] : [16]); } catch (e) {}
     this.set({lightOn:on, lightFlips:(c.lightFlips || 0) + 1}); }
-  burst(big){
+  burst(big, hero){
     const self = this; const st = this.S();
     try { if (st.haptics && typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(big ? [40, 50, 40, 50, 160] : [30, 40, 70]); } catch (e) {}
     if (st.reducedMotion) return;
-    clearTimeout(this.cfTimer); this.set({confetti:{id:Date.now(), big:!!big}});
+    clearTimeout(this.cfTimer); this.set({confetti:{id:Date.now(), big:!!big, hero: hero || null}});
     this.cfTimer = setTimeout(function(){ self.set({confetti:null}); }, big ? 4300 : 2700);
   }
   aiWorkout(st){
@@ -3589,6 +3882,7 @@ class Component extends DCLogic {
     const self = this; const st = this.S();
     const text = String(st.adaptDraft || '').replace(/\s+/g, ' ').trim().slice(0, 600);
     if (!text || st.adaptThinking) return;
+    this.awardLater('coach');
     const fresh = st.adaptStep !== 'chat';
     const thread = (fresh ? [] : (st.adaptChat || [])).concat([{me:true, text:text}]);
     const toSG = function(cat){ const base = Object.assign({}, self.S(), {chat:(self.S().chat || []).concat([{me:true, text:text}])}); const p = self.sgStart(base, cat, 'c' + Date.now(), false);
@@ -3650,12 +3944,14 @@ class Component extends DCLogic {
     else t += 'You showed up and got it done. That’s the hardest part, every time. ';
     if (low) t += 'You mentioned some soreness, so keep an eye on it. Ease off that area next time if it’s still there, and stop at the first twinge. ';
     else if (rough) t += 'It sounds like today was a tough one, and you still did it. Be proud of that. ';
-    else if (tired) t += 'Being tired after is normal. Eat something decent, drink water and get good sleep tonight. ';
+    else if (tired) t += 'Being tired after is normal. It usually means you worked. ';
     else if (feel === 'better') t += 'And you feel better than before. Remember that feeling next time starting is hard. ';
     t += nx ? 'Next up is ' + nx.focus + ' ' + (nx.name === 'tomorrow' ? 'tomorrow' : 'on ' + nx.name) + '. Rest well until then.' : 'Rest well.';
     const fallback = {text:t.trim(), ai:false};
-    if (!this.aiReady(st)) return this.set({review:Object.assign({}, rv, {coach:fallback, loading:false})});
-    this.set({review:Object.assign({}, rv, {loading:true})});
+    if (!this.aiReady(st, 'debrief')) return this.set({review:Object.assign({}, rv, {coach:fallback, loading:false, offer:false})});
+    const trial = this.planOf(st) === 'free';
+    if (trial && !rv.useTrial) return this.set({review:Object.assign({}, rv, {coach:fallback, loading:false, offer: !rv.declined})});
+    this.set({review:Object.assign({}, rv, {loading:true, offer:false, trialRun: trial})});
     const facts = 'WORKOUT JUST FINISHED: ' + R.w.focus + (R.w.mins ? ', about ' + R.w.mins + ' minutes' : '') + ', ' + R.sets + ' of ' + R.planned + ' sets. Exercises: ' + R.rows.map(function(r){ return r.name + ' ' + r.detail + ' (' + r.tag.toLowerCase() + ' vs last time)'; }).join('; ') + '. ' + R.ins.join(' ') + (feel ? ' They said they feel: ' + feel + '.' : '') + (note ? ' Their post-workout journal note: <<<' + note + '>>>' : ' They didn’t write a note.');
     this.aiCoach(st, {mode:'review', typed: note || '(no note)', guide:facts, replies:[]}).then(function(ai){
       const cur = self.S(); const r2 = cur.review || {};
@@ -3685,7 +3981,7 @@ class Component extends DCLogic {
     const patch = {sess:s, pbNow:pbNow, toast:toast};
     if (pbNow) { const self0 = this; setTimeout(function(){ self0.burst(false); }, 30); }
     if (!lastOfAll) {
-      patch.resting = true; patch.lightOn = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
+      patch.resting = true; patch.stimTab = 'spin'; patch.lightOn = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
       if (toast) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
     }
     this.set(patch);
@@ -3712,7 +4008,7 @@ class Component extends DCLogic {
     if (!midWorkout) { patch.sess = null; if (['active','complete','adapt','env','checkin','calm'].indexOf(st.screen) >= 0) patch.screen = 'today'; }
     return patch;
   }
-  dayCheck(){ const st = this.S(); const p = this.rollPatch(st); if (p) this.set(p); }
+  dayCheck(){ const st = this.S(); const p = this.rollPatch(st); if (p) this.set(p); const r = this.rewardsRollPatch(this.S()); if (r) this.set(r); }
 
   componentDidMount(){
     const self = this;
@@ -3848,36 +4144,113 @@ class Component extends DCLogic {
       : SUt.barriers.some(function(b){ return b === 'Busy gyms' || b === 'Noise and crowds' || b === 'Gym anxiety' || b === 'Feeling watched'; }) ? 'Press start when you’re ready. You told me busy gyms can be hard, so I’ll check how it looks with you first.'
       : SUt.exp === 'new' ? 'Press start when you’re ready. As you’re new to this, I’ll show you each exercise step by step.'
       : 'Press start when you’re ready. I’ll check what the space is like and sort out the rest.';
+    let slot = gymDay ? 'pre' : null;
     if (gymDay && st.checked && !st.dayOff && !st.doneToday) {
-      if (st.plan === 'short') todayBubble = mem1 ? 'Stressful day, and you’ve said a busy gym feels harder after those. I’ve made it 20 minutes.' : 'Busy day, so I’ve made it 20 minutes. Same focus.';
-      else if (st.plan === 'min') todayBubble = 'Low battery today. A few minutes of this still counts.';
+      if (st.plan === 'short') slot = 'low', todayBubble = mem1 ? 'Stressful day, and you’ve said a busy gym feels harder after those. I’ve made it 20 minutes.' : 'Busy day, so I’ve made it 20 minutes. Same focus.';
+      else if (st.plan === 'min') slot = 'low', todayBubble = 'Low battery today. A few minutes of this still counts.';
       else if (st.plan === 'plus') todayBubble = 'Feeling strong? I’ve stepped it up to 45 minutes.';
       else todayBubble = 'You’re in good shape today. Press start when you’re ready.';
     }
-    if (!gymDay && notChecked) todayBubble = 'No workout today, so there’s nothing you need to do.';
+    if (!gymDay && notChecked) slot = 'rest', todayBubble = 'No workout today, so there’s nothing you need to do.';
     if (showRestPlanned) {
-      if (v.stress >= 4) todayBubble = 'Sounds like a lot is going on. Good timing for a rest day. Getting it out of your head and onto the page might help.';
-      else if (v.energy && v.energy <= 2) todayBubble = 'Low battery, and it’s a rest day anyway. Your body’s asking for exactly this.';
-      else todayBubble = 'No workout planned today, so there’s nothing you need to do. Rest is part of the plan.';
+      if (v.stress >= 4) slot = null, todayBubble = 'Sounds like a lot is going on. Good timing for a rest day. Getting it out of your head and onto the page might help.';
+      else if (v.energy && v.energy <= 2) slot = null, todayBubble = 'Low battery, and it’s a rest day anyway. Your body’s asking for exactly this.';
+      else slot = 'rest', todayBubble = 'No workout planned today, so there’s nothing you need to do. Rest is part of the plan.';
     }
-    if (st.dayOff && !st.doneToday) todayBubble = 'Rest day it is. That’s part of training, not a break from it.';
-    if (st.doneToday || st.trainedToday) todayBubble = (st.sessToday || 0) >= 2 ? (st.sessToday === 2 ? 'Two sessions today. Brilliant. Eat well, drink water and rest up.' : st.sessToday + ' sessions today. Brilliant. Make sure you rest and refuel.') : 'Nice work today. Rest up, you’ve earned it.';
+    if (st.dayOff && !st.doneToday) slot = 'rest', todayBubble = 'Rest day it is. That’s part of training, not a break from it.';
+    if (st.doneToday || st.trainedToday) slot = 'post', todayBubble = (st.sessToday || 0) >= 2 ? (st.sessToday === 2 ? 'Two sessions today. That’s a big day.' : st.sessToday + ' sessions today. That’s a big day.') : 'Done for today. Nice work.';
     const TJ = readJournal(st.memoryOn ? (st.journal || []).filter(function(j){ return j.learned; }) : [], (st.week.find(function(d){ return d.today; }) || {}).n || 11);
     const tPart = TJ.injury && TJ.injury.part ? 'your ' + TJ.injury.part : 'your injury';
-    if (TJ.injury && !st.doneToday) todayBubble = TJ.injury.urgent ? 'You mentioned chest pain. Please get that checked today before any training.' : st.dayOff ? 'Resting ' + tPart + ' today is the right call. Look after it.' : gymDay ? 'You mentioned ' + tPart + '. Only do what’s pain-free today, or rest it. Your call.' : 'Rest day, and good timing for ' + tPart + '. Look after it.';
-    else if (TJ.stress && !st.doneToday && !st.trainedToday && !st.dayOff && gymDay && !(TJ.jnew && TJ.jnew.positive && TJ.jnew.t > TJ.stress.t)) todayBubble = 'Sounds like a stressful day. A shorter session can help shake it off, or rest. Your call, and Spark coach is here if you want to talk.';
-    else if (TJ.low && !st.doneToday && !(TJ.jnew && TJ.jnew.positive && TJ.jnew.t > TJ.low.t)) todayBubble = 'Go gently today. Whatever you do or don’t do, Spark coach is here if you want to talk.';
-    else if (TJ.ill && !st.doneToday) todayBubble = st.dayOff || !gymDay ? 'Rest up and get well. There’s nothing to catch up on.' : 'You’re not feeling well, so rest comes first. Nothing’s lost by taking today off.';
-    if (TJ.crisis) todayBubble = 'Go gently today. If things feel heavy, Spark coach can show you who to contact.';
+    if (TJ.injury && !st.doneToday) slot = null, todayBubble = TJ.injury.urgent ? 'You mentioned chest pain. Please get that checked today before any training.' : st.dayOff ? 'Resting ' + tPart + ' today is the right call. Look after it.' : gymDay ? 'You mentioned ' + tPart + '. Only do what’s pain-free today, or rest it. Your call.' : 'Rest day, and good timing for ' + tPart + '. Look after it.';
+    else if (TJ.stress && !st.doneToday && !st.trainedToday && !st.dayOff && gymDay && !(TJ.jnew && TJ.jnew.positive && TJ.jnew.t > TJ.stress.t)) slot = null, todayBubble = 'Sounds like a stressful day. A shorter session can help shake it off, or rest. Your call, and Spark coach is here if you want to talk.';
+    else if (TJ.low && !st.doneToday && !(TJ.jnew && TJ.jnew.positive && TJ.jnew.t > TJ.low.t)) slot = null, todayBubble = 'Go gently today. Whatever you do or don’t do, Spark coach is here if you want to talk.';
+    else if (TJ.ill && !st.doneToday) slot = null, todayBubble = st.dayOff || !gymDay ? 'Rest up and get well. There’s nothing to catch up on.' : 'You’re not feeling well, so rest comes first. Nothing’s lost by taking today off.';
+    if (TJ.crisis) slot = null, todayBubble = 'Go gently today. If things feel heavy, Spark coach can show you who to contact.';
     const ADJ = adjOn(st) ? st.adj : null;
     if (ADJ && !st.doneToday && !st.trainedToday) {
+      slot = null;
       const why = ADJ.reason ? ' because ' + ADJ.reason : '';
       if (st.adjConflict) todayBubble = 'Your check-in says you’re feeling good' + (ADJ.reason ? ', but earlier you told me ' + ADJ.reason : '') + '. Want to go back to your original plan instead?';
       else if (ADJ.rest) todayBubble = 'Rest is part of the plan. There’s nothing to make up.';
       else if (ADJ.second) todayBubble = 'Round two. Your earlier session is already banked, so this one is a bonus. Press start when you’re ready.';
       else todayBubble = ADJ.manual ? 'Added to today. Press start when you’re ready.' : 'Press start when you’re ready. Today’s set up the way we agreed in the chat.';
     }
-    if (st.sg) todayBubble = 'Your safety comes first. Open Spark coach to finish your safety check and see who can help.';
+    if (st.sg) slot = null, todayBubble = 'Your safety comes first. Open Spark coach to finish your safety check and see who can help.';
+
+    // ---- plans, credits and rewards (what the user sees) ----
+    const PL = self.planOf(st); const nowP = new Date(); const nextP = firstOfNext(nowP); const nextM = MONTHS_LONG[nextP.getMonth()];
+    const RWr = self.rewardsOf(st); const rwPts = Math.min(PRICING.barMax, Math.round(RWr.pts)); const rwOff = self.offFor(RWr.pts); const rwFull = RWr.pts >= PRICING.barMax;
+    const rwLast = st.rewardsLast; const rwLastM = rwLast && rwLast.m ? MONTHS_LONG[parseInt(rwLast.m.slice(5), 10) - 1] : '';
+    const rwToday = RWr.days[dkey(nowP)] || {};
+    const rw = (function(){
+      let kicker, value, sub;
+      if (PL === 'paused') { kicker = 'Spark AI is paused'; value = ''; sub = 'No payment on ' + longDate(nextP) + '. Resume any time in Settings.'; }
+      else if (PL === 'paid') { kicker = 'Rewards this month'; value = money(rwOff) + ' off';
+        sub = rwFull ? 'Bar full. ' + nextM + ' is ' + money(PRICING.rewardPrice) + '. Earned.'
+          : rwPts === 0 && rwLast && rwLast.off > 0 ? money(rwLast.off) + ' off this month, earned in ' + rwLastM + '.'
+          : nextM + ' so far: ' + money(PRICING.price - rwOff) + ' instead of ' + money(PRICING.price) + '.'; }
+      else { kicker = 'Rewards preview'; value = money(rwOff); sub = rwPts ? 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. You’d have ' + money(rwOff) + ' off so far.' : 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. Workouts, check-ins and journal entries all count.'; }
+      const mode = st.rwSheet;
+      return {kicker:kicker, value:value, bigValue: PL === 'paused' ? 'Paused' : value, sub:sub, pct: PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100),
+        fillSt: PL === 'paid' ? 'background: #DDF58B' : 'background: #B7A6F6', aria: kicker + '. ' + value + '. ' + sub,
+        priceTxt: money(PRICING.price), rewardTxt: money(PRICING.rewardPrice),
+        fullTxt: PRICING.barMax + ' points fills the bar: ' + money(PRICING.maxOff) + ' off, so next month is ' + money(PRICING.rewardPrice) + '.',
+        rows: [['workout','Workout'],['checkin','Check-in'],['journal','Journal entry'],['coach','Coach conversation']].map(function(x){ const on = !!rwToday[x[0]]; return {label:x[1], pts:'+' + PRICING.points[x[0]], icSt: on ? 'background: #DDF58B; color: #111214' : 'background: #26272C; color: #3F4046', ptsSt: on ? 'color: #DDF58B' : ''}; }),
+        hasLast: !!(rwLast && rwLastM && PL !== 'free'), lastTxt: rwLast ? (rwLast.off > 0 ? 'Last month: ' + money(rwLast.off) + ' off this month’s payment, earned in ' + rwLastM + '.' : 'A fresh bar for ' + MONTHS_LONG[nowP.getMonth()] + '.') : '',
+        isFree: PL === 'free', canPause: PL === 'paid', sheet: !!mode, ask: mode === 'pause', notAsk: mode !== 'pause',
+        pauseTxt: 'You won’t pay on ' + longDate(nextP) + '. Your coach switches to standard mode until ' + longDate(firstOfNext(nowP, 2)) + ', and everything else keeps working. Resume any time.',
+        open:function(){ self.set({rwSheet:'main', planSheet:false}); }, close:function(){ self.set({rwSheet:null}); },
+        askPause:function(){ self.set({rwSheet:'pause'}); }, noPause:function(){ self.set({rwSheet:'main'}); },
+        pause:function(){ self.set({planPause:{from:dkey(new Date()), until:dkey(firstOfNext(new Date(), 2))}, rwSheet:null}); }};
+    })();
+    const crLeft = self.creditsLeft(st); const tMsg = self.trialLeft(st, 'msg'); const tDeb = self.trialLeft(st, 'debrief');
+    const planV = {
+      name: PL === 'paid' ? 'Spark AI' : PL === 'paused' ? 'Spark AI · paused' : 'Free plan',
+      price: PL === 'paid' ? money(PRICING.price) + ' a month' : PL === 'paused' ? 'Paused until ' + longDate(firstOfNext(nowP, 2)) : 'No subscription',
+      cta: PL === 'free' ? 'See Spark AI' : 'Plan details',
+      rows: (PL === 'paid' ? [
+          {label:'AI credits', value: crLeft + ' of ' + PRICING.credits + ' left', sub:'Back to ' + PRICING.credits + ' on ' + longDate(nextP) + '. A message is ' + PRICING.cost.msg + ', a debrief is ' + PRICING.cost.debrief + '.'},
+          {label:'Next payment', value: money(PRICING.price - rwOff) + ' on ' + longDate(nextP), sub: rwOff > 0 ? money(rwOff) + ' off from your rewards so far.' : 'Fill your rewards bar to bring it down to ' + money(PRICING.rewardPrice) + '.'}]
+        : PL === 'paused' ? [{label:'Next payment', value:'None on ' + longDate(nextP), sub:'Your coach is in standard mode until ' + longDate(firstOfNext(nowP, 2)) + '.'}]
+        : [{label:'Free Spark AI trial', value: (tMsg || tDeb) ? (tMsg ? tMsg + (tMsg === 1 ? ' message' : ' messages') : 'No messages') + ' and ' + (tDeb ? '1 debrief' : 'no debrief') + ' left' : 'Used', sub: (tMsg || tDeb) ? 'Use them whenever you like.' : 'Your coach is in standard mode.'}]
+      ).map(function(r){ return Object.assign({hasSub: !!r.sub}, r); }),
+      paused: PL === 'paused', testing: !PRICING.live, sheet: !!st.planSheet, isPaid: PL === 'paid', canStart: PL !== 'paid',
+      freeHi: PL !== 'paid' ? 'hi' : '', paidHi: PL === 'paid' ? 'hi' : '',
+      perks: [{line: PRICING.credits + ' AI credits a month. A message is ' + PRICING.cost.msg + ' credit, a debrief is ' + PRICING.cost.debrief + '.'}, {line:'Talk to your coach about anything, any time'}, {line:'A debrief after every workout'}, {line:'A daily coach line written from your own data'}, {line:'Rewards: fill the bar and next month is ' + money(PRICING.rewardPrice)}],
+      msg: st.planMsg || '', hasMsg: !!st.planMsg,
+      open:function(){ self.set({planSheet:true, rwSheet:null, planMsg:''}); }, close:function(){ self.set({planSheet:false, planMsg:''}); },
+      resume:function(){ self.set({planPause:null, rwSheet:null}); },
+      start:function(){ const c = self.S();
+        if (c.planPause) return self.set({planPause:null, planSheet:false});
+        if (!PRICING.live) { if (!c.aiKey) return self.set({planMsg:'Testing: add your API key under AI coach in Settings first. No payment is taken while testing.'}); return self.set({aiOn:true, planSheet:false, aiErr:''}); }
+        // Live: start the app store purchase here.
+      },
+      tools: [
+        {label:'Reset free trial', go:function(){ self.set({trial:{msg:0, debrief:0}}); }},
+        {label:'+10 points', go:function(){ const c = self.S(); const r = self.rewardsOf(c); const pts = Math.min(PRICING.barMax, r.pts + 10); const ms = PRICING.milestones.filter(function(x){ return x <= pts; }); self.set({rewards:Object.assign({}, r, {pts:pts, ms:ms})}); }},
+        {label:'Fill the bar', go:function(){ const c = self.S(); const r = self.rewardsOf(c); self.set({rewards:Object.assign({}, r, {pts:PRICING.barMax - 2, ms:[25,50,75]})}); self.award('coach'); }},
+        {label:'Use 90 credits', go:function(){ const m = monthKeyOf(new Date()); const c = self.S(); const used = c.credits && c.credits.m === m ? c.credits.used : 0; self.set({credits:{m:m, used:Math.min(PRICING.credits, used + 90)}}); }},
+        {label:'Start a new month', go:function(){ const c = self.S(); const d = new Date(); const pm = monthKeyOf(new Date(d.getFullYear(), d.getMonth() - 1, 1)); self.set({rewards:Object.assign({}, self.rewardsOf(c), {m:pm}), credits:{m:pm, used:0}, planPause:null}); self.dayCheck(); }},
+        {label:'Clear plan data', go:function(){ self.set({rewards:null, rewardsLast:null, credits:null, trial:null, planPause:null}); }}]
+    };
+    const planNote = (function(){
+      if (st.sg) return {on:false};
+      if (PL === 'paused') return {on:true, text:'Spark AI is paused, so your coach is in standard mode.', link:false};
+      if (PL === 'paid' && st.aiKey && crLeft < PRICING.cost.msg) return {on:true, text:'This month’s ' + PRICING.credits + ' AI credits are used, so your coach is in standard mode until ' + longDate(nextP) + '.', link:false};
+      if (PL === 'free' && st.aiKey && tMsg > 0) return {on:true, text:'Free Spark AI trial · ' + tMsg + (tMsg === 1 ? ' message' : ' messages') + ' left', link:false};
+      if (PL === 'free' && self.trialLeft(st, 'msg') === 0 && ((st.trial || {}).msg || 0) > 0) return {on:true, text:'You’ve used your ' + PRICING.trial.msg + ' free Spark AI messages, so your coach is in standard mode. Spark AI is ' + money(PRICING.price) + ' a month, or ' + money(PRICING.rewardPrice) + ' when you fill your rewards bar.', link:true};
+      return {on:false};
+    })();
+    let todayBubbleSrc = '';
+    if (slot && st.coachLineOn !== false && !st.adjConflict) {
+      const CL = self.coachLine(st, slot);
+      if (CL) {
+        const aiL = self.aiReady(st, 'line') && slot !== 'low' ? self.coachLineAI(st, slot, CL) : null;
+        todayBubble = slot === 'low' ? todayBubble + ' ' + CL.text : (aiL || CL.text); todayBubbleSrc = aiL ? 'Written by your AI coach from your data' : CL.src;
+        const tkL = dkey(new Date());
+        if (CL.k && (st.lineLog || {})[tkL] !== CL.k) setTimeout(function(){ const c0 = self.S(); const lg = Object.assign({}, c0.lineLog || {}); if (lg[tkL] === CL.k) return; lg[tkL] = CL.k; const ks = Object.keys(lg).sort(); while (ks.length > 14) delete lg[ks.shift()]; self.set({lineLog:lg}); }, 0);
+      }
+    }
     const movedCount = st.week.filter(function(d){ return d.moved || (d.today && st.doneToday); }).length;
     const ROUT = self.routineOf(st); const nextWeek = st.week.map(function(d){ const r = ROUT[d.d] || {t:d.t, focus:d.focus}; const nk = d.key ? addDays(keyDate(d.key), 7) : null; return {d:d.d, n: nk ? nk.getDate() : d.n + 7, key: nk ? dkey(nk) : undefined, t:r.t, focus:r.focus}; });
     const shownWeek = st.weekOffset ? nextWeek : st.week;
@@ -4308,12 +4681,12 @@ class Component extends DCLogic {
     const TOUR = [
       {k:'Welcome', kicker:'Welcome to Spark', title:'Let’s show you around, ' + (st.userName || 'friend'), body:'A one-minute tour of how Spark helps you move. Swipe through, or close it any time. You can replay it from Settings.', why:'', hint:'', nav:''},
       {k:'Today', kicker:'Today', title:'Your home base', body:'This is the Today tab, which keeps everything in one place. You can easily see your week ahead, today’s workout or rest day, a four-tap mindset check-in, and a button to add another session. Press ‘Start workout’ and Spark checks how you’re feeling at the gym and adapts to you.', why:'No planning and no decisions. One button gets you moving.', hint:'Today lives on the home button', nav:'today'},
-      {k:'Rest', kicker:'Rest days', title:'Rest days count too', body:'On rest days, the Today page switches to gentle options, such as a stretch, a short walk, a breathing break or a journal entry. All of them are optional.', why:'Your body gets stronger while it recovers. A rest day is part of the plan, not a day missed.', hint:'Same home button, a calmer screen', nav:'today'},
+      {k:'Rest', kicker:'Rest days', title:'Rest days count too', body:'On rest days, the Today tab switches to gentle options, such as a stretch, a short walk, a breathing break or a journal entry. All of them are optional.', why:'Your body gets stronger while it recovers. A rest day is part of the plan, not a day missed.', hint:'Same home button, a calmer screen', nav:'today'},
       {k:'Week', kicker:'Your week', title:'Plans that bend', body:'This is the Your Week tab. See your training and rest days at a glance. Tap any day to change it, slide a session to tomorrow, or plan next week.', why:'Life rarely goes to plan. Moving a day is a reset, never a failure.', hint:'Your week lives on the calendar button', nav:'routine'},
-      {k:'Journal', kicker:'Journal', title:'Get it out of your head', body:'This is your journal. Jot down how a session went or how your day felt. A few words is plenty. You choose which entries Spark learns from, and you can edit or delete any of them.', why:'Spark spots what helps you, like the times of day that feel easier, so its coaching gets more personal.', hint:'Journal lives on the book button', nav:'journal'},
+      {k:'Journal', kicker:'Journal', title:'Get it out of your head', body:'This is your Journal. Jot down how a session went or how your day felt. A few words is plenty. You choose which entries Spark learns from, and you can edit or delete any of them.', why:'Spark spots what helps you, like the times of day that feel easier, so its coaching gets more personal.', hint:'Journal lives on the book button', nav:'journal'},
       {k:'Progress', kicker:'Your progress', title:'Wins, not streaks', body:'Scroll down on the Today tab to see your progress: the days you moved, your strength chart for every exercise, and your personal bests. Tap a green day to see what you did.', why:'Watching small wins add up is one of the best motivators there is. No streaks to break, no guilt.', hint:'Scroll down on Today', nav:'today'},
       {k:'Settings', kicker:'Settings', title:'Make Spark yours', body:'In Settings you can change your training days and times, switch between kg and lbs, connect the AI coach, choose what Spark remembers, and replay this tour.', why:'Spark works best when it fits your life, so you can change any of it whenever things change.', hint:'Settings lives on the cog button', nav:'settings'},
-      {k:'Coach', kicker:'Your Spark AI coach', title:'Someone in your corner', body:'Tap the black button any time to talk to your Spark AI coach. Whether it’s before a workout, when you can’t get started or after a rough day, your coach is there to help. Spark already knows your plan, check-ins, journal and progress, so its advice fits your needs.', why:'This is the heart of Spark: encouragement that understands you, every single day.', hint:'Your coach is the black button in the middle', nav:'companion'}
+      {k:'Coach', kicker:'Your Spark AI coach', title:'Someone in your corner', body:'Tap the black Spark icon any time to talk to your Spark AI coach. Whether it’s before a workout, when you can’t get started or after a rough day, your coach is there to help. Spark already knows your plan, check-ins, journal and progress, so its advice fits your needs.', why:'This is the heart of Spark: encouragement that understands you, every single day.', hint:'Your coach is the black button in the middle', nav:'companion'}
     ];
     const TS = ti0 >= 0 ? TOUR[ti0] : TOUR[0];
     const tourVals = {on: ti0 >= 0, step: (ti0 + 1) + ' of ' + TOUR_N, kicker:TS.kicker, title:TS.title, body:TS.body, why:TS.why, hasWhy: !!TS.why, hint:'', hasHint:false,
@@ -4457,6 +4830,7 @@ class Component extends DCLogic {
       skipWater:function(){ self.set({waterDue:false}); },
       spinDown:function(e){ self.spinDown(e); }, spinMove:function(e){ self.spinMove(e); }, spinUp:function(e){ self.spinUp(e); },
       flick:function(e){ try { const host = e && e.currentTarget && e.currentTarget.parentElement; const el = host && host.querySelector('[data-spinner]'); if (el) self.spinEl = el; } catch (err) {} if (!self.spin) self.spin = {angle:0, vel:0, total:0, lastTick:0}; self.spin.dragging = false; self.spin.vel = Math.min(0.16, Math.abs(self.spin.vel) + 0.06); self.buzz(10); self.spinLoop(); },
+      clOn: st.coachLineOn !== false, clCls: st.coachLineOn !== false ? 'on' : '', toggleCL:function(){ self.set({coachLineOn: self.S().coachLineOn === false}); },
       stimOn:st.stimOn, stimCls: st.stimOn ? 'on' : '', toggleStim:function(){ self.set({stimOn:!self.S().stimOn}); },
       haptics:st.haptics, hapCls: st.haptics ? 'on' : '', toggleHaptics:function(){ self.set({haptics:!self.S().haptics}); },
       userName: st.userName, userInitial: (st.userName || 'A').charAt(0).toUpperCase(), userTimeLbl:userTimeLbl,
@@ -4575,7 +4949,8 @@ class Component extends DCLogic {
       calmNote: st.calmFrom ? (st.calmFrom === 'env' ? 'Take as long as you need. Your plan will be right where you left it.' : 'Stay as long as you like. Nothing else to do.') : 'When you’re ready, pick one. All of them are fine.',
       calmLeaveLabel: st.calmFrom === 'env' ? 'Back to my plan' : 'I’m done',
       calmLeave:function(){ const cur = self.S(); self.set({screen: cur.calmFrom === 'env' ? 'env' : cur.calmFrom === 'chat' ? 'companion' : 'today', calmFrom:null}); },
-      todayBubble:todayBubble, notChecked:notChecked, showSuggest:showSuggest, showRest: st.dayOff && !st.doneToday, doneToday: st.doneToday,
+      rw:rw, spl:planV, planNote:planNote, rwPopOn: !!st.rwPop, rwPopText: st.rwPop ? st.rwPop.text : '',
+      todayBubble:todayBubble, todayBubbleSrc:todayBubbleSrc, hasBubbleSrc: !!todayBubbleSrc, notChecked:notChecked, showSuggest:showSuggest, showRest: st.dayOff && !st.doneToday, doneToday: st.doneToday,
       plan:plan, planMoves: plan.ids.length + ' exercises',
       easierLabel: st.plan === 'min' ? 'Just rest today' : 'Make it easier',
       easier:function(){ const cur = self.S(); if (cur.plan === 'plus') return self.set({plan:'full'}); if (cur.plan === 'full') return self.set({plan:'short'}); if (cur.plan === 'short') return self.set({plan:'min'}); self.set({dayOff:true}); },
@@ -4643,9 +5018,9 @@ class Component extends DCLogic {
           self.set({adaptChat:[]}); self.applyAdapt(k); }}; }); })(),
       adaptNewChat:function(){ self.set({adaptStep:'pick', adaptChat:[], issue:null}); },
       dimSt: (scr === 'active' && st.resting && st.stimTab === 'switch' && st.stimOn !== false && st.lightOn === false) ? 'opacity: 0.3' : 'opacity: 0',
-      cfOn: !!st.confetti, cfBig: !!(st.confetti && st.confetti.big), cfSize: Math.min(52, Math.floor(350 / (Math.max(8, ((st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!').length) * 0.6))) + 'px',
-      cfName: (st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!',
-      cfSub: (function(){ const s0 = st.sess; if (!s0) return 'Workout complete'; const n = s0.done.reduce(function(a, b){ return a + b; }, 0); return n + (n === 1 ? ' set' : ' sets') + ' done. Workout complete.'; })(),
+      cfOn: !!st.confetti, cfBig: !!(st.confetti && st.confetti.big), cfSize: Math.min(52, Math.floor(350 / (Math.max(8, (st.confetti && st.confetti.hero ? st.confetti.hero.name : ((st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!')).length) * 0.6))) + 'px',
+      cfName: st.confetti && st.confetti.hero ? st.confetti.hero.name : (st.userName || '').trim() ? 'Well done, ' + st.userName.trim() + '!' : 'Well done!',
+      cfSub: (function(){ if (st.confetti && st.confetti.hero) return st.confetti.hero.sub; const s0 = st.sess; if (!s0) return 'Workout complete'; const n = s0.done.reduce(function(a, b){ return a + b; }, 0); return n + (n === 1 ? ' set' : ' sets') + ' done. Workout complete.'; })(),
       cfPieces: (function(){ const c = st.confetti; if (!c) return []; let seed = (c.id % 233280) || 7; const rnd = function(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
         const COL = ['#DDF58B','#B7A6F6','#A6D8FA','#DDF58B','#B7A6F6','#F5F5F2']; const out = [];
         const nB = c.big ? 60 : 44; const nR = c.big ? 90 : 0;
@@ -4657,9 +5032,13 @@ class Component extends DCLogic {
         if (!R) return {on:false, title:'', sub:'', rows:[], ins:[], volTxt:'', volUnit:'', sets:0, changeTxt:'', changeSub:'', coachText:'', loading:false, hasCoach:false, coachSrc:'', hasNote:false, note:'', feel:'', hasFeel:false};
         const title = R.w.pbN ? 'A new personal best!' : R.ups ? 'Stronger than last time.' : R.sets < R.planned ? 'You showed up. That counts.' : 'Every set, done.';
         return {on:true, title:title, sub:R.w.focus + (R.w.mins ? ' · ' + R.w.mins + ' minutes' : '') + ' · ' + aiPlain(whenOf({at:R.w.at})), rows:R.rows, ins:R.ins.map(function(t){ return {line:t}; }), volTxt:R.volTxt, volUnit:R.volUnit, sets:R.sets, changeTxt:R.changeTxt, changeSub:R.changeSub,
-          loading: !!rv0.loading, hasCoach: !rv0.loading && !!(rv0.coach && rv0.coach.text), coachText: rv0.coach ? rv0.coach.text : '', coachSrc: rv0.coach && rv0.coach.ai ? 'Spark’s take · AI coach' : 'Spark’s take',
+          loading: !!rv0.loading, offer: !!rv0.offer && !rv0.loading, showCoach: !rv0.loading && !rv0.offer && !!(rv0.coach && rv0.coach.text), trialDone: !!(rv0.trialRun && rv0.coach && rv0.coach.ai && !rv0.loading),
+          hasGain: !!(st.rewardGain && st.rewardGain.kind === 'workout' && st.rewardGain.add > 0 && Date.now() - st.rewardGain.at < 6 * 3600000), gainTxt: st.rewardGain ? '+' + Math.round(st.rewardGain.add) + ' points for this workout' : '',
+          hasCoach: !rv0.loading && !!(rv0.coach && rv0.coach.text), coachText: rv0.coach ? rv0.coach.text : '', coachSrc: rv0.coach && rv0.coach.ai ? 'Spark’s take · AI coach' : 'Spark’s take',
           hasNote: !!rv0.note, note: rv0.note || '', feel: rv0.feel ? 'You said you feel ' + rv0.feel + '.' : '', hasFeel: !!rv0.feel}; })(),
-      rvTalk:function(){ self.set({screen:'companion', back:'review'}); }, rvDone:function(){ self.set({screen:'today', back:null, toast:'Saved to your journal.'}); },
+      rvTalk:function(){ self.set({screen:'companion', back:'review'}); },
+      rvUseTrial:function(){ const c = self.S(); self.set({review:Object.assign({}, c.review || {}, {useTrial:true, offer:false})}); self.reviewCoach(); },
+      rvDecline:function(){ const c = self.S(); self.set({review:Object.assign({}, c.review || {}, {declined:true, offer:false})}); }, rvDone:function(){ self.set({screen:'today', back:null, toast:'Saved to your journal.'}); },
       goCalm:function(){ self.set({screen:'calm', back:'active'}); },
       adaptReset:function(){ self.set({adaptStep:'pick', issue:null}); },
       adaptRetry:function(){ self.set({adaptStep:'talk', issue:'equip'}); },
@@ -4676,6 +5055,7 @@ class Component extends DCLogic {
         const f = FEELS.find(function(x){ return x[0] === cur.feel; }); if (f) tags.push(f[1]);
         const text = cur.note && cur.note.trim() ? cur.note.trim() : (logged + ' sets logged' + (s.adapted ? ', adapted ' + s.adapted + (s.adapted === 1 ? ' time' : ' times') : '') + '. Showed up and moved.');
         const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:text, tags:tags, learned:cur.memoryOn, auto: !(cur.note && cur.note.trim()), pb: s.pbs.length ? 'Personal best: ' + s.pbs[0].name.toLowerCase() + ' ' + s.pbs[0].kg + ' ' + uu(s.pbs[0].unit) : ''};
+        if (cur.note && cur.note.trim()) self.awardLater('journal');
         const sgc = detectSG(text);
         if (sgc) return self.set(Object.assign({journal:[entry].concat(cur.journal), doneToday:true, note:'', feel:null, screen:'companion', back:'journal', toast:''}, self.sgStart(cur, sgc, entry.id, !entry.learned)));
         const fl = FEELS.find(function(x){ return x[0] === cur.feel; });
@@ -4691,6 +5071,7 @@ class Component extends DCLogic {
       learn:st.learn, learnCls: st.learn ? 'on' : '', toggleLearn:function(){ self.set({learn:!self.S().learn}); },
       saveEntry:function(){
         const cur = self.S(); const t = (cur.draft || '').trim(); if (!t) return self.set({composing:false});
+        self.awardLater('journal');
         const learned = cur.learn && cur.memoryOn;
         const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags: cur.draftMood ? [cur.draftMood] : [], learned:learned};
         const patch = {journal:[entry].concat(cur.journal), composing:false, draft:'', draftMood:null, listening:false, toast: learned ? 'Saved. Spark will keep this in mind.' : 'Saved privately. Spark won’t learn from it.'};
