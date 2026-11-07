@@ -417,8 +417,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div class="rise" style="min-height: 100%; padding: 24px 22px 36px; display: flex; flex-direction: column; gap: 18px">
     <div class="row" style="justify-content: space-between">
       <button class="ib" aria-label="Back" onClick="{{onbBack}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-      <div class="row" style="gap: 4px; width: 200px" aria-label="Step {{onbPos}} of 8"><sc-for list="{{onbSegs}}" as="g" hint-placeholder-count="8"><span class="seg" style="{{g.st}}"></span></sc-for></div>
-      <span class="mut" style="width: 44px; text-align: right; font-size: 13px">{{onbPos}}/8</span>
+      <div class="row" style="gap: 4px; width: 200px" aria-label="Step {{onbPos}} of 7"><sc-for list="{{onbSegs}}" as="g" hint-placeholder-count="7"><span class="seg" style="{{g.st}}"></span></sc-for></div>
+      <span class="mut" style="width: 44px; text-align: right; font-size: 13px">{{onbPos}}/7</span>
     </div>
 
     <!-- Name -->
@@ -526,20 +526,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </div>
     </sc-if>
 
-    <!-- Reminders -->
-    <sc-if value="{{onbRemind}}" hint-placeholder-val="{{ false }}">
-      <h1 class="d" style="font-size: 36px; margin-top: 18px">Want a nudge before each session?</h1>
-      <p class="mut" style="margin: 0; font-size: 16px; line-height: 1.5">One gentle reminder at most. Never about any missed days.</p>
-      <div style="display: flex; flex-direction: column; gap: 8px">
-        <sc-for list="{{remindOpts}}" as="o" hint-placeholder-count="4">
-          <button aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 12px; {{o.st}}"><span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 16px">{{o.label}}</span><span style="font-size: 14px; opacity: .75">{{o.sub}}</span></span></button>
-        </sc-for>
-      </div>
-      <div style="background: #F5F5F2; color: #111214; border-radius: 22px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start">
-        <img src="img/logo.png" alt="" style="width: 26px; height: auto; margin-top: 2px">
-        <span><span style="display: block; font-weight: 600; font-size: 14px">Preview</span><span style="font-size: 14px; line-height: 1.4">{{remindPreview}}</span></span>
-      </div>
-    </sc-if>
 
     <!-- Memory consent -->
     <sc-if value="{{onbMemory}}" hint-placeholder-val="{{ false }}">
@@ -664,21 +650,12 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <svg class="rings" viewBox="0 0 200 200" width="240" height="240" aria-hidden="true" style="right: -80px; top: -70px; z-index: -1"><g fill="none" stroke="#111214" stroke-opacity=".07" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <span style="font-size: 14px; font-weight: 600">Rest day</span>
       <h2 class="d" style="font-size: 30px; margin-top: 6px">Recovery is part of the plan.</h2>
-      <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.45">Your muscles rebuild on days like this. Everything below is optional.</p>
+      <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.45">Your muscles rebuild on days like this.</p>
       <button class="btn sm" style="margin-top: 16px; background: transparent; color: #111214; box-shadow: inset 0 0 0 1.5px rgba(17,18,20,.4); gap: 8px" onClick="{{openAdd}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a workout</button>
     </section>
     <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45">{{todayBubble}}</span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
-    </div>
-    <div class="row" style="justify-content: space-between; margin-top: 6px; padding: 0 2px"><h3 class="d" style="font-size: 20px">If you fancy it</h3><span class="mut" style="font-size: 13px">No pressure</span></div>
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
-      <sc-for list="{{restTiles}}" as="r" hint-placeholder-count="4">
-        <button onClick="{{r.go}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: #1C1D21; color: #F5F5F2; padding: 16px; min-height: 128px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px">
-          <span style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #111214; {{r.icSt}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.ic}}"></path></svg></span>
-          <span><span style="display: block; font-weight: 600; font-size: 16px">{{r.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{r.sub}}</span></span>
-        </button>
-      </sc-for>
     </div>
     <div class="card" style="display: flex; gap: 14px; align-items: flex-start; padding: 18px">
       <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #26272C; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"></path></svg></span>
@@ -706,8 +683,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{showRest}}" hint-placeholder-val="{{ false }}">
     <div class="card" style="display: flex; flex-direction: column; gap: 10px; background: #1C1D21">
       <h2 class="d" style="font-size: 26px">Rest day. Fully allowed.</h2>
-      <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">Nothing to make up tomorrow. If you fancy some air later, a 10-minute walk is ready.</p>
-      <div class="row" style="gap: 10px; margin-top: 4px"><button class="btn b-lime sm" onClick="{{restWalk}}">Short walk instead</button><button class="btn b-ghost sm" onClick="{{undoRest}}">Undo</button></div>
+      <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">Nothing to make up tomorrow. Rest is part of the plan too.</p>
+      <button class="btn b-ghost sm" style="align-self: flex-start; margin-top: 4px" onClick="{{undoRest}}">Undo</button>
     </div>
     </sc-if>
     <sc-if value="{{doneToday}}" hint-placeholder-val="{{ false }}">
@@ -957,7 +934,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <sc-if value="{{tomorrowPlanned}}" hint-placeholder-val="{{ false }}"><div class="toast" style="margin-top: 14px">{{plannedToast}}</div></sc-if>
   <div class="card" style="margin-top: 20px; display: flex; flex-direction: column; gap: 18px">
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Missed one? Let it slide</span><span class="mut" style="font-size: 14px">Moves to your next free day. Never piles up.</span></span><button class="tg {{slideCls}}" aria-pressed="{{slide}}" aria-label="Let missed sessions slide" onClick="{{toggleSlide}}"></button></div>
-    <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">One gentle reminder</span><span class="mut" style="font-size: 14px">30 minutes before. Never more than one.</span></span><button class="tg {{remCls}}" aria-pressed="{{reminders}}" aria-label="One gentle reminder" onClick="{{toggleRem}}"></button></div>
   </div>
 </div>
 </sc-if>
@@ -1569,7 +1545,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Vibration</span><span class="mut" style="font-size: 13px">Little buzzes when you pop or spin.</span></span><button class="tg {{hapCls}}" aria-pressed="{{haptics}}" aria-label="Vibration" onClick="{{toggleHaptics}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Reduce motion</span><span class="mut" style="font-size: 13px">Turns off animations.</span></span><button class="tg {{rmCls}}" aria-pressed="{{reducedMotion}}" aria-label="Reduce motion" onClick="{{toggleRM}}"></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Quiet workouts</span><span class="mut" style="font-size: 13px">No sounds, fewer things on screen.</span></span><button class="tg {{quietCls}}" aria-pressed="{{quiet}}" aria-label="Quiet workouts" onClick="{{toggleQuiet}}"></button></div>
-    <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Gentle reminders</span><span class="mut" style="font-size: 13px">One a day at most. Never about missed days.</span></span><button class="tg {{remCls}}" aria-pressed="{{reminders}}" aria-label="Gentle reminders" onClick="{{toggleRem}}"></button></div>
   </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Training week</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px"><span style="font-weight: 600">Weights in</span><div class="unit-seg" role="group" aria-label="Weight units"><sc-for list="{{unitOpts}}" as="u" hint-placeholder-count="2"><button class="dt-opt {{u.cls}}" aria-pressed="{{u.on}}" onClick="{{u.pick}}"><b>{{u.label}}</b><span>{{u.sub}}</span></button></sc-for></div></div>
@@ -1616,7 +1591,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 56</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 58</p>
 </div>
 </sc-if>
 
@@ -2420,7 +2395,7 @@ const BAR_LINES = {
   'Finding time':'You told me finding time is hard, so remember: 20 minutes is a proper workout here.',
   'Plans changing':'You said plans change a lot. That’s exactly why moving a day is fine.',
   'Staying consistent':'You told me consistency is the tricky part. Showing up small still counts as showing up.',
-  'Forgetting':'You mentioned forgetting can happen, so I’ll keep your reminder coming.',
+  'Forgetting':'You mentioned forgetting can happen, so Today always shows what’s next the moment you open Spark.',
   'Boredom':'You told me boredom creeps in. A new exercise or a different order keeps it fresh.',
   'Slow progress':'You mentioned slow progress gets you down. Your weights are moving, even when it doesn’t feel like it.',
   'Knowing what to do':'You told me knowing what to do can be tricky. Every exercise comes with simple cues when you start.',
@@ -3078,7 +3053,7 @@ class Component extends DCLogic {
     const prefs = Object.keys(st.exPrefs || {}).map(function(k){ const id = st.exPrefs[k]; return EX[id] ? EX[id].name : null; }).filter(Boolean);
     const avoid = Object.keys(st.exAvoid || {}).filter(function(id){ return st.exAvoid[id] && EX[id]; }).map(function(id){ return EX[id].name; });
     if (prefs.length || avoid.length) L.push('Exercise preferences: ' + (prefs.length ? 'prefers ' + prefs.join(', ') : '') + (prefs.length && avoid.length ? '; ' : '') + (avoid.length ? 'swapped away from ' + avoid.join(', ') : '') + '.');
-    L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes. Reminders: ' + (st.reminders ? 'on' : 'off') + '.');
+    L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes.');
     const J = (st.journal || []).filter(function(j){ const t1 = jAt(j); return !t1 || dkey(new Date(t1)) < dkey(lastMon); }).slice(0, 30);
     if (J.length) L.push('OLDER JOURNAL ENTRIES (before last week, ' + (st.journal || []).length + ' entries in total), newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 500) + (j.tags && j.tags.length ? ' (tags: ' + j.tags.join(', ') + ')' : ''); }).join('\n'));
     else L.push('Older journal entries: none (this week and last week are listed above).');
@@ -3594,7 +3569,6 @@ class Component extends DCLogic {
       const lo = LENS.find(function(l){ return l[0] === st.sessLen; }) || LENS[2]; const len = PLANS[lo[2]] && ['short','full','plus'].indexOf(lo[2]) >= 0 ? PLANS[lo[2]].mins : PLANS.full.mins;
       const ctxTxt = doneNow ? 'They already trained today (' + (st.sessToday || 1) + (st.sessToday > 1 ? ' sessions' : ' session') + '). Add another ' : 'Today is a rest day. Add an extra ';
       const r = FOCUS.filter(function(f){ return f[0] !== 'cardio'; }).map(function(f){ return ['adj_add_' + f[0], (doneNow ? 'Add another ' : 'Add a ') + f[1].toLowerCase() + ' workout', ctxTxt + f[1].toLowerCase() + ' workout to today, about ' + len + ' minutes (it can be made shorter afterwards)']; });
-      r.push(['adj_walk', 'An easy walk instead', 'Add an easy ' + PLANS.walk.mins + '-minute walk to today']);
       r.push(['adj_keep', doneNow ? 'No, I’m done for today' : 'Keep it as a rest day', doneNow ? 'No change: they are done for today' : 'No change: keep today as a rest day']);
       return r;
     }
@@ -3605,7 +3579,6 @@ class Component extends DCLogic {
       ['adj_light', 'Same plan, lighter weights', 'Same workout with about 10% lighter weights'],
       ['adj_home', 'A simple home workout', 'Swap to a simple home workout (bodyweight or dumbbells), about ' + PLANS.short.mins + ' minutes'],
       ['adj_min', 'Just the basics', 'Just the basics: a few press-ups and a short walk, about ' + PLANS.min.mins + ' minutes'],
-      ['adj_walk', 'An easy walk instead', 'Swap to an easy ' + PLANS.walk.mins + '-minute walk'],
       ['adj_plus', 'Make it longer', 'Step it up to about ' + PLANS.plus.mins + ' minutes'],
       ['adj_slide', 'Move it to tomorrow', 'Move today’s session to tomorrow and rest today'],
       ['adj_rest', 'Rest today', 'Take today as a rest day']];
@@ -4311,7 +4284,7 @@ class Component extends DCLogic {
     const ciBits = [lvl('energy', 0) && 'Energy ' + lvl('energy', 0), lvl('mood', 1) && 'mood ' + lvl('mood', 1), lvl('stress', 2) && 'stress ' + lvl('stress', 2)].filter(Boolean);
     const checkRow = st.checked && ciBits.length
       ? {title:'Checked in', sub: ciBits.join(' · '), cta:'Redo', ic:IC.check, icSt:'background: #DDF58B; color: #111214', aria:'Checked in: ' + ciBits.join(', ') + '. Tap to redo.'}
-      : {title:'Pre-workout check-in', sub: ciWhen, cta:'Do it now', ic:IC.bell, icSt:'background: #26272C; color: #B7A6F6', aria:'Pre-workout check-in. Tap to do it now.'};
+      : {title:'Pre-workout check-in', sub:'Four taps. Today’s plan fits how you feel.', cta:'Check in', ic:'M3 12h4l2-6 4 12 2-6h6', icSt:'background: #26272C; color: #B7A6F6', aria:'Pre-workout check-in. Tap to check in.'};
     const beginEnv = function(extra){ const cur = self.S(); const env0 = (extra && extra.env) || {}; const ns = Object.assign({}, cur, extra || {}, {env:env0, envEnergy: !cur.checked}); const first = self.envSteps(ns)[0]; self.set(Object.assign({}, extra || {}, {env:env0, envEnergy: !cur.checked, envLadder:false, envAt:first, screen:'env', back:'today', toast:''})); };
     const restTiles = [
       {title:'Gentle stretch', sub:'8 minutes', ic:IC.stretch, icSt:'background: #B7A6F6', go:function(){ self.set({plan:'stretch', screen:'prep', back:'today'}); }},
@@ -4793,7 +4766,7 @@ class Component extends DCLogic {
     }
     const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still check in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Check in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
     const ONB_CTA = {2:'Continue',3:'Continue',4:'Continue',5:'Continue',6:'Continue',7:'Looks good',8:'Continue',9:'Finish setup'};
-    const onbSegs = []; for (let k = 2; k <= 9; k++) onbSegs.push({st: k <= o ? 'background: #DDF58B' : 'background: #34353B'});
+    const onbSegs = []; for (let k = 2; k <= 9; k++) if (k !== 8) onbSegs.push({st: k <= o ? 'background: #DDF58B' : 'background: #34353B'});
     const styleLabel = (STYLES.find(function(x){ return x.key === st.style; }) || STYLES[0]).label;
     const summaryRows = [
       {k:'Name', v:nameShown},
@@ -4801,7 +4774,6 @@ class Component extends DCLogic {
       {k:'Times', v: (function(){ const G = timeGroups(st, dayKeys); if (!G.length) return 'Whenever suits'; if (G.length === 1) return G[0].k === 'none' || G[0].k === 'flex' ? 'Flexible' : (function(T){ return T[1] + ' (' + T[2] + ')'; })(TIMES.find(function(t){ return t[0] === G[0].k; })); return G.map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return (T ? T[1] : 'Flexible') + ': ' + g.days.join(', '); }).join('. '); })()},
       {k:'Weights', v: st.units === 'lb' ? 'Pounds (lbs)' : 'Kilograms (kg)'},
       {k:'Session length', v: lenObj[1]},
-      {k:'Reminders', v: remindObj[1]},
       {k:'Spark memory', v: st.memoryOn ? 'On' : 'Off'}
     ];
     const applySetup = function(){
@@ -4851,7 +4823,7 @@ class Component extends DCLogic {
       userName: st.userName, userInitial: (st.userName || 'A').charAt(0).toUpperCase(), userTimeLbl:userTimeLbl,
       onb0: o === 0, onbSign: o === 1, onbSetup: o >= 2 && o <= 9, onbDone: o === 10,
       onbName: o === 2, onbBarriers: o === 3, onbGoals: o === 4, onbWhere: o === 5, onbSchedule: o === 6, onbFocus: o === 7, onbRemind: o === 8, onbMemory: o === 9, focusRows:focusRows, noFocusDays: !dayKeys.length,
-      onbPos: Math.max(1, o - 1), onbSegs:onbSegs, onbCta: ONB_CTA[o] || 'Continue',
+      onbPos: Math.max(1, o >= 9 ? o - 2 : o - 1), onbSegs:onbSegs, onbCta: ONB_CTA[o] || 'Continue',
       signTitle: st.signMode === 'new' ? 'Create your account' : 'Welcome back',
       signSub: st.signMode === 'new' ? 'Sign up in one tap with Google. Then a few quick questions so Spark fits your week.' : 'Sign in with the Google account you used before. Your plan and journal will be right where you left them.',
       startSignup:function(){ self.set({onb:2, signMode:'new', gPicker:false}); },
@@ -4861,8 +4833,8 @@ class Component extends DCLogic {
       pickAccount:function(){ const cur = self.S(); if (cur.signMode === 'returning') return self.set({gPicker:false, onb:0, screen:'today', userName:'Alex'}); self.set({gPicker:false, onb:2, nameDraft: cur.nameDraft || 'Alex'}); },
       nameDraft: st.nameDraft, nameShown:nameShown, nameTyped: !!(st.nameDraft || '').trim(), allSetTitle: (st.nameDraft || '').trim() ? 'You’re all set, ' + (st.nameDraft || '').trim() + '.' : 'You’re all set.', nameMissing: st.nameTried && !(st.nameDraft || '').trim(),
       onName:function(e){ self.set({nameDraft:e.target.value}); },
-      onbNext:function(){ const cur = self.S(); if (cur.onb === 2 && !(cur.nameDraft || '').trim()) return self.set({nameTried:true}); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let nx = cur.onb + 1; if (nx === 7 && !anyD) nx = 8; self.set({onb: Math.min(10, nx), nameTried:false}); },
-      onbBack:function(){ const cur = self.S(); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let pv = cur.onb === 2 ? 0 : Math.max(0, cur.onb - 1); if (pv === 7 && !anyD) pv = 6; self.set({onb: pv, gPicker:false, daySheet:null}); },
+      onbNext:function(){ const cur = self.S(); if (cur.onb === 2 && !(cur.nameDraft || '').trim()) return self.set({nameTried:true}); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let nx = cur.onb + 1; if (nx === 7 && !anyD) nx = 8; if (nx === 8) nx = 9; self.set({onb: Math.min(10, nx), nameTried:false}); },
+      onbBack:function(){ const cur = self.S(); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let pv = cur.onb === 2 ? 0 : Math.max(0, cur.onb - 1); if (pv === 8) pv = 7; if (pv === 7 && !anyD) pv = 6; self.set({onb: pv, gPicker:false, daySheet:null}); },
       finishOnb:function(){ applySetup(); },
       goalCount:goalCount,
       goalOpts: GOALS.map(function(g){ const on = !!st.goals[g]; return {label:g, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const n = Object.keys(cur.goals).filter(function(k){ return cur.goals[k]; }).length; if (!on && n >= 3) return; const ng = Object.assign({}, cur.goals); ng[g] = !on; self.set({goals:ng}); }}; }),
