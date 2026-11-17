@@ -41,7 +41,7 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .plan-box.hi{box-shadow:inset 0 0 0 2px #DDF58B}
 .plan-li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
-.scroll{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 .mut{color:#A1A1AA}
 .row{display:flex;align-items:center;gap:12px}
@@ -842,8 +842,17 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </sc-for>
     </div>
     </sc-if>
+    <sc-if value="{{env.isKit}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 24px">
+      <sc-for list="{{env.kit}}" as="o" hint-placeholder-count="7">
+        <button class="ropt {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="min-height: 58px; padding: 10px 18px"><span style="flex: 1; text-align: left">{{o.label}}</span><span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 2px currentColor"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="{{o.tickSt}}"><path d="M5 12l5 5 9-10"></path></svg></span></button>
+      </sc-for>
+    </div>
+    <button class="btn b-lime full" style="margin-top: 18px" onClick="{{env.kitDone}}">{{env.kitDoneLabel}}</button>
+    <p class="mut" style="text-align: center; margin: 12px 0 0; font-size: 14px">Tick as many as you like. Nothing ticked means bodyweight only.</p>
+    </sc-if>
     <div style="flex: 1; min-height: 20px"></div>
-    <p class="mut" style="text-align: center; margin: 20px 0 0; font-size: 14px">Tap one and it moves on by itself.</p>
+    <sc-if value="{{env.autoNote}}" hint-placeholder-val="{{ true }}"><p class="mut" style="text-align: center; margin: 20px 0 0; font-size: 14px">Tap one and it moves on by itself.</p></sc-if>
   </sc-if>
 
   <sc-if value="{{env.isPlan}}" hint-placeholder-val="{{ false }}">
@@ -1078,7 +1087,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <!-- ===== REST STAGE ===== -->
     <sc-if value="{{rest.on}}" hint-placeholder-val="{{ false }}">
     <div class="rise" style="position: relative; isolation: isolate; margin-top: 22px; display: flex; flex-direction: column; align-items: center; text-align: center">
-      <svg viewBox="0 0 200 200" width="520" height="520" aria-hidden="true" style="position: absolute; left: 50%; top: 155px; transform: translate(-50%, -50%); z-index: -1; pointer-events: none"><g fill="none" stroke="#A6D8FA" stroke-width="7"><circle class="rest-wave" cx="100" cy="100" r="50" stroke-opacity=".16"></circle><circle cx="100" cy="100" r="70" stroke-opacity=".09"></circle><circle cx="100" cy="100" r="90" stroke-opacity=".05"></circle></g></svg>
+      <div aria-hidden="true" style="position: absolute; top: -200px; bottom: 0; left: -18px; right: -18px; overflow: hidden; z-index: -1; pointer-events: none"><svg viewBox="0 0 200 200" width="520" height="520" aria-hidden="true" style="position: absolute; left: 50%; top: 355px; transform: translate(-50%, -50%); pointer-events: none"><g fill="none" stroke="#A6D8FA" stroke-width="7"><circle class="rest-wave" cx="100" cy="100" r="50" stroke-opacity=".16"></circle><circle cx="100" cy="100" r="70" stroke-opacity=".09"></circle><circle cx="100" cy="100" r="90" stroke-opacity=".05"></circle></g></svg></div>
       <span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; background: #A6D8FA; color: #0C1822; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Set logged</span>
       <div style="position: relative; width: 210px; height: 210px; margin-top: 18px">
         <svg width="210" height="210" viewBox="0 0 76 76" role="img" aria-label="Rest time left {{rest.left}}" style="position: absolute; inset: 0">
@@ -1549,6 +1558,10 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Training week</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px"><span style="font-weight: 600">Weights in</span><div class="unit-seg" role="group" aria-label="Weight units"><sc-for list="{{unitOpts}}" as="u" hint-placeholder-count="2"><button class="dt-opt {{u.cls}}" aria-pressed="{{u.on}}" onClick="{{u.pick}}"><b>{{u.label}}</b><span>{{u.sub}}</span></button></sc-for></div></div>
   <button class="card" onClick="{{nav.routine}}" style="appearance: none; cursor: pointer; font: inherit; color: inherit; border: 0; width: 100%; text-align: left; margin-top: 12px; display: flex; align-items: center; gap: 12px"><span style="flex: 1"><span style="display: block; font-weight: 600">Days and times</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{weekTimesSummary}}</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
+    <span><span style="display: block; font-weight: 600">Home equipment</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">Home workouts only use what’s ticked here. Nothing ticked means bodyweight only.</span></span>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{homeKitOpts}}" as="o" hint-placeholder-count="7"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+  </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Your plan</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="align-items: flex-start; gap: 12px"><span style="flex: 1"><span class="d" style="display: block; font-size: 20px">{{spl.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 4px">{{spl.price}}</span></span><button class="link" style="padding: 0; min-height: 32px; color: #B7A6F6" onClick="{{spl.open}}">{{spl.cta}}</button></div>
@@ -1591,7 +1604,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 58</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 60</p>
 </div>
 </sc-if>
 
@@ -1804,11 +1817,20 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <button class="tour-x" aria-label="Close" onClick="{{sw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     </div>
     <p class="mut" style="margin: 8px 0 14px; font-size: 14px; line-height: 1.5">{{sw.sub}}</p>
+    <div class="sw-tabs" role="tablist" aria-label="What to switch to" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 14px"><sc-for list="{{sw.modes}}" as="t" hint-placeholder-count="2"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="font-size: 14px"><span class="sw-tab-l">{{t.label}}</span></button></sc-for></div>
+    <sc-if value="{{sw.same}}" hint-placeholder-val="{{ true }}">
     <sc-if value="{{sw.hasTabs}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="Kit" style="grid-template-columns: {{sw.tabCols}}"><sc-for list="{{sw.tabs}}" as="t" hint-placeholder-count="4"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}"><span class="sw-tab-l">{{t.label}}</span><span class="sw-tab-n">{{t.count}}</span></button></sc-for></div></sc-if>
     <sc-if value="{{sw.tabEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 6px 4px 0; font-size: 14px; line-height: 1.5">{{sw.tabEmptyText}}</p></sc-if>
     <div style="display: flex; flex-direction: column; gap: 8px" role="tabpanel">
       <sc-for list="{{sw.opts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}<sc-if value="{{o.hasLast}}" hint-placeholder-val="{{ false }}"> · {{o.last}}</sc-if></span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-for>
     </div>
+    </sc-if>
+    <sc-if value="{{sw.other}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px"><sc-for list="{{sw.muscles}}" as="m" hint-placeholder-count="5"><button class="chip {{m.cls}}" aria-pressed="{{m.on}}" onClick="{{m.pick}}">{{m.label}}</button></sc-for></div>
+    <sc-if value="{{sw.noMuscle}}" hint-placeholder-val="{{ true }}"><p class="mut" style="margin: 0 4px; font-size: 14px">Pick a muscle group to see what fits.</p></sc-if>
+    <sc-if value="{{sw.mEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 0 4px; font-size: 14px; line-height: 1.5">Nothing for that one with the kit you’ve got. Try another muscle group.</p></sc-if>
+    <div style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{sw.mOpts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}</span></span><span class="mut" style="font-size: 13px; flex: none">{{o.kit}}</span></button></sc-for></div>
+    </sc-if>
     <sc-if value="{{sw.taken}}" hint-placeholder-val="{{ false }}"><button class="link" style="display: flex; margin: 14px auto 0; color: #A1A1AA" onClick="{{sw.simpler}}">Nothing’s free? Make it simpler</button></sc-if>
   </div>
 </div>
@@ -2180,7 +2202,48 @@ const EQUIP = {chest:'machine',dbbench:'free',cablepress:'cable',inclinedb:'free
   legpress:'machine',goblet:'free',hacksquat:'machine',legext:'machine',squat:'body',rdl:'free',hamcurl:'machine',pullthrough:'cable',glutebridge:'body',
   plank:'body',deadbug:'body',cablecrunch:'cable',abmachine:'machine',bike:'machine',rower:'machine',treadmill:'machine',xtrainer:'machine',stepjack:'body',
   inclinemachine:'machine',smithbench:'machine',plateChest:'machine',lowfly:'cable',cablepress1:'cable',bbbench:'free',dbfly:'free',inclinebb:'free',declinepu:'body',kneepu:'body',chestdips:'body',assistpull:'machine',closepulldown:'machine',platepulldown:'machine',straightarm:'cable',kneelpulldown:'cable',bbpullover:'free',pullup:'body',chinup:'body',negpullup:'body',tbarrow:'machine',chestrow:'machine',reardeltm:'machine',cablerow1:'cable',facepull:'cable',widecablerow:'cable',inclinedbrow:'free',reversefly:'free',invertedrow:'body',superman:'body',smithsp:'machine',cablesp:'cable',bbohp:'free',landmine:'free',elevpike:'body',cableupright:'cable',cablereardelt:'cable',frontraise:'free',uprightrow:'free',ytw:'body',curlmachine:'machine',ropehammer:'cable',cablecurl1:'cable',ezcurl:'free',inclinecurl:'free',concentration:'free',chinhold:'body',tricepsmachine:'machine',assistdip:'machine',ropepush:'cable',singlepush:'cable',skull:'free',kickback:'free',closegrip:'free',diamondpu:'body',tridips:'body',smithsquat:'machine',beltsquat:'machine',cablesquat:'cable',bbsquat:'free',splitsquat:'free',dblunge:'free',stepup:'free',walklunge:'body',wallsit:'body',bwsplit:'body',seatedcurl:'machine',hipthrustm:'machine',abductor:'machine',backext45:'machine',cablekickback:'cable',cablerdl:'cable',bbdeadlift:'free',bbhipthrust:'free',kbswing:'free',sldl:'free',singlebridge:'body',bwkickback:'body',seatedcalf:'machine',standcalf:'machine',lpcalf:'machine',dbcalf:'free',bwcalf:'body',captain:'machine',rotary:'machine',woodchop:'cable',pallof:'cable',farmer:'free',russian:'free',weightcrunch:'free',sideplank:'body',hollow:'body',legraise:'body',mountain:'body',birddog:'body',stairs:'machine',airbike:'machine',skipping:'free',shadowbox:'body',march:'body'};
-const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight'};
+// Resistance bands: their own kit, used at home (never picked at the gym).
+Object.assign(EX, {
+  bandpress:{name:'Band chest press',area:'Chest · shoulders · triceps',reps:12,bw:true,cues:['Anchor the band behind you at chest height','Press forward until your arms are straight','Let it come back slowly']},
+  bandpulldown:{name:'Band pulldown',area:'Back · biceps',reps:12,bw:true,cues:['Anchor the band high, like the top of a door','Pull your elbows down to your sides','Let it rise slowly']},
+  bandrow:{name:'Band row',area:'Back · biceps',reps:12,bw:true,cues:['Anchor the band at chest height','Pull your elbows back and squeeze your shoulder blades','Return slowly']},
+  bandshoulder:{name:'Band shoulder press',area:'Shoulders · triceps',reps:12,bw:true,cues:['Stand on the band, handles at your shoulders','Press straight up','Lower with control']},
+  bandlat:{name:'Band lateral raise',area:'Shoulders',reps:15,bw:true,cues:['Stand on the band','Raise your arms out to the side, up to shoulder height','Lower slowly']},
+  bandpullapart:{name:'Band pull-apart',area:'Upper back · rear shoulders',reps:15,bw:true,cues:['Hold the band at shoulder height, arms straight','Pull it apart until it touches your chest','Return slowly']},
+  bandcurl:{name:'Band biceps curl',area:'Biceps',reps:15,bw:true,cues:['Stand on the band, palms facing up','Curl up with your elbows tucked in','Lower slowly']},
+  bandpushdown:{name:'Band triceps pushdown',area:'Triceps',reps:15,bw:true,cues:['Anchor the band high','Push down until your arms are straight','Keep your elbows by your sides']},
+  bandsquat:{name:'Band squat',area:'Legs · glutes',reps:15,bw:true,cues:['Stand on the band, handles at your shoulders','Sit back and down','Drive up through your heels']},
+  bandrdl:{name:'Band Romanian deadlift',area:'Hamstrings · glutes',reps:15,bw:true,cues:['Stand on the band, handles in front of you','Hinge at the hips with a flat back','Squeeze your glutes to stand tall']}
+});
+Object.assign(EQUIP, {bandpress:'band', bandpulldown:'band', bandrow:'band', bandshoulder:'band', bandlat:'band', bandpullapart:'band', bandcurl:'band', bandpushdown:'band', bandsquat:'band', bandrdl:'band'});
+[['chest','bandpress'],['vpull','bandpulldown'],['row','bandrow'],['shoulder','bandshoulder'],['lateral','bandlat'],['lateral','bandpullapart'],['biceps','bandcurl'],['triceps','bandpushdown'],['squat','bandsquat'],['hinge','bandrdl']].forEach(function(x){ PAT[x[0]].push(x[1]); });
+// Home equipment the user can tick. Spark remembers it.
+const HOME_KIT = [['db','Dumbbells'],['kb','Kettlebell'],['band','Resistance bands'],['bench','Bench or sturdy step'],['bar','Pull-up bar'],['bb','Barbell and plates'],['mat','Exercise mat']];
+// What each exercise needs at home. 'a|b' means either. 'gym' = never at home. Bodyweight moves need nothing unless listed.
+const HOME_NEEDS = {
+  dbbench:['db','bench'], inclinedb:['db','bench'], floorpress:['db'], bbbench:['bb','bench'], dbfly:['db','bench'], inclinebb:['bb','bench'], chestdips:'gym',
+  pullover:['db','bench'], bbpullover:['bb','bench'], pullup:['bar'], chinup:['bar'], negpullup:['bar'],
+  dbrow:['db'], bbrow:['bb'], inclinedbrow:['db','bench'], reversefly:['db'], invertedrow:['bar'],
+  shoulder:['db','bench'], arnold:['db'], standpress:['db'], bbohp:['bb'], landmine:'gym',
+  latraise:['db'], frontraise:['db'], uprightrow:['db'],
+  bicep:['db'], hammer:['db'], ezcurl:['bb'], inclinecurl:['db','bench'], concentration:['db'], chinhold:['bar'],
+  ohext:['db'], skull:['db'], kickback:['db'], closegrip:['bb','bench'], tridips:'gym',
+  goblet:['db|kb'], bbsquat:['bb'], splitsquat:['db'], dblunge:['db'], stepup:['db','bench'],
+  rdl:['db'], bbdeadlift:['bb'], bbhipthrust:['bb','bench'], kbswing:['kb'], sldl:['db'],
+  farmer:['db'], russian:[], weightcrunch:['db|kb'], skipping:'gym', dbcalf:['db'],
+  bandpress:['band'], bandpulldown:['band'], bandrow:['band'], bandshoulder:['band'], bandlat:['band'], bandpullapart:['band'], bandcurl:['band'], bandpushdown:['band'], bandsquat:['band'], bandrdl:['band']
+};
+const BIG_SPACE = {walklunge:1, kbswing:1, farmer:1};
+function homeNeeds(id){ const n = HOME_NEEDS[id]; return n != null ? n : (EQUIP[id] === 'body' ? [] : ['db']); }
+// Can this exercise be done at home with this kit? small = only a little room.
+function homeOK(id, kit, small){
+  const k = EQUIP[id]; if (!EX[id] || k === 'machine' || k === 'cable') return false;
+  const nd = homeNeeds(id); if (nd === 'gym') return false; if (small && BIG_SPACE[id]) return false;
+  const have = kit || [];
+  return nd.every(function(n){ return n.split('|').some(function(x){ return have.indexOf(x) >= 0; }); });
+}
+function kitText(kit){ const names = HOME_KIT.filter(function(k){ return (kit || []).indexOf(k[0]) >= 0 && k[0] !== 'mat'; }).map(function(k){ return k[1].toLowerCase(); }); return names.length ? names.join(', ') : 'bodyweight only'; }
+const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight', band:'Bands'};
 Object.keys(PAT).forEach(function(p){ PAT[p].forEach(function(id){ if (EX[id] && !EX[id].pat) EX[id].pat = p; }); });
 Object.keys(EQUIP).forEach(function(id){ if (EX[id]) EX[id].kit = EQUIP[id]; });
 ['assistpull','assistdip'].forEach(function(id){ if (EX[id]) EX[id].assist = true; });
@@ -2190,13 +2253,19 @@ function pickFor(pat, o, used){
   o = o || {}; const list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0; });
   if (!list.length) return null;
   const where = o.where || 'gym';
-  let pool = where === 'home' ? list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; }) : where === 'outside' ? list.filter(function(id){ return EQUIP[id] === 'body'; }) : list.filter(function(id){ return EQUIP[id] !== 'body'; });
-  if (!pool.length) pool = list;
+  const homeish = where === 'home';
+  let pool = homeish ? list.filter(function(id){ return homeOK(id, o.kit, o.small); }) : where === 'outside' ? list.filter(function(id){ return EQUIP[id] === 'body'; }) : list.filter(function(id){ return EQUIP[id] !== 'body' && EQUIP[id] !== 'band'; });
+  if (!pool.length && homeish) {
+    // Nothing for this movement with their kit (e.g. no pull-up bar): use the nearest movement that works the same area.
+    const near = {vpull:'row', lateral:'shoulder', biceps:'row', triceps:'chest', calves:'squat', cardio:'core'}[pat];
+    return near && near !== pat ? pickFor(near, o, used) : null;
+  }
+  if (!pool.length) pool = list.filter(function(id){ return EQUIP[id] !== 'band'; });
   const liked = (o.prefs || {})[pat]; if (liked && pool.indexOf(liked) >= 0) return liked;
   const ok = pool.filter(function(id){ return !(o.avoid || {})[id]; }); if (ok.length) pool = ok;
   const order = GEAR_ORDER[o.gear || 'mix'];
   if (order && where === 'gym') { for (let k = 0; k < order.length; k++) { const hit = pool.find(function(id){ return EQUIP[id] === order[k]; }); if (hit) return hit; } }
-  if (where === 'home') { const b = pool.find(function(id){ return EQUIP[id] === 'free'; }); return b || pool[0]; }
+  if (homeish) { const b = pool.find(function(id){ const nd = homeNeeds(id); return nd !== 'gym' && nd.length > 0; }); return b || pool[0]; }
   return pool[0];
 }
 // Today's plan can be adjusted in a chat with the coach. It only counts for the day it was made, and always remembers the original so it can be undone.
@@ -2205,7 +2274,11 @@ const ADJ_RANK = {rest:0, walk:1, stretch:2, min:2, short:3, full:4, plus:5};
 function adjRank(a){ if (!a) return 4; if (a.rest) return 0; const r = ADJ_RANK[a.plan] != null ? ADJ_RANK[a.plan] : 4; return a.lighter ? r - 0.5 : a.where === 'home' ? Math.min(r, 3) : r; }
 function adjLabel(a){ if (!a) return ''; const f = a.focus ? focusLabel(a.focus).toLowerCase() : '';
   return {short:'a shorter session, about ' + PLANS.short.mins + ' minutes', min:'just the basics, about ' + PLANS.min.mins + ' minutes', walk:'an easy ' + PLANS.walk.mins + '-minute walk', home:'a simple home workout, about ' + PLANS.short.mins + ' minutes', light:'lighter weights today', plus:'a longer session, about ' + PLANS.plus.mins + ' minutes', focus: f + ' instead', rest:'a rest day', slide:'moving today’s session to tomorrow', add:(a.second ? 'another ' : 'an extra ') + f + ' workout, about ' + ((PLANS[a.plan] || PLANS.full).mins) + ' minutes'}[a.type] || 'a change to today'; }
-function gearOpts(st){ st = st || {}; const w = (st.env && st.env.where) || (adjOn(st) && st.adj.where) || (st.where === 'outdoors' ? 'outside' : st.where === 'mix' ? 'gym' : st.where) || 'gym'; return {gear: (st.env && st.env.gear) || st.gear || 'mix', prefs: st.exPrefs || {}, avoid: st.exAvoid || {}, where: w === 'else' ? 'gym' : w}; }
+function gearOpts(st){ st = st || {}; const e = st.env || {}; const w = e.where || (adjOn(st) && st.adj.where) || (st.where === 'outdoors' ? 'outside' : st.where === 'mix' ? 'gym' : st.where) || 'gym';
+  // Home (or "somewhere else" without a gym): only what they've actually got. Space and a mat, or a little room = bodyweight.
+  const homeish = w === 'home' || (w === 'else' && !!e.kit);
+  const kit = !homeish ? null : e.kit === 'equip' ? (e.kitList || st.homeKit || []) : (e.kit === 'floor' || e.kit === 'tiny') ? [] : (st.homeKit || []);
+  return {gear: e.gear || st.gear || 'mix', prefs: st.exPrefs || {}, avoid: st.exAvoid || {}, where: homeish ? 'home' : w === 'else' ? 'gym' : w, kit: kit || [], small: e.kit === 'tiny'}; }
 const PLANS = {
   full:{key:'full',label:'Full',title:'Upper body',mins:35,ids:['chest','shoulder','pulldown','triceps'],sets:3},
   short:{key:'short',label:'Shorter',title:'Quick upper body',mins:20,ids:['chest','shoulder','pulldown'],sets:2},
@@ -2226,6 +2299,8 @@ const SWAPQ = {
   dbrow:{ask:'Got a clear bit of floor?',opts:[['Yes','backext']]},
   ohext:{ask:'Is there a bench or sturdy ledge?',opts:[['Yes','benchdip']]}
 };
+const MUSCLES = [['chest','Chest',['chest']],['back','Back',['vpull','row']],['shoulders','Shoulders',['shoulder','lateral']],['arms','Arms',['biceps','triceps']],['legs','Legs',['squat','hinge','calves']],['core','Core',['core']]];
+function muscleOf(pat){ const m = MUSCLES.find(function(x){ return x[2].indexOf(pat) >= 0; }); return m ? m[0] : null; }
 const ONE_SPOT = {chest:'dbbench',shoulder:'standpress',pulldown:'dbrow',triceps:'ohext',cablerow:'dbrow'};
 const ISSUES = [
   ['swap','I’d rather do a different exercise','M7 7h11l-3-3M17 17H6l3 3','#B7A6F6'],
@@ -2321,8 +2396,8 @@ const ENV_WHERE = [['gym','At the gym','gym'],['home','At home','home'],['outsid
 const ENV_SPACE = {
   gym:{key:'busy',coach:'Got it.',q:'How busy is it?',opts:[[0,'Quiet','Plenty of space and equipment'],[1,'Moderate','Some equipment is taken'],[2,'Very busy','Not much equipment free']]},
   outside:{key:'busy',coach:'Fresh air. Good choice.',q:'How busy is it around you?',opts:[[0,'Quiet','Space to myself'],[1,'A few people','Some people about'],[2,'Very busy','Lots of people around']]},
-  home:{key:'kit',coach:'Nice, no travelling.',q:'What have you got to work with?',opts:[['db','Some dumbbells','Or other weights'],['floor','A bit of floor','A mat helps'],['tiny','Not much space','Just a small spot']]},
-  else:{key:'kit',coach:'Okay, let’s work with it.',q:'What’s around you?',opts:[['db','Some equipment','Weights or a bench'],['floor','Floor space','Room to move'],['tiny','Very little space','A small spot']]}
+  home:{key:'kit',coach:'Nice, no travelling.',q:'What have you got to work with?',opts:[['equip','Some equipment','Dumbbells, bands, a bench…'],['floor','Space and a mat','Bodyweight only'],['tiny','Just a little room','Bodyweight, small spot']]},
+  else:{key:'kit',coach:'Okay, let’s work with it.',q:'What’s around you?',opts:[['equip','Some equipment','Dumbbells, bands, a bench…'],['floor','Floor space','Bodyweight only'],['tiny','Very little space','Bodyweight, small spot']]}
 };
 const ENV_NOISE = [[0,'Comfortable',''],[1,'A little distracting',''],[2,'Very loud or overwhelming','']];
 const ENV_TEMP = [['ok','Comfortable','ok'],['hot','Too hot','hot'],['cold','Too cold','cold']];
@@ -3053,7 +3128,7 @@ class Component extends DCLogic {
     const prefs = Object.keys(st.exPrefs || {}).map(function(k){ const id = st.exPrefs[k]; return EX[id] ? EX[id].name : null; }).filter(Boolean);
     const avoid = Object.keys(st.exAvoid || {}).filter(function(id){ return st.exAvoid[id] && EX[id]; }).map(function(id){ return EX[id].name; });
     if (prefs.length || avoid.length) L.push('Exercise preferences: ' + (prefs.length ? 'prefers ' + prefs.join(', ') : '') + (prefs.length && avoid.length ? '; ' : '') + (avoid.length ? 'swapped away from ' + avoid.join(', ') : '') + '.');
-    L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes.');
+    L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes. Home equipment: ' + (st.homeKitSaved ? kitText(st.homeKit) : 'not told Spark yet') + '.');
     const J = (st.journal || []).filter(function(j){ const t1 = jAt(j); return !t1 || dkey(new Date(t1)) < dkey(lastMon); }).slice(0, 30);
     if (J.length) L.push('OLDER JOURNAL ENTRIES (before last week, ' + (st.journal || []).length + ' entries in total), newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 500) + (j.tags && j.tags.length ? ' (tags: ' + j.tags.join(', ') + ')' : ''); }).join('\n'));
     else L.push('Older journal entries: none (this week and last week are listed above).');
@@ -3191,7 +3266,7 @@ class Component extends DCLogic {
     return chest ? {q:'Is there a bench free?', kind:'bench', opts:[[true,'Yes','I’ll grab it and some dumbbells'],[false,'No','Let’s work around it'],['over','It’s all a bit much','Keep it really simple today']]}
                  : {q:'Can you grab a pair of dumbbells?', kind:'db', opts:[[true,'Yes','Dumbbells it is'],[false,'No','Bodyweight only, then'],['over','It’s all a bit much','Keep it really simple today']]}; }
   needBench(st){ const e = st.env || {}; if (e.where !== 'gym' || !(e.busy >= 1)) return false; const p = planObj(st.plan, this.envFoci(st), gearOpts(st)); return p.ids.some(function(id){ return !EX[id].bw; }); }
-  envSteps(st){ const s = []; if (!st.checked || st.envEnergy) s.push('energy'); if (!(adjOn(st) && st.adj.where && (st.env || {}).where === st.adj.where)) s.push('where'); s.push('space'); if ((st.env || {}).where === 'gym') s.push('gear'); s.push('noise', 'temp'); s.push('plan'); return s; }
+  envSteps(st){ const s = []; if (!st.checked || st.envEnergy) s.push('energy'); if (!(adjOn(st) && st.adj.where && (st.env || {}).where === st.adj.where)) s.push('where'); s.push('space'); if ((st.env || {}).kit === 'equip') s.push('kitlist'); if ((st.env || {}).where === 'gym') s.push('gear'); s.push('noise', 'temp'); s.push('plan'); return s; }
   envPlan(st){
     // Coaching, not planning: read how today feels, then say how far to lower the bar.
     const e = st.env || {}; const v = st.vals || {};
@@ -3577,7 +3652,7 @@ class Component extends DCLogic {
     const out = [
       ['adj_short', 'Make it ' + PLANS.short.mins + ' minutes', 'Shorter: ' + now + ' → about ' + PLANS.short.mins + ' minutes, fewer sets'],
       ['adj_light', 'Same plan, lighter weights', 'Same workout with about 10% lighter weights'],
-      ['adj_home', 'A simple home workout', 'Swap to a simple home workout (bodyweight or dumbbells), about ' + PLANS.short.mins + ' minutes'],
+      ['adj_home', 'A simple home workout', 'Swap to a simple home workout using what they have at home (' + (this.S().homeKitSaved ? kitText(this.S().homeKit) : 'Spark will ask what kit they have') + '), about ' + PLANS.short.mins + ' minutes'],
       ['adj_min', 'Just the basics', 'Just the basics: a few press-ups and a short walk, about ' + PLANS.min.mins + ' minutes'],
       ['adj_plus', 'Make it longer', 'Step it up to about ' + PLANS.plus.mins + ' minutes'],
       ['adj_slide', 'Move it to tomorrow', 'Move today’s session to tomorrow and rest today'],
@@ -3748,7 +3823,8 @@ class Component extends DCLogic {
     const o = gearOpts(st);
     let list = (PAT[pat] || []).filter(function(id){ return id !== cur && others.indexOf(id) < 0 && EX[id]; });
     if (o.where === 'gym') { const kitFirst = list.filter(function(id){ return EQUIP[id] !== 'body'; }); list = kitFirst.concat(list.filter(function(id){ return EQUIP[id] === 'body'; })); }
-    else if (o.where === 'home') list = list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; });
+    else if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
+    if (o.where === 'gym') list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
     // one of each kit first, so there's a real choice
     const seen = {}; const firstEach = list.filter(function(id){ if (seen[EQUIP[id]]) return false; seen[EQUIP[id]] = true; return true; });
     const rest = list.filter(function(id){ return firstEach.indexOf(id) < 0; });
@@ -3759,17 +3835,33 @@ class Component extends DCLogic {
     const i = s.cur; const cur = s.ids[i]; const pat = (s.pats && s.pats[i]) || (EX[cur] && EX[cur].pat);
     const others = s.ids.filter(function(id, k){ return k !== i; }); const o = gearOpts(st);
     let list = (PAT[pat] || []).filter(function(id){ return id !== cur && others.indexOf(id) < 0 && EX[id]; });
-    if (o.where === 'home') list = list.filter(function(id){ return EQUIP[id] === 'body' || EQUIP[id] === 'free'; });
-    if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
-    const curKit = EQUIP[cur]; return ['machine','cable','free','body'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
+    if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
+    else if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
+    else list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+    const curKit = EQUIP[cur]; return ['machine','cable','free','band','body'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
+  }
+  // Exercises from another muscle group that suit where they are and what they've got.
+  muscleOpts(st, mkey){
+    const s = st.sess; if (!s) return []; const m = MUSCLES.find(function(x){ return x[0] === mkey; }); if (!m) return [];
+    const o = gearOpts(st); const inSess = s.ids;
+    let list = []; m[2].forEach(function(pt){ (PAT[pt] || []).forEach(function(id){ if (EX[id] && list.indexOf(id) < 0 && inSess.indexOf(id) < 0) list.push(id); }); });
+    if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
+    else if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
+    else list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+    const order = o.where === 'home' ? ['free','band','body'] : (GEAR_ORDER[o.gear || 'mix'] || ['machine','cable','free','body']);
+    return list.sort(function(a, b){ return order.indexOf(EQUIP[a]) - order.indexOf(EQUIP[b]); }).slice(0, 8);
   }
   doSwitch(to, reason){
     const st = this.S(); const s = clone(st.sess); const i = s.cur; const from = s.ids[i];
     const pat = (s.pats && s.pats[i]) || EX[from].pat; const L = this.lastOf(st, to);
     s.ids[i] = to; s.kg[i] = L.kg || EX[to].kg || 0; s.reps[i] = L.reps || EX[to].reps; if (s.prog) s.prog[i] = null;
     if (!s.pats) s.pats = s.ids.map(function(id){ return EX[id].pat || null; }); s.pats[i] = pat;
-    const patch = {sess:s, swOpen:false, swReason:null, swTab:null, showCues:false, toast:'Switched to ' + EX[to].name.toLowerCase() + '. Same muscles.'};
-    if (reason === 'taken') { s.adapted += 1; patch.adaptTotal = (st.adaptTotal || 0) + 1; patch.screen = 'active'; patch.adaptStep = 'pick'; patch.issue = null; }
+    const other = muscleOf(EX[to].pat) !== muscleOf(pat);
+    if (other) s.pats[i] = EX[to].pat || pat;
+    const patch = {sess:s, swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null, showCues:false, toast:'Switched to ' + EX[to].name.toLowerCase() + '.' + (other ? '' : ' Same muscles.')};
+    if (reason === 'adapt') { patch.screen = 'active'; patch.adaptStep = 'pick'; patch.issue = null; patch.adaptChat = []; }
+    else if (other) {}
+    else if (reason === 'taken') { s.adapted += 1; patch.adaptTotal = (st.adaptTotal || 0) + 1; patch.screen = 'active'; patch.adaptStep = 'pick'; patch.issue = null; }
     else patch.swAsk = {pat:pat, from:from, to:to};
     this.set(patch);
   }
@@ -3857,7 +3949,45 @@ class Component extends DCLogic {
       'Today’s plan: ' + s.ids.map(function(id, k){ const x = EX[id]; return x.name + ' ' + (x.bw ? s.reps[k] + ' ' + (x.repUnit || 'reps') : wt(s.kg[k]) + ' ' + uu(x.unit) + ' × ' + s.reps[k]) + ' (' + s.done[k] + '/' + s.sets[k] + ' sets done)'; }).join('; ') + '.',
       'Adapted so far today: ' + (s.adapted || 0) + ' times. Personal bests today: ' + ((s.pbs || []).map(function(p){ return p.name; }).join(', ') || 'none yet') + '.'];
     if (st.env && st.env.where) L.push('Gym check: busy level ' + (st.env.busy || 0) + ' of 2, noise ' + (st.env.noise || 0) + ', temperature ' + (st.env.temp || 'ok') + '.');
+    const go = gearOpts(st); if (go.where === 'home') L.push('Training at home with: ' + kitText(go.kit) + (go.small ? ', in a small space' : '') + '. Only suggest exercises that use this kit.');
     return L.join('\n');
+  }
+  // Reads a typed request like "swap this for chest press" or "can I do legs instead".
+  // Returns {to:id} when it can make the change, {open:true} when they want to switch but haven't said to what, or null.
+  parseSwitch(text, st){
+    const s = st.sess; if (!s) return null;
+    const t = ' ' + String(text || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9 -]/g, ' ').replace(/\s+/g, ' ') + ' ';
+    if (!/\b(switch|swap|change|instead|replace|rather|different exercise|something else|another exercise|do .+ instead)\b/.test(t)) return null;
+    const i = s.cur; const curId = s.ids[i]; const o = gearOpts(st);
+    const okHere = function(id){ if (!EX[id] || id === curId) return false; if (o.where === 'home') return homeOK(id, o.kit, o.small); if (o.where === 'outside') return EQUIP[id] === 'body'; return EQUIP[id] !== 'band'; };
+    // 1. A named exercise (longest name match wins). Ignore the one they're on now.
+    const norm = function(x){ return ' ' + x.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9 -]/g, ' ').replace(/\s+/g, ' ').trim() + ' '; };
+    let best = null, bestLen = 0;
+    Object.keys(EX).forEach(function(id){ if (!okHere(id) || !EX[id].pat) return; const nm = norm(EX[id].name); const short = nm.replace(/ (machine|dumbbell|barbell|cable) /g, ' ').replace(/\s+/g, ' ');
+      [nm, short].forEach(function(n){ if (n.trim().length >= 5 && t.indexOf(n) >= 0 && n.length > bestLen) { best = id; bestLen = n.length; } }); });
+    const curNm = norm(EX[curId].name);
+    if (best) return {to:best};
+    // 2. A muscle group: pick the best fit for where they are.
+    const MW = [['chest',/\b(chest|pecs?)\b/],['back',/\b(back|lats?)\b/],['shoulders',/\b(shoulders?|delts?)\b/],['arms',/\b(arms?|biceps?|triceps?)\b/],['legs',/\b(legs?|quads?|glutes?|hamstrings?|squats?)\b/],['core',/\b(core|abs|stomach)\b/]];
+    const tNoCur = t.replace(curNm, ' ');
+    const hit = MW.find(function(m){ return m[1].test(tNoCur); });
+    if (hit) {
+      let pats = MUSCLES.find(function(m){ return m[0] === hit[0]; })[2];
+      if (hit[0] === 'arms') pats = /tricep/.test(tNoCur) ? ['triceps'] : /bicep/.test(tNoCur) ? ['biceps'] : pats;
+      for (let k = 0; k < pats.length; k++) { const id = pickFor(pats[k], o, s.ids); if (id && okHere(id)) return {to:id}; }
+      return {open:true, muscle:hit[0]};
+    }
+    return {open:true};
+  }
+  applySwitchFromChat(to, thread){
+    const st = this.S(); const s = clone(st.sess); const i = s.cur; const from = s.ids[i]; const pat = (s.pats && s.pats[i]) || EX[from].pat; const L = this.lastOf(st, to);
+    s.ids[i] = to; s.kg[i] = L.kg || EX[to].kg || 0; s.reps[i] = L.reps || EX[to].reps; if (s.prog) s.prog[i] = null;
+    if (!s.pats) s.pats = s.ids.map(function(id){ return EX[id].pat || null; }); s.pats[i] = muscleOf(EX[to].pat) !== muscleOf(pat) ? (EX[to].pat || pat) : pat;
+    s.adapted = (s.adapted || 0) + 1;
+    const x = EX[to]; const dose = x.bw ? s.reps[i] + ' ' + (x.repUnit || 'reps') : wt(s.kg[i]) + ' ' + uu(x.unit) + ' × ' + s.reps[i];
+    const msg = {spark:true, text:'Done. Swapped ' + EX[from].name.toLowerCase() + ' for ' + x.name.toLowerCase() + '. ' + dose + ', ' + (s.sets[i] - s.done[i]) + ((s.sets[i] - s.done[i]) === 1 ? ' set' : ' sets') + ' to go. Sets you’ve already done stay logged.', acts:['back','swap']};
+    msg.labels = {swap:'Pick something else'};
+    this.set({sess:s, adaptStep:'chat', adaptChat:thread.concat([msg]), adaptThinking:false, adaptDraft:'', adaptTotal:(st.adaptTotal || 0) + 1, swUndo:{from:from, to:to}});
   }
   sayAdapt(){
     const self = this; const st = this.S();
@@ -3870,6 +4000,10 @@ class Component extends DCLogic {
       p.chat = p.chat.map(function(m){ return m.src === 'Your journal' ? Object.assign({}, m, {src:'What you wrote', text: m.text.replace('I’ve read what you wrote', 'Thank you for telling me')}) : m; });
       self.set(Object.assign(p, {screen:'companion', back:'active', adaptDraft:'', adaptThinking:false, adaptStep:'pick'})); };
     const cat = detectSG(text); if (cat) return toSG(cat);
+    // "I want to switch…": make the change straight away. No extra tap.
+    const swq = this.parseSwitch(text, st);
+    if (swq && swq.to) return this.applySwitchFromChat(swq.to, thread);
+    if (swq && swq.open) return this.set({screen:'active', swOpen:true, swReason:'adapt', swMode: swq.muscle ? 'other' : null, swMuscle: swq.muscle || null, adaptStep:'pick', adaptChat:[], adaptDraft:'', toast:''});
     const day = todayKeyNow(); const ad = st.aiDay && st.aiDay.d === day ? st.aiDay : {d:day, n:0};
     this.set({adaptStep:'chat', adaptChat:thread, adaptDraft:'', adaptThinking:true, aiDay:{d:day, n:ad.n + 1}});
     if (ad.n >= AI_DAY_CAP) return this.set({adaptThinking:false, adaptChat:thread.concat([{spark:true, text:'We’ve talked a lot today. Pick one of these and let’s keep you moving.', acts:['easier','swap','back']}])});
@@ -4304,7 +4438,7 @@ class Component extends DCLogic {
     const segsFor = function(n, of){ const out = []; for (let k = 0; k < of; k++) out.push({c: k < n ? 'f' : ''}); return out; };
     const optRow = function(label, sub, on, pick, segs, ic){ return {label:label, sub:sub || '', hasSub: !!sub, on:on, cls: on ? 'on' : '', pick:pick, segs:segs || [], hasSegs: !!(segs && segs.length), ic:ic || '', hasIc: !!ic}; };
     const usualWhere = st.where === 'outdoors' ? 'outside' : st.where;
-    const env = {coachLine: envAt !== 'bench', coachBox: envAt === 'bench', isQ: envAt !== 'plan', isPlan: envAt === 'plan', isWhere: envAt === 'where', isList: envAt !== 'where' && envAt !== 'plan',
+    const env = {coachLine: envAt !== 'bench', coachBox: envAt === 'bench', isQ: envAt !== 'plan', isPlan: envAt === 'plan', isWhere: envAt === 'where', isKit: envAt === 'kitlist', autoNote: envAt !== 'kitlist', isList: envAt !== 'where' && envAt !== 'plan' && envAt !== 'kitlist', kit:[],
       pos: Math.max(1, envQs.indexOf(envAt) + 1), count: envQs.length, coach:'', q:'', where:[], opts:[],
       dots: envQs.map(function(x, k){ return {st: k <= envQs.indexOf(envAt) ? 'background: #DDF58B' : 'background: #34353B'}; }),
       back:function(){ const i = envSteps.indexOf(envAt); if (i <= 0) return self.set({screen:'today'}); self.set({envAt: envSteps[i - 1]}); },
@@ -4315,6 +4449,15 @@ class Component extends DCLogic {
       env.where = ENV_WHERE.map(function(w){ const on = E.where === w[0]; return {label:w[1], ic:IC[w[2]], on:on, usual: usualWhere === w[0], st: on ? 'background: #DDF58B; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ const ne = setEnv('where', w[0]); delete ne.busy; delete ne.kit; delete ne.bench; envAdvance({env:ne}); }}; }); }
     if (envAt === 'space') { const sp = ENV_SPACE[E.where] || ENV_SPACE.gym; env.coach = sp.coach; env.q = sp.q;
       env.opts = sp.opts.map(function(o, idx){ return optRow(o[1], o[2], E[sp.key] === o[0], function(){ const ne = setEnv(sp.key, o[0]); delete ne.bench; envAdvance({env:ne}); }, sp.key === 'busy' ? segsFor(idx + 1, 3) : null); }); }
+    if (envAt === 'kitlist') {
+      const pick = st.envKitPick || st.homeKit || [];
+      env.coach = st.homeKitSaved ? 'Here’s what you told me last time. Change anything that’s different.' : 'Tick what you’ve got. I’ll remember it for next time.';
+      env.q = 'What equipment have you got?';
+      env.kit = HOME_KIT.map(function(k){ const on = pick.indexOf(k[0]) >= 0; return {label:k[1], on:on, cls: on ? 'on' : '', tickSt: on ? 'opacity: 1' : 'opacity: 0', pick:function(){ const cur = self.S(); const p0 = (cur.envKitPick || cur.homeKit || []).slice(); const at = p0.indexOf(k[0]); if (at >= 0) p0.splice(at, 1); else p0.push(k[0]); self.set({envKitPick:p0}); }}; });
+      const hasKit = pick.some(function(x){ return x !== 'mat'; });
+      env.kitDoneLabel = hasKit ? 'Done' : 'Bodyweight only';
+      env.kitDone = function(){ const cur = self.S(); const p0 = (cur.envKitPick || cur.homeKit || []).slice(); const ne = Object.assign({}, cur.env, {kitList:p0}); if (!p0.some(function(x){ return x !== 'mat'; })) ne.kit = 'floor'; envAdvance({env:ne, homeKit:p0, homeKitSaved:true, envKitPick:null}); };
+    }
     if (envAt === 'gear') { const bz = E.busy || 0;
       env.coach = bz === 2 ? 'It’s packed, so machines are usually the easiest to grab. Your call though.' : bz === 1 ? 'A little busy. Pick whatever you fancy and I’ll work around it.' : 'The gym’s on your side. What do you fancy today?';
       env.q = 'What would you like to use?';
@@ -4429,15 +4572,21 @@ class Component extends DCLogic {
     const swCurKit = st.sess ? EQUIP[st.sess.ids[st.sess.cur]] : null;
     const swTabKey = swGroups.some(function(g){ return g.key === st.swTab; }) ? st.swTab : ((swGroups.find(function(g){ return g.key === swCurKit; }) || swGroups[0] || {}).key);
     const swList = (swGroups.find(function(g){ return g.key === swTabKey; }) || {ids:[]}).ids;
-    const TAB_LABEL = {machine:'Machines', cable:'Cables', free:'Free weights', body:'Bodyweight'};
+    const TAB_LABEL = {machine:'Machines', cable:'Cables', free:'Free weights', band:'Bands', body:'Bodyweight'};
     const swCur = st.sess ? EX[st.sess.ids[st.sess.cur]] : null;
     const sw = {tabs: swGroups.map(function(g){ const on = g.key === swTabKey; return {label:TAB_LABEL[g.key], count:g.ids.length, on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swTab:g.key}); }}; }),
       tabCols: 'repeat(' + Math.max(1, swGroups.length) + ', minmax(0, 1fr))', hasTabs: swGroups.length > 1,
-      on: !!st.swOpen && !!st.sess, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
+      on: !!st.swOpen && !!st.sess, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
       title: st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
-      sub: st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
+      sub: st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
       opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + wt(L.kg) + ' ' + uu(x.unit)), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ self.doSwitch(id, st.swReason); }}; }),
-      close:function(){ self.set({swOpen:false, swReason:null, swTab:null}); },
+      close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null}); },
+      same: st.swMode !== 'other', other: st.swMode === 'other',
+      modes: [['same','Same muscles'],['other','Different muscle']].map(function(m){ const on = (st.swMode || 'same') === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swMode:m[0]}); }}; }),
+      muscles: (function(){ if (!st.sess) return []; const cm = muscleOf((st.sess.pats && st.sess.pats[st.sess.cur]) || (EX[st.sess.ids[st.sess.cur]] || {}).pat); return MUSCLES.filter(function(m){ return m[0] !== cm; }).map(function(m){ const on = st.swMuscle === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({swMuscle:m[0]}); }}; }); })(),
+      noMuscle: !st.swMuscle,
+      mOpts: (st.swMuscle && st.sess ? self.muscleOpts(st, st.swMuscle) : []).map(function(id){ const x = EX[id]; return {name:x.name, area:areaText(x.area), kit:KIT_LABEL[EQUIP[id]] || '', pick:function(){ self.doSwitch(id, st.swReason === 'adapt' ? 'adapt' : 'muscle'); }}; }),
+      mEmpty: !!st.swMuscle && !(st.sess && self.muscleOpts(st, st.swMuscle).length),
       simpler:function(){ self.set({swOpen:false, swReason:null, screen:'adapt', issue:'equip', adaptStep:'talk'}); }};
     const ask = st.swAsk && EX[st.swAsk.to] && EX[st.swAsk.from] ? {on:true, text:'Use the ' + EX[st.swAsk.to].name.toLowerCase() + ' instead of the ' + EX[st.swAsk.from].name.toLowerCase() + ' from now on?', yes:function(){ self.keepSwitch(true); }, no:function(){ self.keepSwitch(false); }} : {on:false};
     // Adapt
@@ -4447,7 +4596,10 @@ class Component extends DCLogic {
     if (st.sess && st.adaptStep === 'talk') {
       const curId = st.sess.ids[st.sess.cur]; const cx = EX[curId];
       const mk = function(label, fn, primary){ return {label:label, act:fn, cls: primary ? 'b-lime' : 'b-surf'}; };
-      if (st.issue === 'equip') {
+      if (st.issue === 'equip' && gearOpts(st).where !== 'gym') {
+        adapt.msg = 'No problem. Pick something that works with what you’ve got, or try a different muscle.';
+        adapt.opts = [mk('Show me options', function(){ self.set({screen:'active', swOpen:true, swReason:null, adaptStep:'pick', issue:null}); }, true), mk('Skip it today', function(){ self.applyAdapt('skipEx'); })];
+      } else if (st.issue === 'equip') {
         const q = SWAPQ[curId];
         if (q) { adapt.msg = q.ask; adapt.opts = q.opts.map(function(o, k){ return mk(o[0], function(){ self.doSwap(o[1]); }, k === 0); }); }
         else if (cx.bw) { adapt.msg = cx.name + ' doesn’t need any equipment. Any clear spot works. Want it easier instead?'; adapt.opts = [mk('Back to it', function(){ self.go('active'); }, true), mk('Make it easier', function(){ self.applyAdapt('easier'); })]; }
@@ -4815,6 +4967,7 @@ class Component extends DCLogic {
       clOn: st.coachLineOn !== false, clCls: st.coachLineOn !== false ? 'on' : '', toggleCL:function(){ self.set({coachLineOn: self.S().coachLineOn === false}); },
       stimOn:st.stimOn, stimCls: st.stimOn ? 'on' : '', toggleStim:function(){ self.set({stimOn:!self.S().stimOn}); },
       haptics:st.haptics, hapCls: st.haptics ? 'on' : '', toggleHaptics:function(){ self.set({haptics:!self.S().haptics}); },
+      homeKitOpts: HOME_KIT.map(function(k){ const on = (st.homeKit || []).indexOf(k[0]) >= 0; return {label:k[1], on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const p0 = (cur.homeKit || []).slice(); const at = p0.indexOf(k[0]); if (at >= 0) p0.splice(at, 1); else p0.push(k[0]); self.set({homeKit:p0, homeKitSaved:true}); }}; }),
       nameEditing: !!st.nameEdit, nameNotEditing: !st.nameEdit, nameEditDraft: st.nameEditDraft == null ? (st.userName || '') : st.nameEditDraft,
       nameEditOpen:function(){ self.set({nameEdit:true, nameEditDraft: self.S().userName || ''}); setTimeout(function(){ try { const el = document.getElementById('sp-name-edit'); if (el) { el.focus(); el.select(); } } catch (e) {} }, 60); },
       onNameEdit:function(e){ self.set({nameEditDraft: e.target.value.slice(0, 30)}); },
