@@ -23,6 +23,9 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .d,.d8,h1,h2,h3{text-wrap:balance}
 .d8{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0}
 .brand-hero{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.03em;line-height:1;margin:0}
+.about-blk{display:flex;flex-direction:column;border-radius:24px;padding:16px 16px 18px;box-shadow:inset 0 0 0 1.5px #2A2B30}
+.about-h{font-weight:700;font-size:17px}
+.about-s{font-size:13px;margin-top:2px}
 .rw-ring{appearance:none;border:0;background:transparent;padding:0;cursor:pointer;position:relative;width:58px;height:58px;flex:none;display:flex;align-items:center;justify-content:center;color:#F5F5F2}
 .rw-ring svg:first-child{position:absolute;inset:0}
 .rw-medal{position:relative}
@@ -417,8 +420,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div class="rise" style="min-height: 100%; padding: 24px 22px 36px; display: flex; flex-direction: column; gap: 18px">
     <div class="row" style="justify-content: space-between">
       <button class="ib" aria-label="Back" onClick="{{onbBack}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-      <div class="row" style="gap: 4px; width: 200px" aria-label="Step {{onbPos}} of 7"><sc-for list="{{onbSegs}}" as="g" hint-placeholder-count="7"><span class="seg" style="{{g.st}}"></span></sc-for></div>
-      <span class="mut" style="width: 44px; text-align: right; font-size: 13px">{{onbPos}}/7</span>
+      <div class="row" style="gap: 4px; width: 200px" aria-label="Step {{onbPos}} of 8"><sc-for list="{{onbSegs}}" as="g" hint-placeholder-count="8"><span class="seg" style="{{g.st}}"></span></sc-for></div>
+      <span class="mut" style="width: 44px; text-align: right; font-size: 13px">{{onbPos}}/8</span>
     </div>
 
     <!-- Name -->
@@ -438,6 +441,20 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px">
         <sc-for list="{{barrierOpts}}" as="o" hint-placeholder-count="8"><button class="chip {{o.cls}}" style="min-height: 48px; font-size: 15px" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for>
       </div>
+    </sc-if>
+
+    <!-- A bit more about you (optional) -->
+    <sc-if value="{{onbAbout}}" hint-placeholder-val="{{ false }}">
+      <h1 class="d" style="font-size: 36px; margin-top: 18px">A bit more about you</h1>
+      <p class="mut" style="margin: 0; font-size: 16px; line-height: 1.5">Only if it’s relevant to you. Skip either part, or the whole page, if it doesn’t apply. It just helps Spark learn more about you.</p>
+      <div class="about-blk"><span class="about-h">How your brain works</span><span class="mut about-s">If any of these fit</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px"><sc-for list="{{about.nd}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" style="min-height: 48px; font-size: 15px" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></div>
+      <div class="about-blk"><span class="about-h">Your body</span><span class="mut about-s">If anything affects how you train</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px"><sc-for list="{{about.body}}" as="o" hint-placeholder-count="5"><button class="chip {{o.cls}}" style="min-height: 48px; font-size: 15px" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+        <label for="sp-about-note" class="mut" style="display: block; font-size: 14px; margin-top: 14px">Anything Spark should know? (optional)</label>
+        <textarea id="sp-about-note" class="field" rows="2" maxlength="300" style="margin-top: 6px; font-size: 16px; padding: 12px 14px; resize: none; width: 100%; box-sizing: border-box" placeholder="For example: no kneeling, or go easy on my left shoulder" value="{{about.note}}" onChange="{{about.onNote}}"></textarea></div>
+      <p class="mut" style="margin: 4px 0 0; font-size: 14px; line-height: 1.5">Spark gets to know you over time. Chatting with your coach, checking in and writing in your journal all help it get things right for you.</p>
+      <p class="mut" style="margin: 0; font-size: 13px; line-height: 1.5">This stays on your phone. It’s only shared with the AI coach when you use it, and you can change or remove it any time in Settings.</p>
     </sc-if>
 
     <!-- Goals -->
@@ -1562,6 +1579,15 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <span><span style="display: block; font-weight: 600">Home equipment</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">Home workouts only use what’s ticked here. Nothing ticked means bodyweight only.</span></span>
     <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{homeKitOpts}}" as="o" hint-placeholder-count="7"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
   </div>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
+    <span><span style="display: block; font-weight: 600">A bit more about you</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px; line-height: 1.45">Optional. Only if it’s relevant. Spark uses it to pitch workouts and advice right for you.</span></span>
+    <span class="mut" style="font-size: 13px">How your brain works</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{about.nd}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+    <span class="mut" style="font-size: 13px">Your body</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{about.body}}" as="o" hint-placeholder-count="5"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+    <textarea class="field" rows="2" maxlength="300" aria-label="Anything Spark should know" style="font-size: 16px; padding: 12px 14px; resize: none; width: 100%; box-sizing: border-box" placeholder="Anything Spark should know? For example: no kneeling" value="{{about.note}}" onChange="{{about.onNote}}"></textarea>
+    <sc-if value="{{about.any}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; padding: 0; min-height: 32px; color: #F4A29A" onClick="{{about.clear}}">Remove all of this</button></sc-if>
+  </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Your plan</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="align-items: flex-start; gap: 12px"><span style="flex: 1"><span class="d" style="display: block; font-size: 20px">{{spl.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 4px">{{spl.price}}</span></span><button class="link" style="padding: 0; min-height: 32px; color: #B7A6F6" onClick="{{spl.open}}">{{spl.cta}}</button></div>
@@ -1604,7 +1630,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 60</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 63</p>
 </div>
 </sc-if>
 
@@ -2244,23 +2270,45 @@ function homeOK(id, kit, small){
 }
 function kitText(kit){ const names = HOME_KIT.filter(function(k){ return (kit || []).indexOf(k[0]) >= 0 && k[0] !== 'mat'; }).map(function(k){ return k[1].toLowerCase(); }); return names.length ? names.join(', ') : 'bodyweight only'; }
 const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight', band:'Bands'};
+// ---- "A bit more about you" (optional, set up or Settings). Only what the person chooses to share. ----
+const ABOUT_ND = [['adhd','ADHD'],['autistic','Autistic'],['audhd','AuDHD'],['ndother','Other neurodivergence']];
+const ABOUT_BODY = [['joints','Joint or back problems'],['mobility','Limited mobility'],['wheelchair','Wheelchair user'],['fatigue','Chronic pain or fatigue'],['bodyother','Another condition']];
+const FLOOR_IDS = ['plank','deadbug','sideplank','hollow','legraise','mountain','birddog','glutebridge','singlebridge','superman','backext','pressup','kneepu','declinepu','diamondpu','pikepu','elevpike','russian','weightcrunch','bwkickback','floorpress','cablecrunch'];
+// Exercises left out for each physical need. Wheelchair users also skip anything that needs standing on their legs.
+const LIMIT_OUT = {
+  mobility: FLOOR_IDS.concat(['walklunge','splitsquat','bwsplit','stepup','mountain','skipping','kbswing','sldl','captain','stepjack']),
+  wheelchair: FLOOR_IDS.concat(['captain','farmer','stepjack','march','skipping','treadmill','stairs','xtrainer','rower','bike','airbike','standcalf','woodchop']),
+  joints: ['bbdeadlift','bbsquat','bbrow','bbohp','kbswing','skipping','mountain','chestdips','tridips','uprightrow','walklunge','legraise','captain','stepjack']
+};
+const LIMIT_PATS = {wheelchair: ['squat','hinge','calves']};
+function bodyOK(id, lim){
+  if (!lim || !lim.length) return true;
+  for (let i = 0; i < lim.length; i++) { const L = lim[i];
+    if (LIMIT_OUT[L] && LIMIT_OUT[L].indexOf(id) >= 0) return false;
+    if (LIMIT_PATS[L] && EX[id] && LIMIT_PATS[L].indexOf(EX[id].pat) >= 0) return false; }
+  return true;
+}
 Object.keys(PAT).forEach(function(p){ PAT[p].forEach(function(id){ if (EX[id] && !EX[id].pat) EX[id].pat = p; }); });
 Object.keys(EQUIP).forEach(function(id){ if (EX[id]) EX[id].kit = EQUIP[id]; });
 ['assistpull','assistdip'].forEach(function(id){ if (EX[id]) EX[id].assist = true; });
 const GEAR_ORDER = {machine:['machine','cable','free','body'], cable:['cable','machine','free','body'], free:['free','cable','machine','body'], mix:null};
 // Picks the exercise for one movement slot, using the kit they chose, their saved preferences and where they are.
 function pickFor(pat, o, used){
-  o = o || {}; const list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0; });
+  o = o || {}; let list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0; });
   if (!list.length) return null;
   const where = o.where || 'gym';
   const homeish = where === 'home';
+  const lim = o.lim || [];
+  list = list.filter(function(id){ return bodyOK(id, lim); });
   let pool = homeish ? list.filter(function(id){ return homeOK(id, o.kit, o.small); }) : where === 'outside' ? list.filter(function(id){ return EQUIP[id] === 'body'; }) : list.filter(function(id){ return EQUIP[id] !== 'body' && EQUIP[id] !== 'band'; });
-  if (!pool.length && homeish) {
+  if (!pool.length && (homeish || lim.length)) {
     // Nothing for this movement with their kit (e.g. no pull-up bar): use the nearest movement that works the same area.
-    const near = {vpull:'row', lateral:'shoulder', biceps:'row', triceps:'chest', calves:'squat', cardio:'core'}[pat];
+    const wc = lim.indexOf('wheelchair') >= 0;
+    const near = (wc ? {squat:'row', hinge:'shoulder', calves:'lateral', cardio:'core', core:'lateral'} : {vpull:'row', lateral:'shoulder', biceps:'row', triceps:'chest', calves:'squat', cardio:'core'})[pat];
     return near && near !== pat ? pickFor(near, o, used) : null;
   }
   if (!pool.length) pool = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+  if (o.familiar && o.familiar.length) { const fam = o.familiar.filter(function(id){ return pool.indexOf(id) >= 0 && used.indexOf(id) < 0; }); if (fam.length) return fam[0]; }
   const liked = (o.prefs || {})[pat]; if (liked && pool.indexOf(liked) >= 0) return liked;
   const ok = pool.filter(function(id){ return !(o.avoid || {})[id]; }); if (ok.length) pool = ok;
   const order = GEAR_ORDER[o.gear || 'mix'];
@@ -2278,7 +2326,11 @@ function gearOpts(st){ st = st || {}; const e = st.env || {}; const w = e.where 
   // Home (or "somewhere else" without a gym): only what they've actually got. Space and a mat, or a little room = bodyweight.
   const homeish = w === 'home' || (w === 'else' && !!e.kit);
   const kit = !homeish ? null : e.kit === 'equip' ? (e.kitList || st.homeKit || []) : (e.kit === 'floor' || e.kit === 'tiny') ? [] : (st.homeKit || []);
-  return {gear: e.gear || st.gear || 'mix', prefs: st.exPrefs || {}, avoid: st.exAvoid || {}, where: homeish ? 'home' : w === 'else' ? 'gym' : w, kit: kit || [], small: e.kit === 'tiny'}; }
+  const ab = st.about || {}; const nd = ab.nd || [];
+  // Autistic or AuDHD: keep exercises familiar from week to week.
+  const steady = nd.indexOf('autistic') >= 0 || nd.indexOf('audhd') >= 0;
+  const familiar = steady ? (st.sessLog || []).slice(-6).reverse().reduce(function(a, w){ (w.items || []).forEach(function(it){ if (a.indexOf(it.id) < 0) a.push(it.id); }); return a; }, []) : [];
+  return {gear: e.gear || st.gear || 'mix', prefs: st.exPrefs || {}, avoid: st.exAvoid || {}, where: homeish ? 'home' : w === 'else' ? 'gym' : w, kit: kit || [], small: e.kit === 'tiny', lim: ab.body || [], familiar: familiar}; }
 const PLANS = {
   full:{key:'full',label:'Full',title:'Upper body',mins:35,ids:['chest','shoulder','pulldown','triceps'],sets:3},
   short:{key:'short',label:'Shorter',title:'Quick upper body',mins:20,ids:['chest','shoulder','pulldown'],sets:2},
@@ -2641,8 +2693,23 @@ function planObj(key, foci, o){
 }
 function mkSession(plan, foci, o){
   const p = planObj(plan, foci, o);
-  return {plan:plan, ids:p.ids.slice(), pats:(p.pats || p.ids.map(function(id){ return EX[id].pat || null; })).slice(), sets:p.ids.map(function(){return p.sets;}), done:p.ids.map(function(){return 0;}),
+  const sess = {plan:plan, ids:p.ids.slice(), pats:(p.pats || p.ids.map(function(id){ return EX[id].pat || null; })).slice(), sets:p.ids.map(function(){return p.sets;}), done:p.ids.map(function(){return 0;}),
     kg:p.ids.map(function(id){return snapU(EX[id].kg||0);}), reps:p.ids.map(function(id){return EX[id].reps;}), cur:0, adapted:0, pbs:[]};
+  if (o && o.lim && o.lim.indexOf('fatigue') >= 0) sess.sets = sess.sets.map(function(n){ return n > 2 ? n - 1 : n; });
+  return fitCardio(sess, p.mins);
+}
+// Timed cardio (minutes) is one continuous block, not sets. Share the session's time between the cardio blocks
+// so a 20-minute cardio workout really is about 20 minutes.
+function fitCardio(sess, mins){
+  const timed = []; sess.ids.forEach(function(id, i){ if (EX[id] && EX[id].repUnit === 'minutes') timed.push(i); });
+  if (!timed.length) return sess;
+  timed.forEach(function(i){ sess.sets[i] = 1; });
+  const others = sess.ids.length - timed.length;
+  const otherMins = sess.ids.reduce(function(a, id, i){ return timed.indexOf(i) >= 0 ? a : a + (sess.sets[i] || 1) * 2.5; }, 0);
+  const budget = Math.max(timed.length * 3, (mins || 30) - Math.round(otherMins));
+  const each = Math.max(3, Math.round(budget / timed.length));
+  timed.forEach(function(i){ sess.reps[i] = each; });
+  return sess;
 }
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
 function fmt(n){ return (Math.round(n*100)/100).toString(); }
@@ -2680,7 +2747,7 @@ const firstOfNext = function(d, k){ return new Date(d.getFullYear(), d.getMonth(
 const longDate = function(d){ return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()]; };
 const AI_MODELS = [['claude-haiku-5-5','Fast','Quick and cheapest'],['claude-sonnet-5-5','Smarter','Deeper, costs more']];
 const AI_DAY_CAP = 60;
-const ADAPT_ACTS = {back:'Back to my workout', easier:'Make it easier', drop:'Drop a set', swap:'Switch exercise', later:'Move this exercise to the end', skipEx:'Skip this exercise', oneSpot:'Stay in one spot', quiet:'Turn on quiet mode', calm:'I need a breather', lost:'Show me how to do it', minPlan:'Just do the minimum', finish:'Finish for today'};
+const ADAPT_ACTS = {undoAct:'Undo that', back:'Back to my workout', easier:'Make it easier', drop:'Drop a set', swap:'Switch exercise', later:'Move this exercise to the end', skipEx:'Skip this exercise', oneSpot:'Stay in one spot', quiet:'Turn on quiet mode', calm:'I need a breather', lost:'Show me how to do it', minPlan:'Just do the minimum', finish:'Finish for today'};
 const AI_GENERAL = ['today','hype','cant','reason','rough','over','missed','busy','short','last','restwhy','bye'];
 const AI_LABELS = {today:'What’s my plan today?', hype:'Hype me up!', cant:'I can’t get started', reason:'Give me a reason to go', rough:'Rough week. Can’t face it', over:'I feel overwhelmed', missed:'I’ve missed a few days', busy:'The gym’s too busy', short:'I’ve only got 20 minutes', last:'What did I lift last time?', restwhy:'Why do rest days matter?', bye:'Thanks, Spark', sghelp:'Show me support numbers'};
 const AI_SYSTEM = [
@@ -2698,7 +2765,16 @@ const AI_SYSTEM = [
   'ADJUSTING TODAY: when something the user says affects today’s training (poor sleep, tiredness, stress, soreness or pain, little time, feeling unwell, or feeling great), you can suggest ONE specific change to today’s workout as a button, using an adj_ kind from REPLY OPTIONS, and always add a button to keep the plan as it is. Say exactly what would change, for example "drop today from 35 minutes to 20" or "swap to a simple home workout". Match the change to what they said and never jump to the most extreme option: if you are unsure how they feel, ask first and suggest a change in your next reply. Only suggest a walk, the basics, rest or moving the session when what they told you clearly calls for it. When you offer an adj_ button, also include "reason": a few words in the second person explaining why, such as "you slept badly". Nothing changes unless they tap it. If today was already changed and they now sound better, you can offer adj_undo. SECOND SESSIONS: if they have already trained today and want to go again (for example a gym session in the evening), that is fine: offer 2 adj_add_ buttons, ideally a different area from what they just did or something lighter, plus adj_keep. REST DAYS: if they say they want to train on a rest day, do not just chat: in the same reply, offer 2 adj_add_ buttons (the focus they asked for, or two sensible options based on their recent workouts) plus adj_keep, so one tap sets the session up on their Today screen. You can ask one short question in the text (for example what they fancy, or how they feel) while still offering the buttons. Add a light, friendly note that rest also helps progress, never guilt them either way, and if they trained the same area very recently, mention it gently.',
   'REPLY BUTTONS: offer 2 or 3 tappable replies you choose. Pick kinds only from the REPLY OPTIONS list. Write each label as the user speaking, 2 to 6 words, in their voice. Usually keep the draft reply options; add a general one only if it clearly helps. Never offer to start or launch a workout.',
   'You never mention being an AI, a model, Claude or Anthropic. You are simply Spark.',
-  'OUTPUT: only JSON, no other text: {"text":"your message","replies":[{"kind":"<kind>","label":"<label>"}]} and, only when needed, "concern":"self|others|abuse" or "reason":"<why, when offering an adj_ change>".'
+  'ACTIONS: you can make changes in the app when the user clearly asks you to. Add "actions":[...] to your JSON using only these (keys exactly as written): '
+  + '{"do":"today","focus":["chest|back|shoulders|arms|legs|core|cardio|full", up to 2],"length":"short|full|plus"} set today’s workout (works on rest days and after they have trained too) · '
+  + '{"do":"missed_today"} do the most recent missed session from the last few days today · {"do":"rest_today"} · {"do":"move_tomorrow"} · {"do":"home_today"} · {"do":"lighter_today"} · '
+  + '{"do":"set_day","day":"Mon..Sun","type":"train|rest","focus":[...]} change their weekly routine from now on · {"do":"swap_days","a":"Tue","b":"Thu"} · {"do":"set_time","day":"Mon","time":"early|morning|lunch|afternoon|evening|late|flex"} · '
+  + '{"do":"rename","name":"..."} · {"do":"units","to":"kg|lb"} · {"do":"session_length","minutes":10|20|35|45} · {"do":"rest_time","seconds":30-300} · {"do":"setting","name":"fidget|coach_line","on":true|false} · '
+  + '{"do":"home_kit","add":[...],"remove":[...]} with db, kb, band, bench, bar, bb, mat · {"do":"about","add":[...],"remove":[...],"note":"..."} with adhd, autistic, audhd, ndother, joints, mobility, wheelchair, fatigue, bodyother · '
+  + '{"do":"journal","text":"..."} write a journal entry for them in their own words · {"do":"open","screen":"journal|settings|routine|rewards|plan|checkin|memories|progress"} adds a button that opens it · '
+  + 'during a workout only: {"do":"set_weight","weight":n} (in their units) · {"do":"set_reps","reps":n} · {"do":"add_set"} · {"do":"skip_exercise"} · {"do":"switch","to":"<exercise name>"}. '
+  + 'Rules: include an action only when the user asked for that change or clearly agreed to it. For changes you are suggesting yourself, use REPLY BUTTONS instead. The app applies actions straight away and shows what changed with an Undo button, so write "text" in the past tense ("Done, today is now…"). If a request is unclear, ask one short question and include no action. If they ask for something the app cannot do (prices, credits, rewards, deleting history, logging workouts they did not do, anything outside Spark), say so kindly and plainly.',
+  'OUTPUT: only JSON, no other text: {"text":"your message","replies":[{"kind":"<kind>","label":"<label>"}],"actions":[...]} (leave "actions" out when there is nothing to change) and, only when needed, "concern":"self|others|abuse" or "reason":"<why, when offering an adj_ change>".'
 ].join('\n\n');
 const aiPlain = function(t){ return String(t == null ? '' : t).replace(/[⁠]/g, '').replace(/ /g, ' ').replace(/\{name\}/g, ''); };
 
@@ -2751,7 +2827,7 @@ class Component extends DCLogic {
 
   lastOf(st, id){ const h = st.hist && st.hist[id]; if (h) return h; return st.fresh ? {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:null, first:true} : {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:'Last week'}; }
   bestOf(st, id){ if (EX[id] && EX[id].assist) return null; return st.fresh ? ((st.bests || {})[id] != null ? st.bests[id] : null) : EX[id].best; }
-  withHist(sess, st){ const self = this; sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return sess; }
+  withHist(sess, st){ const self = this; sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
   coachInfo(st){
     // Everything the coach can "see": today's plan, check-in, quick check, workout, week, goals and (if allowed) memories.
     const self = this; const v = st.vals || {};
@@ -3002,6 +3078,117 @@ class Component extends DCLogic {
   }
   creditsLeft(st){ const c = st.credits; const used = c && c.m === monthKeyOf(new Date()) ? c.used : 0; return Math.max(0, PRICING.credits - used); }
   trialLeft(st, k){ return Math.max(0, (PRICING.trial[k] || 0) - ((st.trial || {})[k] || 0)); }
+  // ---------------- Coach toolbox ----------------
+  // Claude (or a plain-language match) asks for an action; the app checks it and applies it exactly as if the
+  // person had tapped it themselves. Everything is undoable in one tap. Billing, rewards, credits and history are not here.
+  missedRecent(st){
+    const w = st.week || []; const ti = w.findIndex(function(d){ return d.today; }); if (ti <= 0) return null;
+    const logged = {}; (st.sessLog || []).forEach(function(x){ logged[dkey(new Date(x.at))] = true; });
+    for (let i = ti - 1; i >= Math.max(0, ti - 3); i--) { const d = w[i];
+      if (d && d.t && d.t !== 'rest' && !d.moved && !logged[d.key]) { const full = (DAYS.find(function(x){ return x[0] === d.d; }) || [0,0,d.d])[2]; return {name: i === ti - 1 ? 'yesterday' : full, dayName: full, focus: (d.focus && d.focus.length ? d.focus : ['full']), t:d.t}; } }
+    return null;
+  }
+  doAction(a, mode){
+    const self = this; const st = this.S(); a = a || {}; const kind = String(a.do || '').toLowerCase();
+    const FK = function(x){ const t = String(x || '').toLowerCase().trim(); const f = FOCUS.find(function(y){ return y[0] === t || y[1].toLowerCase() === t || (y[0] === 'full' && /full/.test(t)) || (y[0] === 'arms' && /bicep|tricep|arm/.test(t)) || (y[0] === 'legs' && /leg|glute|quad|hamstring/.test(t)) || (y[0] === 'core' && /\babs?\b|core/.test(t)) || (y[0] === 'shoulders' && /shoulder|delt/.test(t)); }); return f ? f[0] : null; };
+    const focusList = function(v){ return [].concat(v || []).map(FK).filter(Boolean).filter(function(x, i, arr){ return arr.indexOf(x) === i; }).slice(0, 2); };
+    const DK = function(x){ const t = String(x || '').toLowerCase().trim(); const ti = (st.week || []).findIndex(function(d){ return d.today; }); const tdk = (st.week[ti] || {}).d;
+      if (t === 'today') return tdk; if (t === 'tomorrow') return DAYS[(DAYS.findIndex(function(d){ return d[0] === tdk; }) + 1) % 7][0];
+      const d = DAYS.find(function(y){ return y[0].toLowerCase() === t.slice(0, 3) || y[2].toLowerCase() === t; }); return d ? d[0] : null; };
+    const dayFull = function(k){ return (DAYS.find(function(d){ return d[0] === k; }) || [0,0,k])[2]; };
+    const lenKey = function(v){ const n = parseInt(v, 10); if (['short','full','plus'].indexOf(v) >= 0) return v; if (!isNaN(n)) return n <= 25 ? 'short' : n <= 40 ? 'full' : 'plus'; return null; };
+    const fl = function(f){ return focusLabel(f).toLowerCase(); };
+    const doneNow = !!(st.doneToday || st.trainedToday); const tt = (st.week || []).find(function(d){ return d.today; }) || {};
+    const restNow = tt.t === 'rest' && !st.extraToday;
+    const setToday = function(foci, plan, label){
+      const f0 = foci[0] || ((self.envFoci(st) || [])[0]) || 'full';
+      const k = (doneNow || restNow) ? 'adj_add_' + f0 : 'adj_focus_' + f0;
+      const A = self.applyAdj(k, 'you asked', {plan: plan || undefined, focus: foci.length ? foci : undefined, manual:true});
+      const pl = PLANS[(A && A.plan) || plan || 'full'] || PLANS.full;
+      return {ok: (label || ((doneNow ? 'Added ' : 'Today is now ') + fl(A.focus || foci))) + ', about ' + pl.mins + ' minutes.'};
+    };
+    switch (kind) {
+      case 'today': { const foci = focusList(a.focus); const plan = lenKey(a.length || a.minutes); if (!foci.length && !plan) return {no:'I wasn’t sure what to change today to.'}; return setToday(foci, plan); }
+      case 'missed_today': { const m = this.missedRecent(st); if (!m) return {no:'I couldn’t find a missed session from the last few days.'}; return setToday(m.focus, lenKey(a.length) || null, (doneNow ? 'Added ' : 'Today is now ') + (m.name === 'yesterday' ? 'yesterday’s' : m.dayName + '’s') + ' ' + fl(m.focus)); }
+      case 'rest_today': this.applyAdj('adj_rest', 'you asked', {manual:true}); return {ok:'Today is now a rest day.'};
+      case 'move_tomorrow': this.applyAdj('adj_slide', 'you asked', {manual:true}); return {ok:'Today’s session has moved to tomorrow. Today is a rest day.'};
+      case 'home_today': this.applyAdj('adj_home', 'you asked', {manual:true}); return {ok:'Today is now a home workout.'};
+      case 'lighter_today': this.applyAdj('adj_light', 'you asked', {manual:true}); return {ok:'Today’s weights are about 10% lighter.'};
+      case 'set_day': { const d = DK(a.day); if (!d) return {no:'I wasn’t sure which day you meant.'}; const R = Object.assign({}, this.routineOf(st)); const was = R[d] || {t:'rest'};
+        const rest = String(a.type || '').toLowerCase() === 'rest'; const foci = focusList(a.focus);
+        const lo = LENS.find(function(l){ return l[0] === st.sessLen; }) || LENS[2]; const def = lo[2] === 'min' ? 'walk' : lo[2];
+        R[d] = rest ? {t:'rest'} : {t: was.t && was.t !== 'rest' ? was.t : def, focus: foci.length ? foci : (was.focus && was.focus.length ? was.focus : ['full'])};
+        const wi = st.week.findIndex(function(x){ return x.d === d; }); const ti = st.week.findIndex(function(x){ return x.today; });
+        const locked = wi < ti || !!(st.week[wi] && (st.week[wi].moved || (st.week[wi].today && st.doneToday)));
+        const patch = {routine:R}; if (!locked) patch.week = st.week.map(function(x){ return x.d === d ? Object.assign({}, x, {t:R[d].t, focus:R[d].focus}) : x; });
+        if (!locked && st.week[wi] && st.week[wi].today && !rest) { patch.dayOff = false; }
+        this.set(patch); return {ok: dayFull(d) + 's are now ' + (rest ? 'rest days' : fl(R[d].focus) + ' days') + '.'}; }
+      case 'swap_days': { const x = DK(a.a), y = DK(a.b); if (!x || !y || x === y) return {no:'I wasn’t sure which two days to swap.'}; const R = Object.assign({}, this.routineOf(st)); const rx = R[x] || {t:'rest'}, ry = R[y] || {t:'rest'}; R[x] = ry; R[y] = rx;
+        const ti = st.week.findIndex(function(z){ return z.today; }); const lk = function(k){ const i = st.week.findIndex(function(z){ return z.d === k; }); return i < ti || !!(st.week[i] && (st.week[i].moved || (st.week[i].today && st.doneToday))); };
+        const patch = {routine:R}; if (!lk(x) && !lk(y)) patch.week = st.week.map(function(z){ return z.d === x ? Object.assign({}, z, {t:ry.t, focus:ry.focus}) : z.d === y ? Object.assign({}, z, {t:rx.t, focus:rx.focus}) : z; });
+        this.set(patch); return {ok:'Swapped ' + dayFull(x) + 's and ' + dayFull(y) + 's.'}; }
+      case 'set_time': { const d = DK(a.day); const tk = String(a.time || '').toLowerCase(); const T = TIMES.find(function(t){ return t[0] === tk; }); if (!d || !(T || tk === 'flex')) return {no:'I wasn’t sure which day or time you meant.'};
+        const nt = Object.assign({}, st.dayTimes); nt[d] = tk; this.set({dayTimes:nt}); return {ok: dayFull(d) + ' workouts are now ' + (T ? T[3] ? 'in the ' + T[1].toLowerCase() : T[1] : 'flexible') + '.'}; }
+      case 'rename': { let n = String(a.name || '').replace(/\s+/g, ' ').trim().slice(0, 30); if (!n) return {no:'I didn’t catch the name.'}; n = n.charAt(0).toUpperCase() + n.slice(1); this.set({userName:n}); return {ok:'I’ll call you ' + n + ' from now on.'}; }
+      case 'units': { const u = /lb|pound/.test(String(a.to || '').toLowerCase()) ? 'lb' : /kg|kilo/.test(String(a.to || '').toLowerCase()) ? 'kg' : null; if (!u) return {no:'I wasn’t sure which units you wanted.'}; this.set({units:u}); return {ok:'Weights are now in ' + (u === 'lb' ? 'pounds' : 'kilograms') + '.'}; }
+      case 'session_length': { const n = parseInt(a.minutes, 10); const L = LENS.reduce(function(b, l){ return Math.abs(l[0] - n) < Math.abs(b[0] - n) ? l : b; }, LENS[2]); if (isNaN(n)) return {no:'I wasn’t sure how long you wanted sessions to be.'}; this.set({sessLen:L[0]}); return {ok:'Sessions are now about ' + L[1] + ' by default.'}; }
+      case 'rest_time': { const n = Math.round(Math.max(30, Math.min(300, parseInt(a.seconds, 10) || 0)) / 15) * 15; if (!n) return {no:'I wasn’t sure how long to rest.'}; this.set({restLen:n}); return {ok:'Rest between sets is now ' + (n % 60 ? n + ' seconds' : (n / 60) + (n === 60 ? ' minute' : ' minutes')) + '.'}; }
+      case 'setting': { const nm = String(a.name || '').toLowerCase(); const on = a.on !== false && a.on !== 'false'; const key = /fidget|spinner|switch/.test(nm) ? 'stimOn' : /coach.?line|daily line/.test(nm) ? 'coachLineOn' : null; if (!key) return {no:'That setting isn’t one I can change.'}; const pt = {}; pt[key] = on; this.set(pt); return {ok:(key === 'stimOn' ? 'Fidget tools between sets are ' : 'The daily coach line is ') + (on ? 'on.' : 'off.')}; }
+      case 'home_kit': { const keys = HOME_KIT.map(function(k){ return k[0]; }); const k0 = (st.homeKit || []).slice(); [].concat(a.add || []).forEach(function(k){ if (keys.indexOf(k) >= 0 && k0.indexOf(k) < 0) k0.push(k); }); [].concat(a.remove || []).forEach(function(k){ const i = k0.indexOf(k); if (i >= 0) k0.splice(i, 1); }); this.set({homeKit:k0, homeKitSaved:true}); return {ok:'Home equipment is now: ' + kitText(k0) + '.'}; }
+      case 'about': { const ab = Object.assign({nd:[], body:[], note:''}, st.about || {}); const ndK = ABOUT_ND.map(function(x){ return x[0]; }), bdK = ABOUT_BODY.map(function(x){ return x[0]; });
+        [].concat(a.add || []).forEach(function(k){ if (ndK.indexOf(k) >= 0 && ab.nd.indexOf(k) < 0) ab.nd = ab.nd.concat([k]); if (bdK.indexOf(k) >= 0 && ab.body.indexOf(k) < 0) ab.body = ab.body.concat([k]); });
+        [].concat(a.remove || []).forEach(function(k){ ab.nd = ab.nd.filter(function(x){ return x !== k; }); ab.body = ab.body.filter(function(x){ return x !== k; }); });
+        if (typeof a.note === 'string') ab.note = a.note.slice(0, 300); this.set({about:ab}); return {ok:'Updated what Spark knows about you.'}; }
+      case 'journal': { const t = String(a.text || '').trim().slice(0, 1000); if (!t) return {no:'I didn’t have anything to write.'}; if (detectSG(t)) return {no:''};
+        const nowAt = Date.now(); const learned = !!st.memoryOn; this.set({journal:[{id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags:[], learned:learned}].concat(st.journal || [])}); this.awardLater('journal'); return {ok:'Added to your journal.'}; }
+      case 'open': { const OPEN = {journal:'Open my journal', settings:'Open Settings', routine:'Open my week', rewards:'Show my rewards', plan:'Show my plan', checkin:'Check in now', memories:'What Spark remembers', progress:'Show my progress'}; const sc = String(a.screen || '').toLowerCase(); if (!OPEN[sc]) return null; return {open:[OPEN[sc], 'open_' + sc]}; }
+    }
+    // Mid-workout changes (only while a workout is running)
+    if (['set_weight','set_reps','add_set','skip_exercise','switch'].indexOf(kind) < 0) return null;
+    const s0 = st.sess; if (!s0 || st.doneToday) return {no:'That only works during a workout.'};
+    const s = clone(s0); const i = s.cur; const id = s.ids[i]; const x = EX[id] || {};
+    if (kind === 'set_weight') { if (x.bw) return {no:'This one doesn’t use weights.'}; const v = parseFloat(a.weight); if (!(v >= 0 && v < 1000)) return {no:'I wasn’t sure what weight you meant.'}; s.kg[i] = snapU(fromU(v)); this.set({sess:s}); return {ok:x.name + ' is now ' + wt(s.kg[i]) + ' ' + uu(x.unit || 'kg') + '.'}; }
+    if (kind === 'set_reps') { const v = parseInt(a.reps, 10); if (!(v > 0 && v <= 100)) return {no:'I wasn’t sure how many reps you meant.'}; s.reps[i] = v; this.set({sess:s}); return {ok:x.name + ' is now ' + v + ' ' + (x.repUnit || 'reps') + '.'}; }
+    if (kind === 'add_set') { s.sets[i] = Math.min(8, (s.sets[i] || 1) + 1); this.set({sess:s}); return {ok:'Added a set to ' + x.name.toLowerCase() + '. ' + s.sets[i] + ' sets in total.'}; }
+    if (kind === 'skip_exercise') { this.applyAdapt('skipEx'); return {ok:'Skipped ' + x.name.toLowerCase() + '.'}; }
+    if (kind === 'switch') { const pr = this.parseSwitch('switch to ' + String(a.to || ''), st); if (!pr || !pr.to) return {no:'I couldn’t find a good swap for that here.'}; const to = pr.to; const pat = (s.pats && s.pats[i]) || x.pat; const L = this.lastOf(st, to);
+      s.ids[i] = to; s.kg[i] = L.kg || EX[to].kg || 0; s.reps[i] = L.reps || EX[to].reps; if (s.prog) s.prog[i] = null; if (!s.pats) s.pats = s.ids.map(function(q){ return EX[q].pat || null; }); s.pats[i] = muscleOf(EX[to].pat) !== muscleOf(pat) ? (EX[to].pat || pat) : pat; s.adapted = (s.adapted || 0) + 1;
+      this.set({sess:s}); return {ok:'Swapped ' + x.name.toLowerCase() + ' for ' + EX[to].name.toLowerCase() + '.'}; }
+    return {no:'That isn’t something I can change in the app yet.'};
+  }
+  runActions(list, mode){
+    const self = this; const st0 = this.S();
+    const KEYS = ['userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
+    const snap = {}; KEYS.forEach(function(k){ snap[k] = st0[k] === undefined ? null : JSON.parse(JSON.stringify(st0[k])); });
+    const done = [], fail = [], open = [];
+    (Array.isArray(list) ? list : []).slice(0, 5).forEach(function(a){ let r = null; try { r = self.doAction(a, mode); } catch (e) { r = {no:'Something went wrong making that change.'}; }
+      if (!r) return; if (r.ok) done.push(r.ok); else if (r.open) open.push(r.open); else if (r.no) fail.push(r.no); });
+    if (done.length) { delete snap.screen; this.set({actUndo:{id:'u' + Date.now(), snap:snap}}); }
+    return {done:done, fail:fail, open:open};
+  }
+  undoActions(){ const st = this.S(); if (!st.actUndo) return false; this.set(Object.assign({}, st.actUndo.snap, {actUndo:null})); return true; }
+  // Plain-language requests that work with or without the AI (and cost no credits).
+  quickAsk(text, st){
+    const t = String(text || '').replace(/[’]/g, "'").trim(); const lo = t.toLowerCase();
+    const m = t.match(/\b(?:call me|change my name to|rename me(?: to)?|my name(?:'s| is) now)\s+([A-Za-z][A-Za-z' -]{0,28}?)(?:\s+(?:please|instead|from now on))?[.!]?$/i);
+    if (m && !/^(later|back|tomorrow|tonight|soon|again|now|when|if|out|up|maybe|anytime|any time|crazy|lazy|that|this|it|old|a|an|the)\b/i.test(m[1].trim())) return [{do:'rename', name:m[1].trim()}];
+    if (/\b(yesterday'?s|missed|didn'?t (?:manage|get|go|do)|skipped)\b/.test(lo) && /\b(today|instead|now)\b/.test(lo) && /\b(session|workout|training|it|that|one)\b/.test(lo) && /\b(make|do|move|switch|swap|change|put|have|catch up|make up|can i|could i|can you|could you|let me|let's|i'?d like to|i want to|i wanna)\b/.test(lo) && !/\b(not|don'?t|can'?t)\b[^.?!]{0,20}\btoday\b/.test(lo)) return [{do:'missed_today'}];
+    return null;
+  }
+  // A coach message that reports what changed, with Undo.
+  actionMsg(R, text, extraReplies){
+    const lines = R.done.map(function(x){ return '✓ ' + x; }).join('\n');
+    const fail = R.fail.filter(Boolean).join(' ');
+    const body = [text, fail, lines].filter(Boolean).join('\n\n');
+    const reps = (R.done.length ? [['Undo that', 'undo_act']] : []).concat(R.open || []).concat(extraReplies || []).slice(0, 3);
+    return {spark:true, text:body || 'Done.', replies: reps.length ? reps : [['Thanks, Spark', 'bye']], src:'your request'};
+  }
+  sayAction(kind, label){
+    const self = this; const st = this.S(); const chat = st.chat.concat([{me:true, text:label}]);
+    if (kind === 'undo_act') { const ok = this.undoActions(); const cur = this.S(); this.set({chat: chat.concat([{spark:true, text: ok ? 'Undone. Everything’s back as it was.' : 'There’s nothing to undo right now.', replies:[['Thanks, Spark', 'bye']]}])}); return this.scrollChat(); }
+    if (kind.indexOf('open_') === 0) { const sc = kind.slice(5); const go = {journal:{screen:'journal'}, settings:{screen:'settings'}, routine:{screen:'routine'}, memories:{screen:'memories'}, progress:{screen:'today'}, checkin:{screen:'checkin', checkStep:0}, rewards:{screen:'today', rwSheet:'main'}, plan:{screen:'settings', planSheet:true}}[sc]; return this.set(Object.assign({chat:chat}, go || {})); }
+    if (kind === 'missed_today') { const R = this.runActions([{do:'missed_today'}], 'chat'); const cur = this.S(); this.set({chat: chat.concat([this.actionMsg(R, R.done.length ? 'Done. It’s on Today whenever you’re ready.' : '', [['Thanks, Spark', 'bye']])])}); return this.scrollChat(); }
+  }
   aiReady(st, kind){
     // Can the AI be used right now, for this kind of call? (Testing: needs the key on this phone.)
     if (!(st.aiKey && typeof fetch === 'function' && !st.sg)) return false;
@@ -3051,6 +3238,19 @@ class Component extends DCLogic {
     this.set(patch);
   }
   awardLater(kind){ const self = this; setTimeout(function(){ self.award(kind); }, 0); }
+  aboutLines(st){
+    const L = [];
+    const ab = st.about || {}; const ndL = (ab.nd || []).map(function(k){ const x = ABOUT_ND.find(function(y){ return y[0] === k; }); return x ? x[1] : k; }); const bdL = (ab.body || []).map(function(k){ const x = ABOUT_BODY.find(function(y){ return y[0] === k; }); return x ? x[1].toLowerCase() : k; });
+    if (ndL.length || bdL.length || (ab.note || '').trim()) {
+      L.push('ABOUT THEM (they chose to share this; it is optional and private): ' + [ndL.length ? 'Neurodivergence: ' + ndL.join(', ') : '', bdL.length ? 'Physical: ' + bdL.join(', ') : '', (ab.note || '').trim() ? 'Their note: "' + ab.note.trim() + '"' : ''].filter(Boolean).join('. ') + '.');
+      L.push('HOW TO USE IT: Let it shape your suggestions quietly; do not keep mentioning it, never diagnose, label or assume beyond what they said. '
+        + ((ab.nd || []).some(function(k){ return k === 'autistic' || k === 'audhd'; }) ? 'Favour predictability: same exercises and order where possible, warn clearly before any change, plain literal wording, consider sensory load (noise, crowds, lights). ' : '')
+        + ((ab.nd || []).some(function(k){ return k === 'adhd' || k === 'audhd'; }) ? 'For ADHD: short clear steps, quick wins, variety and starting help. ' : '')
+        + (bdL.length || (ab.note || '').trim() ? 'Respect their physical needs and note: only suggest exercises that suit them, progress gently, and never encourage pushing through pain. If they mention new or worsening pain, suggest checking in with a GP or physio. ' : '')
+        + 'The app already leaves out exercises that do not suit their physical needs.');
+    }
+    return L;
+  }
   aiContext(st){
     const I = this.coachInfo(st); const L = []; const now = new Date();
     const DN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'], MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -3129,6 +3329,7 @@ class Component extends DCLogic {
     const avoid = Object.keys(st.exAvoid || {}).filter(function(id){ return st.exAvoid[id] && EX[id]; }).map(function(id){ return EX[id].name; });
     if (prefs.length || avoid.length) L.push('Exercise preferences: ' + (prefs.length ? 'prefers ' + prefs.join(', ') : '') + (prefs.length && avoid.length ? '; ' : '') + (avoid.length ? 'swapped away from ' + avoid.join(', ') : '') + '.');
     L.push('Kit preference at the gym: ' + ({machine:'machines', cable:'cables', free:'free weights', mix:'a mix'}[st.gear] || st.gear || 'a mix') + '. Rest between sets: ' + Math.round((st.restLen || 180) / 60) + ' minutes. Home equipment: ' + (st.homeKitSaved ? kitText(st.homeKit) : 'not told Spark yet') + '.');
+    this.aboutLines(st).forEach(function(x){ L.push(x); });
     const J = (st.journal || []).filter(function(j){ const t1 = jAt(j); return !t1 || dkey(new Date(t1)) < dkey(lastMon); }).slice(0, 30);
     if (J.length) L.push('OLDER JOURNAL ENTRIES (before last week, ' + (st.journal || []).length + ' entries in total), newest first:\n' + J.map(function(j){ return '- [' + aiPlain(whenOf(j)) + '] ' + aiPlain(j.text).slice(0, 500) + (j.tags && j.tags.length ? ' (tags: ' + j.tags.join(', ') + ')' : ''); }).join('\n'));
     else L.push('Older journal entries: none (this week and last week are listed above).');
@@ -3169,7 +3370,7 @@ class Component extends DCLogic {
     if (!o.mode) (CJ.crisis ? ['rough','bye','sghelp'] : AI_GENERAL.concat(o.typed ? ['sghelp'] : [])).forEach(function(k){ if (!allowed[k]) allowed[k] = AI_LABELS[k]; });
     const adjOpts = (!o.mode && !o.noAdj && !CJ.crisis) ? this.adjOptions(st) : [];
     adjOpts.forEach(function(x){ allowed[x[0]] = x[1]; });
-    if (o.mode === 'adapt') { Object.keys(allowed).forEach(function(k){ if (!ADAPT_ACTS[k]) delete allowed[k]; }); }
+    if (o.mode === 'adapt') { Object.keys(allowed).forEach(function(k){ if (!ADAPT_ACTS[k] || k === 'undoAct') delete allowed[k]; }); }
     if (o.mode === 'review') { Object.keys(allowed).forEach(function(k){ delete allowed[k]; }); }
     const hist = (o.hist || st.chat).filter(function(m){ return m.text !== '{greet}'; }).slice(-24).map(function(m){ return (m.me ? 'User: ' : 'Spark: ') + aiPlain(m.text); }).join('\n');
     let user;
@@ -3201,7 +3402,7 @@ class Component extends DCLogic {
       self.set({aiUse:use, aiErr:'', aiDebug:''});
       if (!o.opener) self.charge(o.mode === 'review' ? 'debrief' : 'msg');
       const reason = p && typeof p.reason === 'string' ? p.reason.replace(/\s+/g, ' ').trim().slice(0, 80) : '';
-      return {text:text, replies:finalReps, ai:true, adjReason:reason};
+      return {text:text, replies:finalReps, ai:true, adjReason:reason, actions: Array.isArray(p && p.actions) ? p.actions.slice(0, 5) : []};
     }).catch(function(e){ const why = e && e.name === 'AbortError' ? 'Claude took too long to answer.' : 'Couldn’t reach Claude. Check your signal.'; self.set({aiErr:why, aiDebug:String(e && (e.message || e)).slice(0, 300)}); return {fail:why}; });
   }
   sayFree(){
@@ -3213,6 +3414,8 @@ class Component extends DCLogic {
     const chat1 = st.chat.concat([{me:true, text:text}]);
     const toSG = function(base, cat){ const p = self.sgStart(Object.assign({}, base, {chat:chat1}), cat, 'c' + Date.now(), false); p.chat = p.chat.map(function(m){ return m.src === 'Your journal' ? Object.assign({}, m, {src:'What you wrote', text: m.text.replace('I’ve read what you wrote', 'Thank you for telling me')}) : m; }); p.chatDraft = ''; self.set(p); self.scrollChat(); };
     const cat = detectSG(text); if (cat) return toSG(st, cat);
+    const qa = this.quickAsk(text, st);
+    if (qa) { const R = this.runActions(qa, 'chat'); if (R.done.length || R.fail.length) { this.set({chat: chat1.concat([this.actionMsg(R, R.done.length ? 'Done.' : '', [['Thanks, Spark', 'bye']])]), chatDraft:''}); return this.scrollChat(); } }
     const day = todayKeyNow(); const ad = st.aiDay && st.aiDay.d === day ? st.aiDay : {d:day, n:0};
     if (ad.n >= AI_DAY_CAP) { this.set({chat: chat1.concat([{spark:true, text:'We’ve talked a lot today, and that’s good. Let’s pick this up tomorrow. The buttons below still work any time.', replies:[['Thanks, Spark', 'bye']]}]), chatDraft:''}); return this.scrollChat(); }
     this.set({chat:chat1, chatDraft:'', chatThinking:true, chatMenu:false, aiDay:{d:day, n:ad.n + 1}, convTurns:(st.convTurns || 0) + 1}); this.scrollChat();
@@ -3220,6 +3423,8 @@ class Component extends DCLogic {
       const cur = self.S();
       if (ai && ai.concern) return toSG(cur, ai.concern);
       let msg0 = ai && ai.text ? Object.assign({spark:true, src:'What you wrote'}, ai) : null;
+      if (msg0 && ai.actions && ai.actions.length) { const R = self.runActions(ai.actions, 'chat'); if (R.done.length || R.fail.length || R.open.length) { const m2 = self.actionMsg(R, ai.text, (ai.replies || []).filter(function(r){ return String(r[1]).indexOf('adj_') !== 0; })); msg0 = Object.assign({}, msg0, m2, {ai:true}); delete msg0.actions; } }
+      if (msg0) delete msg0.actions;
       if (msg0 && self.isRestToday(cur) && self.wantsToTrain(text) && !(msg0.replies || []).some(function(r){ return String(r[1]).indexOf('adj_') === 0; })) msg0 = Object.assign({}, msg0, {replies: self.restAddReplies(cur, text), adjReason: msg0.adjReason || 'you felt up for training'});
       const msg = msg0 ? msg0 : {spark:true, err:true, retry:text, text:'I couldn’t get an answer from the AI just then. ' + ((ai && ai.fail) || cur.aiErr || 'Something went wrong.') + ' Tap Try again, or check AI coach in Settings.', replies:[['Try again', 'airetry']]};
       self.set({chat: cur.chat.concat([msg]), chatThinking:false}); self.scrollChat(); });
@@ -3452,7 +3657,7 @@ class Component extends DCLogic {
       case 'today':
         if (I.trained) return M('You’ve already trained today' + (I.summary ? ': ' + I.summary.exN + ' exercises, ' + I.summary.sets + ' sets' : '') + '. Nothing else on the plan. Enjoy the rest of your day.', [['How did it go?', 'howwent'], ['Thanks, Spark', 'bye']], 'Today’s workout');
         if (I.dayOff) return M('You’ve taken today off, so there’s nothing else on the plan.' + (I.nextDay ? ' Next up is ' + I.nextDay.focus + ', ' + I.nextDay.name + '.' : ''), [['Good to know', 'bye'], ['Actually, help me move a bit', 'cant']], 'Your week');
-        if (!I.gym) return M('Rest day today, so nothing to do.' + (I.nextDay ? ' Your next workout is ' + I.nextDay.focus + ', ' + I.nextDay.name + '.' : ''), [['Good to know', 'bye'], ['Why do rest days matter?', 'restwhy']], 'Your week');
+        if (!I.gym) { const ms = this.missedRecent(this.S()); return M('Rest day today, so nothing to do.' + (I.nextDay ? ' Your next workout is ' + I.nextDay.focus + ', ' + I.nextDay.name + '.' : '') + (ms ? ' If you’d like, you can do ' + (ms.name === 'yesterday' ? 'yesterday’s' : ms.dayName + '’s') + ' ' + focusLabel(ms.focus).toLowerCase() + ' session today instead.' : ''), ms ? [['Do ' + (ms.name === 'yesterday' ? 'yesterday’s' : ms.dayName + '’s') + ' session today', 'missed_today'], ['Keep it as a rest day', 'bye']] : [['Good to know', 'bye'], ['Why do rest days matter?', 'restwhy']], 'Your week'); }
         return M('Today is ' + I.focusL + ', about ' + I.mins + ' minutes. ' + (I.checked ? (I.lowE || I.highS ? 'You said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + ' at check-in, so I’ve kept it to the shorter version.' : 'Your check-in looked good, so it’s the full session.') : 'You haven’t checked in yet. Four taps and I can fine-tune it.'),
           I.checked ? [['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']] : [['Check in now', 'checkin'], ['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']], I.checked ? 'Today’s plan · your check-in' : 'Today’s plan');
       case 'todayok': return M('Great. Press Start workout on Today when you’re ready, and I’ll check what the space is like with you.', [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']]);
@@ -3643,7 +3848,7 @@ class Component extends DCLogic {
     if (!gym) {
       const lo = LENS.find(function(l){ return l[0] === st.sessLen; }) || LENS[2]; const len = PLANS[lo[2]] && ['short','full','plus'].indexOf(lo[2]) >= 0 ? PLANS[lo[2]].mins : PLANS.full.mins;
       const ctxTxt = doneNow ? 'They already trained today (' + (st.sessToday || 1) + (st.sessToday > 1 ? ' sessions' : ' session') + '). Add another ' : 'Today is a rest day. Add an extra ';
-      const r = FOCUS.filter(function(f){ return f[0] !== 'cardio'; }).map(function(f){ return ['adj_add_' + f[0], (doneNow ? 'Add another ' : 'Add a ') + f[1].toLowerCase() + ' workout', ctxTxt + f[1].toLowerCase() + ' workout to today, about ' + len + ' minutes (it can be made shorter afterwards)']; });
+      const r = FOCUS.map(function(f){ return ['adj_add_' + f[0], (doneNow ? 'Add another ' : 'Add a ') + f[1].toLowerCase() + ' workout', ctxTxt + f[1].toLowerCase() + ' workout to today, about ' + len + ' minutes (it can be made shorter afterwards)']; });
       r.push(['adj_keep', doneNow ? 'No, I’m done for today' : 'Keep it as a rest day', doneNow ? 'No change: they are done for today' : 'No change: keep today as a rest day']);
       return r;
     }
@@ -3669,6 +3874,8 @@ class Component extends DCLogic {
     const pick = named.length ? named.slice(0, 2) : ['full', 'legs', 'chest', 'core'].filter(function(k){ return doneF.indexOf(k === 'full' ? 'full body' : k) < 0; }).slice(0, 2);
     const nm = function(k){ const f = FOCUS.find(function(x){ return x[0] === k; }); return f ? f[1].toLowerCase() : k; };
     const done = !!(st.doneToday || st.trainedToday);
+    const ms = !done && !named.length ? this.missedRecent(st) : null;
+    if (ms) return [['Do ' + (ms.name === 'yesterday' ? 'yesterday’s' : ms.dayName + '’s') + ' ' + focusLabel(ms.focus).toLowerCase(), 'missed_today'], ['Or a ' + nm(pick[0]) + ' workout', 'adj_add_' + pick[0]], ['Keep it as a rest day', 'adj_keep']];
     return pick.map(function(k, i){ return [(i === 0 ? (done ? 'Yes, add another ' : 'Yes, add a ') : 'Or a ') + nm(k) + ' workout', 'adj_add_' + k]; }).concat([[done ? 'No, I’m done for today' : 'Keep it as a rest day', 'adj_keep']]);
   }
   wantsToTrain(text){ const t = String(text || '').toLowerCase().replace(/[’']/g, "'");
@@ -3730,6 +3937,7 @@ class Component extends DCLogic {
   say(kind, text){
     const st = this.S(); const self = this;
     if (st.chatThinking) return;
+    if (kind === 'undo_act' || kind === 'missed_today' || String(kind).indexOf('open_') === 0) return this.sayAction(kind, text);
     if (kind !== 'bye') this.awardLater('coach');
     if (kind.indexOf('adj_') === 0) return this.sayAdj(kind, text);
     if (kind === 'restup') {
@@ -3801,6 +4009,7 @@ class Component extends DCLogic {
   sendFree(){
     const st = this.S(); const t = (st.chatDraft || '').trim(); if (!t) return;
     this.awardLater('coach');
+    if (!detectSG(t)) { const qa = this.quickAsk(t, st); if (qa) { const R = this.runActions(qa, 'chat'); if (R.done.length || R.fail.length) { this.set({chat: st.chat.concat([{me:true, text:t}, this.actionMsg(R, R.done.length ? 'Done.' : '', [['Thanks, Spark', 'bye']])]), chatDraft:''}); return this.scrollChat(); } } }
     const l = t.toLowerCase(); let k = 'free';
     if (/tired|rough|week|stress|hard|can.?t face|down/.test(l)) k = 'rough';
     else if (/start|motivat|get going/.test(l)) k = 'cant';
@@ -3825,6 +4034,7 @@ class Component extends DCLogic {
     if (o.where === 'gym') { const kitFirst = list.filter(function(id){ return EQUIP[id] !== 'body'; }); list = kitFirst.concat(list.filter(function(id){ return EQUIP[id] === 'body'; })); }
     else if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
     if (o.where === 'gym') list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+    list = list.filter(function(id){ return bodyOK(id, o.lim); });
     // one of each kit first, so there's a real choice
     const seen = {}; const firstEach = list.filter(function(id){ if (seen[EQUIP[id]]) return false; seen[EQUIP[id]] = true; return true; });
     const rest = list.filter(function(id){ return firstEach.indexOf(id) < 0; });
@@ -3838,6 +4048,7 @@ class Component extends DCLogic {
     if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
     else if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
     else list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+    list = list.filter(function(id){ return bodyOK(id, o.lim); });
     const curKit = EQUIP[cur]; return ['machine','cable','free','band','body'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
   }
   // Exercises from another muscle group that suit where they are and what they've got.
@@ -3848,6 +4059,7 @@ class Component extends DCLogic {
     if (o.where === 'home') list = list.filter(function(id){ return homeOK(id, o.kit, o.small); });
     else if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
     else list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
+    list = list.filter(function(id){ return bodyOK(id, o.lim); });
     const order = o.where === 'home' ? ['free','band','body'] : (GEAR_ORDER[o.gear || 'mix'] || ['machine','cable','free','body']);
     return list.sort(function(a, b){ return order.indexOf(EQUIP[a]) - order.indexOf(EQUIP[b]); }).slice(0, 8);
   }
@@ -3892,7 +4104,7 @@ class Component extends DCLogic {
     }
     if (kind === 'drop') {
       for (let i = s.cur; i < s.ids.length; i++) s.sets[i] = Math.max(s.done[i] || 1, s.sets[i] - 1, 1);
-      s.adapted += 1; return this.set(Object.assign({sess:s, screen:'active', toast:'One set fewer on each exercise. Water first.', adaptTotal: st.adaptTotal + 1}, reset));
+      s.adapted += 1; return this.set(Object.assign({sess:s, screen:'active', toast:'One set fewer on each exercise.', adaptTotal: st.adaptTotal + 1}, reset));
     }
     if (kind === 'easier') {
       for (let i = s.cur; i < s.ids.length; i++) { s.sets[i] = Math.max(s.done[i] || 1, s.sets[i] - 1, 1); const ex = EX[s.ids[i]]; if (!ex.bw) s.kg[i] = Math.max(0, WU === 'lb' ? Math.round(s.kg[i] * 0.9 * LB / 2.5) * 2.5 / LB : Math.round(s.kg[i] * 0.9 / ex.step) * ex.step); }
@@ -3949,6 +4161,7 @@ class Component extends DCLogic {
       'Today’s plan: ' + s.ids.map(function(id, k){ const x = EX[id]; return x.name + ' ' + (x.bw ? s.reps[k] + ' ' + (x.repUnit || 'reps') : wt(s.kg[k]) + ' ' + uu(x.unit) + ' × ' + s.reps[k]) + ' (' + s.done[k] + '/' + s.sets[k] + ' sets done)'; }).join('; ') + '.',
       'Adapted so far today: ' + (s.adapted || 0) + ' times. Personal bests today: ' + ((s.pbs || []).map(function(p){ return p.name; }).join(', ') || 'none yet') + '.'];
     if (st.env && st.env.where) L.push('Gym check: busy level ' + (st.env.busy || 0) + ' of 2, noise ' + (st.env.noise || 0) + ', temperature ' + (st.env.temp || 'ok') + '.');
+    this.aboutLines(st).forEach(function(x){ L.push(x); });
     const go = gearOpts(st); if (go.where === 'home') L.push('Training at home with: ' + kitText(go.kit) + (go.small ? ', in a small space' : '') + '. Only suggest exercises that use this kit.');
     return L.join('\n');
   }
@@ -3959,7 +4172,7 @@ class Component extends DCLogic {
     const t = ' ' + String(text || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9 -]/g, ' ').replace(/\s+/g, ' ') + ' ';
     if (!/\b(switch|swap|change|instead|replace|rather|different exercise|something else|another exercise|do .+ instead)\b/.test(t)) return null;
     const i = s.cur; const curId = s.ids[i]; const o = gearOpts(st);
-    const okHere = function(id){ if (!EX[id] || id === curId) return false; if (o.where === 'home') return homeOK(id, o.kit, o.small); if (o.where === 'outside') return EQUIP[id] === 'body'; return EQUIP[id] !== 'band'; };
+    const okHere = function(id){ if (!EX[id] || id === curId || !bodyOK(id, o.lim)) return false; if (o.where === 'home') return homeOK(id, o.kit, o.small); if (o.where === 'outside') return EQUIP[id] === 'body'; return EQUIP[id] !== 'band'; };
     // 1. A named exercise (longest name match wins). Ignore the one they're on now.
     const norm = function(x){ return ' ' + x.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9 -]/g, ' ').replace(/\s+/g, ' ').trim() + ' '; };
     let best = null, bestLen = 0;
@@ -4011,7 +4224,8 @@ class Component extends DCLogic {
     this.aiCoach(this.S(), {mode:'adapt', typed:text, hist:thread, replies:opts}).then(function(ai){
       if (ai && ai.concern) return toSG(ai.concern);
       const cur = self.S();
-      const msg = ai && ai.text ? {spark:true, text:ai.text, acts:(ai.replies || []).map(function(r){ return r[1]; }).filter(function(k){ return ADAPT_ACTS[k]; }), labels:(ai.replies || []).reduce(function(o, r){ o[r[1]] = r[0]; return o; }, {}), ai:true}
+      let R = null; if (ai && ai.text && ai.actions && ai.actions.length) R = self.runActions(ai.actions, 'adapt');
+      const msg = ai && ai.text ? {spark:true, text: R ? [ai.text, R.fail.filter(Boolean).join(' '), R.done.map(function(x){ return '✓ ' + x; }).join('\n')].filter(Boolean).join('\n\n') : ai.text, acts:(R && R.done.length ? ['back','undoAct'] : []).concat((ai.replies || []).map(function(r){ return r[1]; }).filter(function(k){ return ADAPT_ACTS[k]; })).filter(function(k, n, arr){ return arr.indexOf(k) === n; }).slice(0, 3), labels:(ai.replies || []).reduce(function(o, r){ o[r[1]] = r[0]; return o; }, {}), ai:true}
                                 : {spark:true, text:'I couldn’t get an answer from the AI just then. ' + ((ai && ai.fail) || cur.aiErr || '') + ' Here are some quick fixes instead.', acts:['easier','swap','drop','back']};
       self.set({adaptChat:(cur.adaptChat || []).concat([msg]), adaptThinking:false});
     });
@@ -4680,7 +4894,7 @@ class Component extends DCLogic {
     // plus the 'Get me moving' trio. Without AI, the full set of suggested replies drives the conversation.
     const aiChat = self.aiReady(st) && !CJ.crisis;
     const CHAT_ACTS = {restup:1, airetry:1, checkin:1, calm:1, goshort:1, injshort:1, injoff:1, illoff:1, sleepshort:1, lowrest:1, shorternext:1, restok:1, slide:1, lastup:1, drop:1, easier:1, quiet:1, finish:1, quitover:1, step:1, trainers:1, restart:1};
-    const isAct = function(k){ return /^(adj_|sg)/.test(k || '') || !!CHAT_ACTS[k]; };
+    const isAct = function(k){ return /^(adj_|sg|open_)/.test(k || '') || k === 'undo_act' || k === 'missed_today' || !!CHAT_ACTS[k]; };
     const sugg = !st.chatThinking ? (lastSpark.replies || []).filter(function(r){ return aiChat ? isAct(r[1]) : (st.sg || ['hype','cant','reason'].indexOf(r[1]) < 0); }) : [];
     const follow = null;
     const quickReplies = [];
@@ -4917,8 +5131,10 @@ class Component extends DCLogic {
       else scheduleNote += ' Missed one? It just slides to your next free day.';
     }
     const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still check in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Check in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
-    const ONB_CTA = {2:'Continue',3:'Continue',4:'Continue',5:'Continue',6:'Continue',7:'Looks good',8:'Continue',9:'Finish setup'};
-    const onbSegs = []; for (let k = 2; k <= 9; k++) if (k !== 8) onbSegs.push({st: k <= o ? 'background: #DDF58B' : 'background: #34353B'});
+    const ONB_ORDER = [2, 3, 8, 4, 5, 6, 7, 9];
+    const aboutAny = !!(st.about && (((st.about.nd || []).length) || ((st.about.body || []).length) || (st.about.note || '').trim()));
+    const ONB_CTA = {2:'Continue',3:'Continue',4:'Continue',5:'Continue',6:'Continue',7:'Looks good',8: aboutAny ? 'Continue' : 'Skip this page',9:'Finish setup'};
+    const onbIdx = ONB_ORDER.indexOf(o); const onbSegs = ONB_ORDER.map(function(k, i){ return {st: (onbIdx >= 0 ? i <= onbIdx : o >= 10) ? 'background: #DDF58B' : 'background: #34353B'}; });
     const styleLabel = (STYLES.find(function(x){ return x.key === st.style; }) || STYLES[0]).label;
     const summaryRows = [
       {k:'Name', v:nameShown},
@@ -4975,8 +5191,8 @@ class Component extends DCLogic {
       nameEditCancel:function(){ self.set({nameEdit:false, nameEditDraft:null}); },
       userName: st.userName, userInitial: (st.userName || 'A').charAt(0).toUpperCase(), userTimeLbl:userTimeLbl,
       onb0: o === 0, onbSign: o === 1, onbSetup: o >= 2 && o <= 9, onbDone: o === 10,
-      onbName: o === 2, onbBarriers: o === 3, onbGoals: o === 4, onbWhere: o === 5, onbSchedule: o === 6, onbFocus: o === 7, onbRemind: o === 8, onbMemory: o === 9, focusRows:focusRows, noFocusDays: !dayKeys.length,
-      onbPos: Math.max(1, o >= 9 ? o - 2 : o - 1), onbSegs:onbSegs, onbCta: ONB_CTA[o] || 'Continue',
+      onbName: o === 2, onbBarriers: o === 3, onbGoals: o === 4, onbWhere: o === 5, onbSchedule: o === 6, onbFocus: o === 7, onbAbout: o === 8, onbRemind: false, onbMemory: o === 9, focusRows:focusRows, noFocusDays: !dayKeys.length,
+      onbPos: Math.max(1, onbIdx + 1), onbSegs:onbSegs, onbCta: ONB_CTA[o] || 'Continue',
       signTitle: st.signMode === 'new' ? 'Create your account' : 'Welcome back',
       signSub: st.signMode === 'new' ? 'Sign up in one tap with Google. Then a few quick questions so Spark fits your week.' : 'Sign in with the Google account you used before. Your plan and journal will be right where you left them.',
       startSignup:function(){ self.set({onb:2, signMode:'new', gPicker:false}); },
@@ -4986,8 +5202,8 @@ class Component extends DCLogic {
       pickAccount:function(){ const cur = self.S(); if (cur.signMode === 'returning') return self.set({gPicker:false, onb:0, screen:'today', userName:'Alex'}); self.set({gPicker:false, onb:2, nameDraft: cur.nameDraft || 'Alex'}); },
       nameDraft: st.nameDraft, nameShown:nameShown, nameTyped: !!(st.nameDraft || '').trim(), allSetTitle: (st.nameDraft || '').trim() ? 'You’re all set, ' + (st.nameDraft || '').trim() + '.' : 'You’re all set.', nameMissing: st.nameTried && !(st.nameDraft || '').trim(),
       onName:function(e){ self.set({nameDraft:e.target.value}); },
-      onbNext:function(){ const cur = self.S(); if (cur.onb === 2 && !(cur.nameDraft || '').trim()) return self.set({nameTried:true}); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let nx = cur.onb + 1; if (nx === 7 && !anyD) nx = 8; if (nx === 8) nx = 9; self.set({onb: Math.min(10, nx), nameTried:false}); },
-      onbBack:function(){ const cur = self.S(); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); let pv = cur.onb === 2 ? 0 : Math.max(0, cur.onb - 1); if (pv === 8) pv = 7; if (pv === 7 && !anyD) pv = 6; self.set({onb: pv, gPicker:false, daySheet:null}); },
+      onbNext:function(){ const cur = self.S(); if (cur.onb === 2 && !(cur.nameDraft || '').trim()) return self.set({nameTried:true}); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); const ORD = [2, 3, 8, 4, 5, 6, 7, 9]; let k = ORD.indexOf(cur.onb); let nx = k < 0 ? cur.onb + 1 : (ORD[k + 1] || 10); if (nx === 7 && !anyD) nx = 9; self.set({onb: Math.min(10, nx), nameTried:false}); },
+      onbBack:function(){ const cur = self.S(); const anyD = DAYS.some(function(d){ return cur.days[d[0]]; }); const ORD = [2, 3, 8, 4, 5, 6, 7, 9]; const k = ORD.indexOf(cur.onb); let pv = cur.onb === 2 ? 0 : k > 0 ? ORD[k - 1] : Math.max(0, cur.onb - 1); if (pv === 7 && !anyD) pv = 6; self.set({onb: pv, gPicker:false, daySheet:null}); },
       finishOnb:function(){ applySetup(); },
       goalCount:goalCount,
       goalOpts: GOALS.map(function(g){ const on = !!st.goals[g]; return {label:g, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const n = Object.keys(cur.goals).filter(function(k){ return cur.goals[k]; }).length; if (!on && n >= 3) return; const ng = Object.assign({}, cur.goals); ng[g] = !on; self.set({goals:ng}); }}; }),
@@ -5008,6 +5224,11 @@ class Component extends DCLogic {
       ],
       summaryRows:summaryRows,
       skipOnb:function(){ self.set({screen:'today', onb:0}); },
+      about: (function(){ const ab = st.about || {}; const tog = function(key, v){ return function(){ const cur = self.S(); const a = Object.assign({nd:[], body:[], note:''}, cur.about || {}); const arr = (a[key] || []).slice(); const i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); a[key] = arr; self.set({about:a}); }; };
+        return {nd: ABOUT_ND.map(function(x){ const on = (ab.nd || []).indexOf(x[0]) >= 0; return {label:x[1], on:on, cls: on ? 'on' : '', pick: tog('nd', x[0])}; }),
+          body: ABOUT_BODY.map(function(x){ const on = (ab.body || []).indexOf(x[0]) >= 0; return {label:x[1], on:on, cls: on ? 'on' : '', pick: tog('body', x[0])}; }),
+          note: ab.note || '', onNote:function(e){ const cur = self.S(); self.set({about: Object.assign({nd:[], body:[], note:''}, cur.about || {}, {note: String(e.target.value || '').slice(0, 300)})}); },
+          clear:function(){ self.set({about:{nd:[], body:[], note:''}}); }, any: !!(((ab.nd || []).length) || ((ab.body || []).length) || (ab.note || '').trim())}; })(),
       barrierOpts: BARRIERS.map(function(b){ const on = !!st.barriers[b]; return {label:b, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const nb = Object.assign({}, cur.barriers); nb[b] = !on; self.set({barriers:nb}); }}; }),
       styleOpts: STYLES.map(function(x){ const on = st.style === x.key; return {label:x.label, sample:x.sample, on:on, st: on ? 'background: ' + x.bg + '; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ self.set({style:x.key}); }}; }),
       daySheetOn: !!st.daySheet,
@@ -5106,7 +5327,7 @@ class Component extends DCLogic {
       openAdd:function(){ const c = self.S(); const lastF = String(((c.sessLog || []).slice(-1)[0] || {}).focus || '').toLowerCase(); const done = !!(c.doneToday || c.trainedToday); const def = done ? (['full','legs','chest','core'].find(function(k){ return lastF.indexOf(k === 'full' ? 'full body' : k) < 0; }) || 'full') : 'full'; const lo = LENS.find(function(l){ return l[0] === c.sessLen; }) || LENS[2]; self.set({addSheet:true, addFocus:[def], addLen: done ? 'short' : (['short','full','plus'].indexOf(lo[2]) >= 0 ? lo[2] : 'full')}); },
       closeAdd:function(){ self.set({addSheet:false}); },
       addOn: !!st.addSheet,
-      addFoci: FOCUS.filter(function(f){ return f[0] !== 'cardio'; }).map(function(f){ const sel = [].concat(st.addFocus || ['full']); const on = sel.indexOf(f[0]) >= 0; return {label:f[1], on:on, cls: on ? 'on' : '', pick:function(){
+      addFoci: FOCUS.map(function(f){ const sel = [].concat(st.addFocus || ['full']); const on = sel.indexOf(f[0]) >= 0; return {label:f[1], on:on, cls: on ? 'on' : '', pick:function(){
         let cur = [].concat(self.S().addFocus || ['full']); const i = cur.indexOf(f[0]);
         if (i >= 0) { if (cur.length > 1) cur.splice(i, 1); }
         else if (f[0] === 'full' || cur.indexOf('full') >= 0) cur = [f[0]];
@@ -5153,6 +5374,7 @@ class Component extends DCLogic {
         return (lastS.acts || []).slice(0, 3).map(function(k, n){ return {label:(lastS.labels && lastS.labels[k]) || ADAPT_ACTS[k], cls: n === 0 ? 'b-lime' : 'b-surf', act:function(){
           const c = self.S();
           if (k === 'back') return self.set({screen:'active', adaptStep:'pick', issue:null, adaptChat:[]});
+          if (k === 'undoAct') { self.undoActions(); const c2 = self.S(); return self.set({screen:'adapt', adaptChat:(c2.adaptChat || []).concat([{spark:true, text:'Undone. Everything’s back as it was.', acts:['back']}])}); }
           if (k === 'swap') return self.set({screen:'active', swOpen:true, swReason:null, adaptStep:'pick', adaptChat:[]});
           if (k === 'lost') return self.set({issue:'lost', adaptStep:'swap', swapTo: c.sess ? c.sess.ids[c.sess.cur] : 'pressup', adaptChat:[]});
           self.set({adaptChat:[]}); self.applyAdapt(k); }}; }); })(),
