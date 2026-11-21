@@ -1677,7 +1677,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 95</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 96</p>
 </div>
 </sc-if>
 
@@ -2091,8 +2091,15 @@ body.kb [data-chat-wrap]{bottom:0!important}
       if (!saved || !saved.screen) { try { saved = JSON.parse((await idbGet()) || 'null'); } catch (e) {} }
     }
     if (saved && saved.screen) { const HOME = saved.screen !== 'welcome' ? {screen:'today', back:null, daySheet:null, addSheet:false, progDay:null, progPick:false, ciAsk:false, ciThenStart:false, swOpen:false, swReason:null, adaptStep:'pick', resting:false, composing:false, chatMenu:false, rwSheet:null, planSheet:false} : {}; app.state = Object.assign({}, app.state, saved, TRANSIENT, HOME); ['dayKey','joinKey','doneDates','plannedDates'].forEach(function(k){ if (!(k in saved)) delete app.state[k]; }); }
-    render();
-    if (app.componentDidMount) app.componentDidMount();
+    try { render(); }
+    catch (e1) {
+      try { app.state = Object.assign({}, app.state, {screen:'today', back:'today', sess:null, resting:false, swOpen:false, pvSw:null, daySheet:null, addSheet:false, adj:null}); render(); }
+      catch (e2) {
+        root.innerHTML = '<div style="padding:32px 20px;font-family:system-ui,sans-serif;color:#F5F5F2;background:#111214;min-height:100vh;box-sizing:border-box"><h1 style="font-size:26px;margin:0 0 12px">Spark hit a snag opening</h1><p style="color:#A1A1AA;line-height:1.5;margin:0 0 16px">Your journal and progress are still saved on this phone. Please send a screenshot of this screen so it can be fixed.</p><pre style="white-space:pre-wrap;font-size:12px;background:#1C1D21;padding:12px;border-radius:12px;color:#DDF58B">' + String((e2 && e2.message) || e2).replace(/</g, '&lt;') + '</pre><button onclick="location.reload()" style="margin-top:16px;padding:14px 20px;border:0;border-radius:999px;background:#DDF58B;font-weight:700">Try again</button></div>';
+        return;
+      }
+    }
+    try { if (app.componentDidMount) app.componentDidMount(); } catch (e3) { try { console.error(e3); } catch (x) {} }
   };
 })();
 </script>
@@ -2457,7 +2464,9 @@ const ROUTINE_T = {
   rest:{title:'Rest day',sub:'Recovery counts too',st:'background: #1C1D21; color: #F5F5F2'},
   walk:{title:'Walk',sub:'20 minutes, anywhere',st:'background: #A6D8FA; color: #111214'},
   short:{title:'Short session',sub:'Quick upper body, 20 mins',st:'background: #B7A6F6; color: #111214'},
-  full:{title:'Full session',sub:'Upper body, 35 mins',st:'background: #DDF58B; color: #111214'}
+  full:{title:'Full session',sub:'Upper body, 35 mins',st:'background: #DDF58B; color: #111214'},
+  plus:{title:'Longer session',sub:'45 minutes',st:'background: #DDF58B; color: #111214'},
+  min:{title:'Just the basics',sub:'About 8 minutes',st:'background: #A6D8FA; color: #111214'}
 };
 const CYCLE = ['rest','walk','short','full'];
 const SEED_J = [
@@ -4468,6 +4477,7 @@ class Component extends DCLogic {
     const s = st.sess; if (!s || s.ended || !Array.isArray(s.ids) || !s.ids.length || !Array.isArray(s.done) || !Array.isArray(s.sets)) return false;
     if (!(s.cur >= 0 && s.cur < s.ids.length) || !EX[s.ids[s.cur]]) return false;
     if (!s.ids.some(function(id, i){ return (s.done[i] || 0) < (s.sets[i] || 0); })) return false; // everything's done: that workout is finished
+    const tS = s.t0 || s.at; if (tS && (st.sessLog || []).some(function(w){ return w.at && w.at >= tS; })) return false; // already saved to your log: it was finished
     const t = s.t0 || s.at; if (!t) return false;
     return Date.now() - t < 6 * 3600000 && dkey(new Date(t)) === dkey(new Date());
   }
@@ -5276,7 +5286,7 @@ class Component extends DCLogic {
 
     // Routine
     const routineRows = st.week.map(function(d, k){
-      const t = ROUTINE_T[d.t];
+      const t = ROUTINE_T[d.t] || ROUTINE_T.full;
       const tm = prefTimeObj(st, d.d);
       const fl = d.t !== 'rest' ? focusLabel(d.focus) : '';
       const todayPlan = d.today && d.t !== 'rest' && PLANS[st.plan] && st.plan !== d.t ? (st.plan === 'short' ? 'Shorter version' : st.plan === 'min' ? 'Just the basics' : st.plan === 'plus' ? 'Extra session' : t.title) + ', ' + PLANS[st.plan].mins + ' mins' : '';
