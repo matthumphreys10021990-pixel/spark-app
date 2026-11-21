@@ -62,6 +62,10 @@ button:not(:disabled):active{transform:scale(.975);transition:transform .1s ease
 .gw{animation:gwIn .42s ease-out both}
 .rm .gw{animation:none}
 @media (prefers-reduced-motion: reduce){.gw{animation:none}}
+.pv-toggle{appearance:none;border:0;background:transparent;color:#B7A6F6;font:inherit;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:40px;padding:0 4px;margin-top:6px}
+.pv-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.pv-row{display:flex;align-items:center;gap:12px;background:#111214;border-radius:20px;padding:12px 12px 12px 14px}
+.pv-n{width:30px;height:30px;flex:none;border-radius:50%;background:#26272C;color:#DDF58B;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:14px}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -281,6 +285,8 @@ button.dc.d-tap{cursor:pointer}
 .phtag{position:absolute;right:12px;top:12px;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:rgba(17,18,20,.55);color:#E4E4E7;font-size:11px;font-weight:500;backdrop-filter:blur(6px)}
 .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,18,20,0) 35%,rgba(17,18,20,.75) 100%)}
 .rings{position:absolute;pointer-events:none}
+/* Cards with decorative rings clip them without becoming scrollable sideways. */
+:has(> .rings){overflow:clip !important}
 /* Subtle parallax: decorative rings drift slower than the page, cards ease up as they scroll in, big headings lag a touch as they leave. */
 @supports (animation-timeline: view()){
   :has(> .rings){view-timeline-name:--pxr}
@@ -689,6 +695,23 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6; padding: 0 4px">Today's workout</span>
       <h2 class="d" style="font-size: 36px; margin-top: 8px; padding: 0 4px">{{plan.title}}</h2>
       <span class="mut" style="font-size: 15px; margin-top: 8px; padding: 0 4px">{{todayMeta}}</span>
+      <sc-if value="{{pv.has}}" hint-placeholder-val="{{ true }}">
+      <button class="pv-toggle" onClick="{{pv.toggle}}" aria-expanded="{{pv.open}}"><span>{{pv.label}}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{pv.ic}}"></path></svg></button>
+      <sc-if value="{{pv.open}}" hint-placeholder-val="{{ false }}">
+      <div class="pv-list rise">
+        <div class="sw-tabs" role="tablist" aria-label="Where you’re training" style="grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 4px"><sc-for list="{{pv.whereOpts}}" as="w" hint-placeholder-count="3"><button class="sw-tab {{w.cls}}" role="tab" aria-selected="{{w.sel}}" onClick="{{w.pick}}" style="font-size: 14px"><span class="sw-tab-l">{{w.label}}</span></button></sc-for></div>
+        <sc-if value="{{pv.otherEd}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 0 4px; font-size: 13px">{{pv.otherTxt}}</p></sc-if>
+        <sc-for list="{{pv.rows}}" as="r" hint-placeholder-count="4">
+        <div class="pv-row">
+          <span class="pv-n">{{r.n}}</span>
+          <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 16px">{{r.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{r.detail}}</span></span>
+          <button class="btn sm b-ghost" style="flex: none" onClick="{{r.sw}}" aria-label="{{r.aria}}">Switch</button>
+        </div>
+        </sc-for>
+        <sc-if value="{{pv.edited}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; min-height: 36px; padding: 0 4px; font-size: 14px; color: #B7A6F6" onClick="{{pv.reset}}">Back to the original plan</button></sc-if>
+      </div>
+      </sc-if>
+      </sc-if>
       <button class="btn b-lime full go-btn" style="margin-top: 26px; min-height: 92px; border-radius: 999px; padding: 0 12px 0 12px; justify-content: flex-start; gap: 18px" onClick="{{startWorkout}}">
         <span style="width: 68px; height: 68px; flex: none; border-radius: 50%; background: #111214; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg></span>
         <span class="d" style="font-size: 26px">Start workout</span>
@@ -914,6 +937,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </sc-if>
     </section>
 
+    <sc-if value="{{ep.pvNote}}" hint-placeholder-val="{{ false }}">
+    <div class="adj-note rise" style="margin-top: 12px"><span style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="{{ep.pvIc}}"></path></svg><span style="flex: 1; font-size: 14px; line-height: 1.45">{{ep.pvText}}</span></span></div>
+    </sc-if>
     <sc-if value="{{ep.isGo}}" hint-placeholder-val="{{ false }}">
       <div style="flex: 1; min-height: 40px"></div>
       <button class="btn b-lime full go-btn" style="min-height: 80px; font-size: 20px; justify-content: flex-start; padding: 0 10px; gap: 16px" onClick="{{ep.goUsual}}">
@@ -1650,7 +1676,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 90</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 93</p>
 </div>
 </sc-if>
 
@@ -1876,6 +1902,10 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{sw.noMuscle}}" hint-placeholder-val="{{ true }}"><p class="mut" style="margin: 0 4px; font-size: 14px">Pick a muscle group to see what fits.</p></sc-if>
     <sc-if value="{{sw.mEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 0 4px; font-size: 14px; line-height: 1.5">Nothing for that one with the kit you’ve got. Try another muscle group.</p></sc-if>
     <div style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{sw.mOpts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}</span></span><span class="mut" style="font-size: 13px; flex: none">{{o.kit}}</span></button></sc-for></div>
+    </sc-if>
+    <sc-if value="{{sw.pv}}" hint-placeholder-val="{{ false }}">
+    <div class="row" style="margin-top: 16px"><span style="flex: 1"><span style="display: block; font-weight: 600">{{sw.neverLabel}}</span><span class="mut" style="font-size: 13px">Spark will use your pick from now on.</span></span><button class="tg {{sw.neverCls}}" aria-pressed="{{sw.never}}" aria-label="{{sw.neverLabel}}" onClick="{{sw.toggleNever}}"></button></div>
+    <button class="btn b-ghost full" style="margin-top: 14px" onClick="{{sw.skipToday}}">Skip it today</button>
     </sc-if>
     <sc-if value="{{sw.taken}}" hint-placeholder-val="{{ false }}"><button class="link" style="display: flex; margin: 14px auto 0; color: #A1A1AA" onClick="{{sw.simpler}}">Nothing’s free? Make it simpler</button></sc-if>
   </div>
@@ -2854,7 +2884,42 @@ class Component extends DCLogic {
 
   lastOf(st, id){ const h = st.hist && st.hist[id]; if (h) return h; return st.fresh ? {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:null, first:true} : {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:'Last week'}; }
   bestOf(st, id){ if (EX[id] && EX[id].assist) return null; return st.fresh ? ((st.bests || {})[id] != null ? st.bests[id] : null) : EX[id].best; }
-  withHist(sess, st){ const self = this; sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
+  planEditsToday(st){ const e = st.planEdits; return e && e.day === dkey(new Date()) ? e : null; }
+  applyPlanEdits(sess, st){
+    // Swaps and skips made on Today's preview carry into the real workout.
+    const e = this.planEditsToday(st); if (!e || !sess || !Array.isArray(sess.ids) || sess.plan === 'min' && sess.ids.length === 1) return sess;
+    if (e.where && e.where !== gearOpts(st).where) return sess; // changes made for the gym don't get forced onto a home workout
+    Object.keys(e.swaps || {}).forEach(function(from){ const to = e.swaps[from]; const i = sess.ids.indexOf(from); if (i >= 0 && EX[to] && sess.ids.indexOf(to) < 0) { sess.ids[i] = to; if (sess.pats) sess.pats[i] = EX[to].pat || sess.pats[i]; } });
+    const keep = sess.ids.map(function(id){ return !(e.removed || {})[id]; });
+    if (keep.some(Boolean) && keep.some(function(k){ return !k; })) ['ids','pats','sets','done','kg','reps'].forEach(function(f){ if (Array.isArray(sess[f])) sess[f] = sess[f].filter(function(_, i){ return keep[i]; }); });
+    return sess;
+  }
+  pvPick(from, to){
+    const cur = this.S(); const e = this.editsFor(cur);
+    const orig = Object.keys(e.swaps).find(function(k){ return e.swaps[k] === from; }) || from; e.swaps[orig] = to; if (orig === to) delete e.swaps[orig];
+    const patch = {planEdits:e, pvSw:null, pvNever:false, swOpen:false, swTab:null, swMode:null, swMuscle:null, toast:'Switched to ' + EX[to].name.toLowerCase() + ' for today.'};
+    if (cur.pvNever) { const pat = EX[from].pat; patch.exPrefs = Object.assign({}, cur.exPrefs || {}); if (pat && EX[to].pat === pat) patch.exPrefs[pat] = to; patch.exAvoid = Object.assign({}, cur.exAvoid || {}); patch.exAvoid[from] = true; delete patch.exAvoid[to];
+      patch.toast = 'Done. I won’t suggest the ' + EX[from].name.toLowerCase() + ' again.';
+      if (cur.memoryOn) patch.memories = (cur.memories || []).filter(function(m){ return m.id !== 'mx-' + pat; }).concat([{id:'mx-' + pat, text:'You prefer the ' + EX[to].name.toLowerCase() + ' to the ' + EX[from].name.toLowerCase() + '.', src:'From Today’s plan', on:true}]); }
+    this.set(patch);
+  }
+  pvWhereOf(st){
+    const e = this.planEditsToday(st); if (st.pvWhere) return st.pvWhere; if (e && e.where) return e.where;
+    const A = adjOn(st) ? st.adj : null; const w = (A && A.where) || (st.where === 'outdoors' ? 'outside' : st.where);
+    return w === 'home' || w === 'outside' ? w : 'gym';
+  }
+  previewCtx(st){ return Object.assign({}, st, {env:{where:this.pvWhereOf(st)}}); }
+  previewSess(st){
+    const ctx = this.previewCtx(st);
+    const A = adjOn(st) ? st.adj : null; const key = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
+    return this.withHist(mkSession(key, this.envFoci(ctx), gearOpts(ctx)), ctx);
+  }
+  editsFor(st){
+    // Today's changes, for the place you're planning. Planning somewhere else starts a fresh set.
+    const w = this.pvWhereOf(st); const e0 = this.planEditsToday(st); const A = adjOn(st) ? st.adj : null; const pk = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
+    return e0 && (!e0.where || e0.where === w) ? {day:e0.day, where:w, plan:pk, swaps:Object.assign({}, e0.swaps || {}), removed:Object.assign({}, e0.removed || {})} : {day:dkey(new Date()), where:w, plan:pk, swaps:{}, removed:{}};
+  }
+  withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
   coachInfo(st){
     // Everything the coach can "see": today's plan, check-in, quick check, workout, week, goals and (if allowed) memories.
     const self = this; const v = st.vals || {};
@@ -3494,12 +3559,12 @@ class Component extends DCLogic {
   }
 
   envFoci(st){ if (adjOn(st) && st.adj.focus && st.adj.focus.length) return st.adj.focus; const t = st.week.find(function(d){ return d.today; }) || {}; return (t.t !== 'rest' && t.focus && t.focus.length) ? t.focus : ['full']; }
-  origKey(st){ const t = st.week.find(function(d){ return d.today; }) || {}; return (t.t === 'short' || t.t === 'full' || t.t === 'plus') ? t.t : 'full'; }
+  origKey(st){ if (['min','short','full','plus'].indexOf(st.plan) >= 0) return st.plan; /* what Today's card shows is what you get */ const t = st.week.find(function(d){ return d.today; }) || {}; return (t.t === 'short' || t.t === 'full' || t.t === 'plus') ? t.t : 'full'; }
   benchQ(st){ const f = this.envFoci(st); const chest = f.indexOf('chest') >= 0 || f.indexOf('full') >= 0;
     return chest ? {q:'Is there a bench free?', kind:'bench', opts:[[true,'Yes','I’ll grab it and some dumbbells'],[false,'No','Let’s work around it'],['over','It’s all a bit much','Keep it really simple today']]}
                  : {q:'Can you grab a pair of dumbbells?', kind:'db', opts:[[true,'Yes','Dumbbells it is'],[false,'No','Bodyweight only, then'],['over','It’s all a bit much','Keep it really simple today']]}; }
   needBench(st){ const e = st.env || {}; if (e.where !== 'gym' || !(e.busy >= 1)) return false; const p = planObj(st.plan, this.envFoci(st), gearOpts(st)); return p.ids.some(function(id){ return !EX[id].bw; }); }
-  envSteps(st){ const s = []; if (!st.checked || st.envEnergy) s.push('energy'); if (!(adjOn(st) && st.adj.where && (st.env || {}).where === st.adj.where)) s.push('where'); s.push('space'); if ((st.env || {}).kit === 'equip') s.push('kitlist'); if ((st.env || {}).where === 'gym') s.push('gear'); s.push('noise', 'temp'); s.push('plan'); return s; }
+  envSteps(st){ const s = []; const pe = this.planEditsToday(st); const planned = !!(pe && (Object.keys(pe.swaps || {}).length || Object.keys(pe.removed || {}).length) && (st.env || {}).where && (!pe.where || pe.where === (st.env || {}).where)); if (!st.checked || st.envEnergy) s.push('energy'); if (!(adjOn(st) && st.adj.where && (st.env || {}).where === st.adj.where)) s.push('where'); s.push('space'); if ((st.env || {}).kit === 'equip' && !planned) s.push('kitlist'); if ((st.env || {}).where === 'gym' && !planned) s.push('gear'); s.push('noise', 'temp'); s.push('plan'); return s; }
   envPlan(st){
     // Coaching, not planning: read how today feels, then say how far to lower the bar.
     const e = st.env || {}; const v = st.vals || {};
@@ -4523,6 +4588,28 @@ class Component extends DCLogic {
     const go = function(k){ return function(){ self.go(k); }; };
     const nav = {}; ['today','checkin','routine','prep','active','adapt','journal','companion','memories','settings'].forEach(function(k){ nav[k] = go(k); }); nav.progress = go('today');
     nav.companion = function(){ self.go('companion'); self.chatOnOpen(); };
+    // Today's workout preview: see it, switch or skip exercises before you start.
+    const pv = (function(){
+      const empty = {has:false, open:false, rows:[], sheet:false, alts:[], noAlts:false, edited:false, label:'', ic:'', swTitle:'', neverLabel:'', never:false, neverCls:'', toggle:function(){}, reset:function(){}, close:function(){}, toggleNever:function(){}, skip:function(){}};
+      if (st.screen !== 'today' || !st.week || !st.week.some(function(d){ return d.today && d.t !== 'rest'; })) return empty;
+      let P; try { P = self.previewSess(st); } catch (e) { return empty; }
+      if (!P || !P.ids || !P.ids.length) return empty;
+      const unitW = WU === 'lb' ? 'lbs' : 'kg'; const E0 = self.planEditsToday(st);
+      const ru = function(ex){ const u = ex.repUnit || 'reps'; return /minute/.test(u) ? 'min' : /second/.test(u) ? 'sec' : /each/.test(u) ? 'each side' : 'reps'; };
+      const rows = P.ids.map(function(id, i){ const ex = EX[id]; const det = P.sets[i] + ' × ' + P.reps[i] + ' ' + ru(ex) + (!ex.bw && P.kg[i] ? ' · ' + wt(P.kg[i]) + ' ' + unitW : '');
+        return {n:i + 1, name:ex.name, detail:det, aria:'Switch ' + ex.name, sw:function(){ self.set({pvSw:id, pvNever:false, swTab:null, swMode:null, swMuscle:null}); }}; });
+      const swId = st.pvSw && P.ids.indexOf(st.pvSw) >= 0 ? st.pvSw : null;
+      const editsBase = function(){ return self.editsFor(self.S()); };
+      const pw = self.pvWhereOf(st); const hasEd = function(e){ return !!(e && (Object.keys(e.swaps || {}).length || Object.keys(e.removed || {}).length)); };
+      const edited = hasEd(E0) && (!E0.where || E0.where === pw);
+      const otherEd = hasEd(E0) && E0.where && E0.where !== pw;
+      const WN = {gym:'the gym', home:'home', outside:'outside'};
+      const whereOpts = [['gym','Gym'],['home','Home'],['outside','Outside']].map(function(w){ const on = pw === w[0]; return {label:w[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({pvWhere:w[0]}); }}; });
+      const swName = swId ? EX[swId].name : '';
+      return {has:true, open: !!st.pvOpen, rows:rows, whereOpts:whereOpts, otherEd:otherEd, otherTxt: otherEd ? 'Your changes for ' + WN[E0.where] + ' are kept for ' + WN[E0.where] + '.' : '', label: st.pvOpen ? 'Hide exercises' : 'See exercises (' + rows.length + ')', ic: st.pvOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+        toggle:function(){ self.set({pvOpen:!self.S().pvOpen}); }, edited:edited, reset:function(){ self.set({planEdits:null, pvWhere:null, toast:'Back to the original plan.'}); },
+        skip:function(){ if (rows.length <= 1) return self.set({pvSw:null, toast:'That’s the only exercise today, so I’ll keep it.'}); const e = editsBase(); e.removed[swId] = true; self.set({planEdits:e, pvSw:null, pvNever:false, swTab:null, swMode:null, swMuscle:null, toast:'Skipping the ' + swName.toLowerCase() + ' today.'}); }};
+    })();
     const navOn = {today:'',routine:'',journal:'',settings:'',companion:''};
     if (navOn[scr] !== undefined) navOn[scr] = 'on';
     if (scr === 'memories' && navOn[st.back] !== undefined) navOn[st.back] = 'on';
@@ -4773,7 +4860,23 @@ class Component extends DCLogic {
       ['short', 'A shorter version', 'About 20 minutes, fewer sets. Then head home proud.'],
       ['mini', 'Bare minimum: press-ups', 'Drop to the floor for a few sets. That’s a real workout today.']
     ].map(function(o){ const rec = ladderOn && EP.tier !== 'go' && o[0] === recKey; return {title:o[1], sub:o[2], rec:rec, st: rec ? 'background: #DDF58B; color: #111214' : 'background: #1C1D21; color: #F5F5F2', pick:function(){ self.startEnv(o[0]); }}; });
-    const ep = {coach:EP.coach, coachSub: EP.tier === 'go' ? 'All good today' : 'Let’s make today doable',
+    const pvNote = (function(){
+      if (envAt !== 'plan') return null; const e = self.planEditsToday(st);
+      if (!e || !(Object.keys(e.swaps || {}).length || Object.keys(e.removed || {}).length)) return null;
+      const WN = {gym:'the gym', home:'home', outside:'outside'}; const WY = {gym:'at the gym', home:'at home', outside:'outside', else:'somewhere else'};
+      const wNow = gearOpts(st).where;
+      if (e.where && e.where !== wNow) return {clash:true, text:'Your changes were for ' + (WN[e.where] || 'another place') + '. You’re ' + (WY[(st.env || {}).where] || WY[wNow] || 'somewhere else') + ' today, so I’ve picked exercises that fit here. You can switch any of them once you start.'};
+      let ids = []; try { const A = adjOn(st) ? st.adj : null; const key = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : EP.orig; ids = self.withHist(mkSession(key, EP.foci, gearOpts(st)), st).ids; } catch (x) { return null; }
+      const sw = Object.keys(e.swaps || {}).filter(function(f){ return ids.indexOf(e.swaps[f]) >= 0; }).map(function(f){ return EX[e.swaps[f]].name + ' instead of ' + EX[f].name.toLowerCase(); });
+      const sk = Object.keys(e.removed || {}).filter(function(id){ return ids.indexOf(id) < 0 && EX[id]; }).map(function(id){ return EX[id].name + ' skipped'; });
+      const missed = Object.keys(e.swaps || {}).length + Object.keys(e.removed || {}).length - sw.length - sk.length;
+      const keyNow = (function(){ const A = adjOn(st) ? st.adj : null; return A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : EP.orig; })();
+      const planMoved = e.plan && e.plan !== keyNow;
+      const PN = {min:'just the basics', short:'the shorter version', full:'your full workout', plus:'the longer version'};
+      if (!sw.length && !sk.length) return {clash:true, text: planMoved ? 'After your check-in, today is ' + (PN[keyNow] || 'a different workout') + ', so your earlier changes don’t apply. You can switch any exercise once you start.' : 'Your changes don’t fit what you’ve got here today, so I’ve picked exercises that do. You can switch any of them once you start.'};
+      return {clash:false, text:'Your changes are in: ' + sw.concat(sk).join('. ') + '.' + (missed > 0 ? (planMoved ? ' Today’s plan changed after your check-in, so the rest didn’t carry over.' : ' One didn’t fit what you’ve got here, so I’ve picked something that does.') : '')};
+    })();
+    const ep = {pvNote: !!pvNote, pvText: pvNote ? pvNote.text : '', pvClash: !!(pvNote && pvNote.clash), pvIc: pvNote && pvNote.clash ? 'M12 8v5M12 16.5v.5M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z' : 'M20 6L9 17l-5-5', coach:EP.coach, coachSub: EP.tier === 'go' ? 'All good today' : 'Let’s make today doable',
       isGo: EP.tier === 'go' && !st.envLadder, ladderOn:ladderOn, ladder:ladder,
       tips: EP.tips.map(function(t){ return {text:t}; }), hasTips: EP.tips.length > 0,
       goUsual:function(){ self.startEnv('usual'); }, showLadder:function(){ self.set({envLadder:true}); },
@@ -4862,26 +4965,30 @@ class Component extends DCLogic {
       self.set({sess:s, kgEdit:false, kgDraft:null});
     }; };
 
-    // Switch exercise sheet
-    const swGroups = st.sess ? self.switchGroups(st) : [];
-    const swCurKit = st.sess ? EQUIP[st.sess.ids[st.sess.cur]] : null;
+    // Switch exercise sheet (in a workout, or on Today's preview before you start)
+    const pvS = (st.screen === 'today' && st.pvSw) ? (function(){ try { const P = self.previewSess(st); const k = P.ids.indexOf(st.pvSw); return k >= 0 ? Object.assign({}, P, {cur:k}) : null; } catch (e) { return null; } })() : null;
+    const stSw = pvS ? Object.assign({}, self.previewCtx(st), {sess:pvS}) : st; const pvFrom = pvS ? st.pvSw : null;
+    const swGroups = stSw.sess ? self.switchGroups(stSw) : [];
+    const swCurKit = stSw.sess ? EQUIP[stSw.sess.ids[stSw.sess.cur]] : null;
     const swTabKey = swGroups.some(function(g){ return g.key === st.swTab; }) ? st.swTab : ((swGroups.find(function(g){ return g.key === swCurKit; }) || swGroups[0] || {}).key);
     const swList = (swGroups.find(function(g){ return g.key === swTabKey; }) || {ids:[]}).ids;
     const TAB_LABEL = {machine:'Machines', cable:'Cables', free:'Free weights', band:'Bands', body:'Bodyweight'};
-    const swCur = st.sess ? EX[st.sess.ids[st.sess.cur]] : null;
+    const swCur = stSw.sess ? EX[stSw.sess.ids[stSw.sess.cur]] : null;
     const sw = {tabs: swGroups.map(function(g){ const on = g.key === swTabKey; return {label:TAB_LABEL[g.key], count:g.ids.length, on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swTab:g.key}); }}; }),
       tabCols: 'repeat(' + Math.max(1, swGroups.length) + ', minmax(0, 1fr))', hasTabs: swGroups.length > 1,
-      on: !!st.swOpen && !!st.sess, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
+      on: (!!st.swOpen && !!st.sess) || !!pvS, pv: !!pvS, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
       title: st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
-      sub: st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
-      opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + wt(L.kg) + ' ' + uu(x.unit)), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ self.doSwitch(id, st.swReason); }}; }),
-      close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null}); },
+      sub: pvS ? (st.swMode === 'other' ? 'Train something else in this slot today.' : 'Same muscles, different kit. Not easier, just different.') : st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
+      opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + wt(L.kg) + ' ' + uu(x.unit)), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason); }}; }),
+      close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null, pvSw:null, pvNever:false}); },
       same: st.swMode !== 'other', other: st.swMode === 'other',
       modes: [['same','Same muscles'],['other','Different muscle']].map(function(m){ const on = (st.swMode || 'same') === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swMode:m[0]}); }}; }),
-      muscles: (function(){ if (!st.sess) return []; const cm = muscleOf((st.sess.pats && st.sess.pats[st.sess.cur]) || (EX[st.sess.ids[st.sess.cur]] || {}).pat); return MUSCLES.filter(function(m){ return m[0] !== cm; }).map(function(m){ const on = st.swMuscle === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({swMuscle:m[0]}); }}; }); })(),
+      muscles: (function(){ if (!stSw.sess) return []; const cm = muscleOf((stSw.sess.pats && stSw.sess.pats[stSw.sess.cur]) || (EX[stSw.sess.ids[stSw.sess.cur]] || {}).pat); return MUSCLES.filter(function(m){ return m[0] !== cm; }).map(function(m){ const on = st.swMuscle === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({swMuscle:m[0]}); }}; }); })(),
       noMuscle: !st.swMuscle,
-      mOpts: (st.swMuscle && st.sess ? self.muscleOpts(st, st.swMuscle) : []).map(function(id){ const x = EX[id]; return {name:x.name, area:areaText(x.area), kit:KIT_LABEL[EQUIP[id]] || '', pick:function(){ self.doSwitch(id, st.swReason === 'adapt' ? 'adapt' : 'muscle'); }}; }),
-      mEmpty: !!st.swMuscle && !(st.sess && self.muscleOpts(st, st.swMuscle).length),
+      mOpts: (st.swMuscle && stSw.sess ? self.muscleOpts(stSw, st.swMuscle) : []).map(function(id){ const x = EX[id]; return {name:x.name, area:areaText(x.area), kit:KIT_LABEL[EQUIP[id]] || '', pick:function(){ if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason === 'adapt' ? 'adapt' : 'muscle'); }}; }),
+      mEmpty: !!st.swMuscle && !(stSw.sess && self.muscleOpts(stSw, st.swMuscle).length),
+      neverLabel: pvFrom ? 'Don’t suggest ' + EX[pvFrom].name.toLowerCase() + ' again' : '', never: !!st.pvNever, neverCls: st.pvNever ? 'on' : '', toggleNever:function(){ self.set({pvNever:!self.S().pvNever}); },
+      skipToday:function(){ const v1 = self.renderVals(); if (v1.pv && v1.pv.skip) v1.pv.skip(); },
       simpler:function(){ self.set({swOpen:false, swReason:null, screen:'adapt', issue:'equip', adaptStep:'talk'}); }};
     const ask = st.swAsk && EX[st.swAsk.to] && EX[st.swAsk.from] ? {on:true, text:'Use the ' + EX[st.swAsk.to].name.toLowerCase() + ' instead of the ' + EX[st.swAsk.from].name.toLowerCase() + ' from now on?', yes:function(){ self.keepSwitch(true); }, no:function(){ self.keepSwitch(false); }} : {on:false};
     // Adapt
@@ -5276,7 +5383,7 @@ class Component extends DCLogic {
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
     return {
-      is:is, nav:nav, navOn:navOn, navT:navT, showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
+      is:is, nav:nav, navOn:navOn, navT:navT, pv:pv, showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
       tourClose:function(){ self.set({tour:null}); },
@@ -5413,7 +5520,7 @@ class Component extends DCLogic {
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
       ciAskOn: !!st.ciAsk,
       ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
-      ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, self.ciPatch(v), self.ciLogPatch(v, true))); self.renderVals().startWorkout(); },
+      ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; const cp = self.ciPatch(v); const pe = self.planEditsToday(self.S()); if (pe && (Object.keys(pe.swaps || {}).length || Object.keys(pe.removed || {}).length)) delete cp.plan; /* you've already planned today: skipping keeps it */ self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, cp, self.ciLogPatch(v, true))); self.renderVals().startWorkout(); },
       ciAskClose:function(){ self.set({ciAsk:false}); },
       startWorkout:function(){ const cur = self.S(); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
       extraWorkout:function(){ const cur = self.S(); beginEnv({extraToday:true, dayOff:false, plan: cur.checked ? self.rec(cur.vals) : 'full'}); },
