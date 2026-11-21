@@ -984,9 +984,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </sc-for>
   </div>
   <sc-if value="{{tomorrowPlanned}}" hint-placeholder-val="{{ false }}"><div class="toast" style="margin-top: 14px">{{plannedToast}}</div></sc-if>
-  <div class="card" style="margin-top: 20px; display: flex; flex-direction: column; gap: 18px">
-    <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Missed one? Let it slide</span><span class="mut" style="font-size: 14px">Moves to your next free day. Never piles up.</span></span><button class="tg {{slideCls}}" aria-pressed="{{slide}}" aria-label="Let missed sessions slide" onClick="{{toggleSlide}}"></button></div>
-  </div>
 </div>
 </sc-if>
 
@@ -1442,7 +1439,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div class="card rise" style="display: flex; flex-direction: column; gap: 14px">
     <label for="sp-draft" style="position: absolute; left: -9999px">Journal entry</label>
     <textarea id="sp-draft" class="field" rows="5" style="background: #111214" placeholder="How’s today been?" value="{{draft}}" onChange="{{onDraft}}"></textarea>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{moodTags}}" as="o" hint-placeholder-count="5"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+    <div><span class="mut" style="display: block; font-size: 13px; margin: 0 2px 8px">How are you feeling? Pick any that fit.</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{moodTags}}" as="o" hint-placeholder-count="5"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div><button class="link" style="min-height: 36px; font-size: 14px; padding: 0 2px; margin-top: 4px; color: #B7A6F6; display: inline-flex; align-items: center; gap: 4px" onClick="{{toggleMoodMore}}" aria-expanded="{{moodMore}}">{{moodMoreLabel}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{moodMoreIc}}"></path></svg></button></div>
     <div class="row"><span style="flex: 1"><span style="display: block; font-weight: 600">Let Spark learn from this</span><span class="mut" style="font-size: 13px">Edit or delete it any time.</span></span><button class="tg {{learnCls}}" aria-pressed="{{learn}}" aria-label="Let Spark learn from this" onClick="{{toggleLearn}}"></button></div>
     <div class="row" style="gap: 10px"><button class="btn b-lime" style="flex: 1" onClick="{{saveEntry}}">Save entry</button><button class="btn b-ghost" onClick="{{cancelCompose}}">Cancel</button></div>
   </div>
@@ -1653,7 +1650,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 88</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 90</p>
 </div>
 </sc-if>
 
@@ -2642,6 +2639,7 @@ const findPart = function(x){
   return null;
 };
 const STRESS_RE = /stress|overwhelm|anxious|anxiety|panic|worried|worrying|\bworry\b|nervous|\btense\b|on edge|frustrat|angry|furious|irritab|burn(t|ed) out|can.?t cope|under pressure|too much on|hectic|wound up|on my case|shouted at|argument|row with/i;
+const POS_TAGS = ['Calm','Proud','Happy','Energised','Motivated','Focused','Grateful'];
 const POS_RE = /\b(good|great|amazing|proud|strong|happy|happier|enjoyed|loved|buzzing|brilliant|better|smashed|nailed|fun|calm|calmer|relaxed|lighter|okay now|fine now)\b/i;
 const jTime = function(j){ return j && /^j\d{10,}$/.test(j.id) ? +j.id.slice(1) : 0; };
 const jQuote = function(text, re){
@@ -2669,17 +2667,23 @@ const readJournal = function(list, todayN){
     else if (injured) { if (!(R.healed && ex.part && R.healed[ex.part])) hit('injury', 7, ex); }
     else if (/\b(sore(?! throat)|aching|achy|stiff|doms)\b/i.test(x)) hit('sore', 2, {part: P ? P.part : ''});
     if (/\b(ill|sick|unwell|poorly|flu|covid|fever|migraine|vomit\w*|throwing up|stomach bug|infection|sore throat|with a cold|have a cold|got a cold|caught a cold|head cold|full of cold|a stinking cold)\b/i.test(x)) hit('ill', 3);
-    if (/sleep|slept|insomnia|awake all|knackered|exhausted|\btired\b/i.test(x) || tags.indexOf('Tired') >= 0) hit('sleep', 1, {q: jQuote(j.text, /sleep|slept|insomnia|awake|knackered|exhausted|tired/i)});
-    if (STRESS_RE.test(x) || tags.indexOf('Stressed') >= 0 || tags.indexOf('Overwhelmed') >= 0) hit('stress', 0, {q: jQuote(j.text, STRESS_RE)});
+    const felt = function(list, re){ const t0 = tags.filter(function(t){ return list.indexOf(t) >= 0; })[0]; return (t0 && !re.test(j.text || '')) ? {q:'', felt:t0.toLowerCase()} : null; };
+    if (/sleep|slept|insomnia|awake all|knackered|exhausted|\btired\b/i.test(x) || tags.indexOf('Tired') >= 0) hit('sleep', 1, felt(['Tired'], /sleep|slept|insomnia|awake|knackered|exhausted|tired/i) || {q: jQuote(j.text, /sleep|slept|insomnia|awake|knackered|exhausted|tired/i)});
+    const STAGS = ['Stressed','Overwhelmed','Anxious','Frustrated'];
+    if (STRESS_RE.test(x) || tags.some(function(t){ return STAGS.indexOf(t) >= 0; })) hit('stress', 0, felt(STAGS, STRESS_RE) || {q: jQuote(j.text, STRESS_RE)});
     if (/\b(sad|depress\w*|lonely|crying|cried|hopeless|worthless|miserable)\b|\b(feel|feeling|felt)\s+(so |really |quite |a bit )?(low|down|empty|rubbish|awful|terrible)\b/i.test(x)) hit('low', 2, {q: jQuote(j.text, /sad|depress|lonely|crying|cried|hopeless|worthless|miserable|low|down|empty|rubbish|awful|terrible/i)});
+    else if (tags.indexOf('Low') >= 0) hit('low', 2, {q:'', felt:'low'});
+    if (tags.indexOf('Sore') >= 0) hit('sore', 2, {part:''});
+    if (tags.indexOf('Unwell') >= 0) hit('ill', 3);
     if (/\b(period|cramps|time of the month)\b/i.test(x)) hit('period', 2);
     if (/\b(staring|stared|watching me|looking at me|embarrass\w*|judged|judging|self[- ]conscious|intimidat\w*|awkward)\b/i.test(x)) hit('anxious', 3);
     if (/\b(no time|busy (day|week)|working late|work late|deadline|swamped|long day|hectic week)\b/i.test(x)) hit('time', 1);
   });
   Object.keys(R).forEach(function(k){ if (R[k] && R[k].entry) R[k].t = jTime(R[k].entry); });
   const newest = (list || [])[0];
-  if (newest && !newest.auto && jTime(newest) && jDaysOf(newest, todayN) === 0 && !Object.keys(R).some(function(k){ return R[k] && R[k].id === newest.id; }))
-    R.jnew = {entry:newest, id:newest.id, t:jTime(newest), days:0, q:jQuote(newest.text, POS_RE), positive: POS_RE.test(newest.text || '')};
+  if (newest && !newest.auto && jTime(newest) && jDaysOf(newest, todayN) === 0 && !Object.keys(R).some(function(k){ return R[k] && R[k].id === newest.id; })) {
+    const posTag = (newest.tags || []).filter(function(t){ return POS_TAGS.indexOf(t) >= 0; })[0]; const posText = POS_RE.test(newest.text || '');
+    R.jnew = {entry:newest, id:newest.id, t:jTime(newest), days:0, q: posTag && !posText ? '' : jQuote(newest.text, POS_RE), felt: posTag && !posText ? posTag.toLowerCase() : '', positive: posText || !!posTag}; }
   delete R.healed; const sgv = R.sg; delete R.sg; Object.defineProperty(R, 'sg', {value:sgv, enumerable:false}); return R;
 };
 const JNOTE = {crisis:'', injury:'an injury', healing:'an injury on the mend', ill:'feeling unwell', sleep:'a rough night', stress:'a stressful day', low:'feeling low', sore:'post-workout soreness', period:'a tough time of the month', anxious:'feeling self-conscious', time:'a busy stretch'};
@@ -2931,15 +2935,16 @@ class Component extends DCLogic {
     JT.sort(function(a, b){ return ((J[b].t || 0) - (J[a].t || 0)) || 0; });
     const jPick = JT[0];
     const q = function(x){ return x && x.q ? '“' + x.q + '”' : ''; };
+    const said = function(x){ return x && !x.q && x.felt ? 'You said you felt ' + x.felt : 'You wrote ' + q(x); };
     const wNod = !wFresh ? '' : S.partial ? ' I also saw you got through ' + S.sets + ' sets today, which still counts.' : ' And you still trained today, which is no small thing.';
     if (jPick && (!wFresh || (J[jPick].t || 0) > wT)) {
       const x = J[jPick]; const keys = [jPick + x.id].concat(wFresh ? [wKey] : []);
       const out = function(text, replies){ return {spark:true, text:text, replies:replies, src: wFresh ? 'Your journal · today’s workout' : 'Your journal', jKey:keys[0], jKeys:keys}; };
-      if (jPick === 'stress') return out(welcome + 'I’ve read your journal. You wrote ' + q(x) + '. That sounds really stressful.' + wNod + ' Do you want to talk it through?',
+      if (jPick === 'stress') return out(welcome + 'I’ve read your journal. ' + said(x) + (x.q ? '. That sounds really stressful.' : '. That’s a lot to carry.') + wNod + ' Do you want to talk it through?',
         [['Yes, it’s a lot', 'jstress'], ['I just needed to get it out', 'jvent'], ['I’m okay now', 'feelok']]);
-      if (jPick === 'low') return out(welcome + 'I’ve read your journal. You wrote ' + q(x) + ', and it sounds like you’re feeling low. I’m sorry. You don’t have to do anything today to deserve a kind word.' + wNod + ' Do you want to talk it through?',
+      if (jPick === 'low') return out(welcome + 'I’ve read your journal. ' + (x.q ? 'You wrote ' + q(x) + ', and it sounds like you’re feeling low.' : 'You said you’re feeling low.') + ' I’m sorry. You don’t have to do anything today to deserve a kind word.' + wNod + ' Do you want to talk it through?',
         [['Yes, I’d like that', 'lowtalk'], ['I just needed to say it', 'lowsaid']]);
-      if (jPick === 'sleep') return out(welcome + 'I’ve read your journal. You wrote ' + q(x) + '. Rough nights make everything harder, so go easy on yourself today.' + wNod + (GP ? ' Want me to switch today to the shorter version?' : ''),
+      if (jPick === 'sleep') return out(welcome + 'I’ve read your journal. ' + said(x) + '. ' + (x.q || !x.felt ? 'Rough nights make everything harder' : 'Tired days make everything harder') + ', so go easy on yourself today.' + wNod + (GP ? ' Want me to switch today to the shorter version?' : ''),
         GP ? [['Yes, go shorter', 'sleepshort'], ['I’ll see how I feel', 'sleepsee'], ['Any tips for tonight?', 'sleeptip']] : [['Any tips for tonight?', 'sleeptip'], ['Thanks, Spark', 'bye']]);
       if (jPick === 'sore') return out(welcome + 'Sounds like you’re sore from your last session. That’s normal, and it means you worked.' + (GP ? ' Moving usually helps it ease, so ' + I.focusL + ' is still fine if it’s just muscle ache. If anything feels sharp, or only hurts on one side, treat it as an injury and rest it.' : ' A walk or a stretch will help it ease.'),
         GP ? [['Up for it', 'feelgood'], ['Go shorter today', 'goshort'], ['It might be more than sore', 'injtrain']] : [['Thanks, Spark', 'bye'], ['I’d like to move a bit', 'restmove']]);
@@ -2949,8 +2954,8 @@ class Component extends DCLogic {
       if (jPick === 'time') return out(welcome + 'Sounds like you’re stretched for time at the moment. Want me to make ' + I.focusL + ' the 20-minute version so it fits?', [['Yes, go shorter', 'goshort'], ['I’ll make the time', 'feelgood']]);
       if (jPick === 'healing') return out(welcome + 'Glad to read ' + yourPart(J.healing) + ' is feeling better. ' + I.focus + ' is on today. Ease back in: lighter than usual, and stop at the first twinge. Want the shorter version as a first step back?', [['Yes, go shorter', 'goshort'], ['I feel ready for the usual', 'healok']]);
       const eased = J.stress || J.low; const easedSeen = eased && ack[(J.stress ? 'stress' : 'low') + eased.id] && (x.t || 0) > (eased.t || 0);
-      if (jPick === 'jnew' && x.positive && easedSeen) return out(welcome + 'I’ve read your latest entry: ' + q(x) + '. I’m really glad you’re feeling better than earlier. Whatever helped, it’s worth remembering.', [['Thanks, Spark', 'bye'], ['Breathe with me', 'calm']]);
-      if (jPick === 'jnew' && x.positive) return out(welcome + 'I’ve read your journal. You wrote ' + q(x) + '. Love that.' + (wFresh ? ' And on a training day, too.' : '') + ' Moments like this are worth remembering for the harder days.', GP ? [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']] : [['Thanks, Spark', 'bye']]);
+      if (jPick === 'jnew' && x.positive && easedSeen) return out(welcome + (x.q ? 'I’ve read your latest entry: ' + q(x) + '.' : 'I’ve read your latest entry. You felt ' + x.felt + '.') + ' I’m really glad you’re feeling better than earlier. Whatever helped, it’s worth remembering.', [['Thanks, Spark', 'bye'], ['Breathe with me', 'calm']]);
+      if (jPick === 'jnew' && x.positive) return out(welcome + 'I’ve read your journal. ' + said(x) + '. Love that.' + (wFresh ? ' And on a training day, too.' : '') + ' Moments like this are worth remembering for the harder days.', GP ? [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']] : [['Thanks, Spark', 'bye']]);
       if (jPick === 'jnew') return out(welcome + 'Thanks for writing in your journal. I’ve read it: ' + q(x) + '.' + wNod + ' Anything you want to talk through?', [['Yes, actually', 'jtalk'], ['No, all good', 'feelok']]);
     }
     if (wFresh && S.partial) return {spark:true, text: welcome + 'I saw you stopped partway through ' + I.focusL + ': ' + S.sets + ' of ' + S.setsTotal + ' sets. That still counts as a workout. What happened?',
@@ -3322,7 +3327,7 @@ class Component extends DCLogic {
       const trainedNoLog = !W.length && (st.doneDates || {})[key];
       const bits = [ciTxt((st.ciLog || {})[key])];
       if (W.length) W.forEach(function(w){ bits.push('WORKOUT ' + wTxt(w)); }); else bits.push(trainedNoLog ? 'trained (details not recorded)' : (key === todayKeyNow() ? 'no workout yet today' : 'no workout'));
-      JJ.forEach(function(j){ const t1 = new Date(jAt(j)); bits.push('JOURNAL ' + String(t1.getHours()).padStart(2, '0') + ':' + String(t1.getMinutes()).padStart(2, '0') + ' "' + aiPlain(j.text) + '"'); });
+      JJ.forEach(function(j){ const t1 = new Date(jAt(j)); bits.push('JOURNAL ' + String(t1.getHours()).padStart(2, '0') + ':' + String(t1.getMinutes()).padStart(2, '0') + ' "' + aiPlain(j.text) + '"' + (j.tags && j.tags.length ? ' (felt: ' + j.tags.join(', ').toLowerCase() + ')' : '')); });
       return '- ' + name + (planned ? ' (planned: ' + planned + ')' : '') + ': ' + bits.join('; '); };
     const today0 = keyDate(todayKeyNow()); const mon0 = new Date(today0.getFullYear(), today0.getMonth(), today0.getDate() - ((today0.getDay() + 6) % 7));
     const weekKeys = function(start, upto){ const out = []; for (let k = 0; k < 7; k++) { const d1 = new Date(start.getFullYear(), start.getMonth(), start.getDate() + k); if (upto && d1 > upto) break; const kk = dkey(d1); if (st.joinKey && kk < st.joinKey) continue; out.push(kk); } return out; };
@@ -3751,7 +3756,7 @@ class Component extends DCLogic {
           [['Pencil it in', 'planTomorrow'], ['Not even that', 'roughno']], [I.checked && I.highS ? 'Your check-in' : '', I.memStress ? 'a memory' : ''].filter(Boolean).join(' · '));
       case 'roughno': return M('That’s completely fine. Nothing’s needed today. Would it help to get it out of your head and into your journal, or would you rather just rest?', [['Write in my journal', 'journal'], ['Just rest', 'restgood']]);
       case 'restgood': return M('Good call. Rest is part of training, not a break from it. Look after yourself today.', [['Thanks, Spark', 'bye']]);
-      case 'planTomorrow': return M('Done. ' + I.tomorrow + (I.time ? ', ' + I.time : '') + ', 15 minutes. It’s on Your week now. If it doesn’t happen, it slides to your next free day. No catching up.', [['Thanks, Spark', 'bye'], ['Give me a reason to go', 'reason']], 'Added to Your week');
+      case 'planTomorrow': return M('Done. ' + I.tomorrow + (I.time ? ', ' + I.time : '') + ', 15 minutes. It’s on Your week now. If it doesn’t happen, no catching up.', [['Thanks, Spark', 'bye'], ['Give me a reason to go', 'reason']], 'Added to Your week');
       case 'over': if (ctx.n >= 2) return M('Sounds like today’s just a lot, and that’s okay. Let’s not push it. Rest, look after yourself, and we’ll try again another day.', [['Thanks, Spark', 'bye'], ['Breathe with me', 'calm']]);
         return M(pick(['Let’s take the pressure off. A couple of minutes of breathing first, then you decide. Stopping is allowed too.', 'Still a lot? Let’s keep it to just breathing for now. Nothing else needs deciding.']),
         [['Breathe with me', 'calm'], ['I’d rather not', 'overno']]);
@@ -4944,7 +4949,10 @@ class Component extends DCLogic {
 
     // Journal
     const MOODS = ['Calm','Proud','Tired','Stressed','Overwhelmed'];
-    const moodTags = MOODS.map(function(m){ const on = st.draftMood === m; return {label:m, on:on, cls: on ? 'on' : '', pick:function(){ self.set({draftMood: self.S().draftMood === m ? null : m}); }}; });
+    const MOODS_MORE = ['Happy','Energised','Motivated','Focused','Grateful','Restless','Frustrated','Anxious','Low','Sore','Unwell'];
+    const picked = Array.isArray(st.draftMoods) ? st.draftMoods : (st.draftMood ? [st.draftMood] : []);
+    const moodChip = function(m){ const on = picked.indexOf(m) >= 0; return {label:m, on:on, cls: on ? 'on' : '', pick:function(){ const cur = self.S(); const p0 = Array.isArray(cur.draftMoods) ? cur.draftMoods.slice() : []; const k = p0.indexOf(m); if (k >= 0) p0.splice(k, 1); else p0.push(m); self.set({draftMoods:p0, draftMood:null}); }}; };
+    const moodTags = MOODS.concat(st.moodMore ? MOODS_MORE : MOODS_MORE.filter(function(m){ return picked.indexOf(m) >= 0; })).map(moodChip);
     const PROMPTS = ['What got in the way?','What felt good?','How’s your head today?','What helped?'];
     const prompts = PROMPTS.map(function(p){ return {label:p, pick:function(){ const cur = self.S(); self.set({draft: (cur.draft ? cur.draft + '\n' : '') + p + ' '}); }}; });
     const journalView = st.journal.map(function(j){ const learned = !!j.learned && st.memoryOn; return {when:whenOf(j), text:j.text, tags:j.tags, learned:learned, hasPb:!!j.pb, pb:j.pb || '',
@@ -5233,7 +5241,6 @@ class Component extends DCLogic {
       scheduleNote = dayKeys.length + (dayKeys.length === 1 ? ' day' : ' days') + ' a week' + (timePhrase ? ', ' + timePhrase : '') + ', about ' + lenObj[0] + ' minutes each.';
       if (dayKeys.length > 4) scheduleNote += ' That’s ambitious. Spark will happily scale it back on busy weeks.';
       else if (anyEvening && busyWorry) scheduleNote += ' Gyms are usually busiest 5–7pm. If crowds are hard, early mornings tend to be quieter.';
-      else scheduleNote += ' Missed one? It just slides to your next free day.';
     }
     const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still check in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Check in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
     const ONB_ORDER = [2, 3, 8, 4, 5, 6, 7, 9];
@@ -5452,7 +5459,6 @@ class Component extends DCLogic {
       checkSkip:function(){ const cur = self.S(); if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false}, self.ciPatch(cur.vals), self.ciLogPatch(cur.vals, false))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
       routineRows:routineRows, tomorrowPlanned:st.tomorrowPlanned,
       weekTimesSummary: (function(){ const dks = st.week.filter(function(d){ return d.t !== 'rest'; }).map(function(d){ return d.d; }); if (!dks.length) return 'No training days set'; return timeGroups(st, dks).map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return g.days.join(', ') + ': ' + (T ? T[1].toLowerCase() : 'flexible'); }).join(' · '); })(),
-      slide:st.slide, slideCls: st.slide ? 'on' : '', toggleSlide:function(){ self.set({slide:!self.S().slide}); },
       reminders:st.reminders, remCls: st.reminders ? 'on' : '', toggleRem:function(){ self.set({reminders:!self.S().reminders}); },
       prepList:prepList, planOpts:planOpts, memoryOn:st.memoryOn,
       prepIsWorkout: st.plan !== 'stretch' && st.plan !== 'walk', prepGymTip: st.memoryOn && st.plan !== 'stretch' && st.plan !== 'walk',
@@ -5531,9 +5537,9 @@ class Component extends DCLogic {
         setTimeout(function(){ self.reviewCoach(); }, 50);
       },
       skipSave:function(){ self.set({doneToday:true, screen:'today', note:'', feel:null}); },
-      composing:st.composing, notComposing: !st.composing, draft:st.draft, prompts:prompts, moodTags:moodTags,
+      composing:st.composing, notComposing: !st.composing, draft:st.draft, prompts:prompts, moodTags:moodTags, moodMore: !!st.moodMore, moodMoreLabel: st.moodMore ? 'Fewer feelings' : 'More feelings', moodMoreIc: st.moodMore ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6', toggleMoodMore:function(){ self.set({moodMore:!self.S().moodMore}); },
       compose:function(){ self.set({composing:true, toast:''}); },
-      cancelCompose:function(){ self.set({composing:false, draft:'', draftMood:null, listening:false}); },
+      cancelCompose:function(){ self.set({composing:false, draft:'', draftMood:null, draftMoods:[], moodMore:false, listening:false}); },
       onDraft:function(e){ self.set({draft:e.target.value}); },
       listening:st.listening, listenCls: st.listening ? 'listening' : '',
       learn:st.learn, learnCls: st.learn ? 'on' : '', toggleLearn:function(){ self.set({learn:!self.S().learn}); },
@@ -5541,8 +5547,8 @@ class Component extends DCLogic {
         const cur = self.S(); const t = (cur.draft || '').trim(); if (!t) return self.set({composing:false});
         self.awardLater('journal');
         const learned = cur.learn && cur.memoryOn;
-        const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags: cur.draftMood ? [cur.draftMood] : [], learned:learned};
-        const patch = {journal:[entry].concat(cur.journal), composing:false, draft:'', draftMood:null, listening:false, toast: learned ? 'Saved. Spark will keep this in mind.' : 'Saved privately. Spark won’t learn from it.'};
+        const nowAt = Date.now(); const entry = {id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags: (Array.isArray(cur.draftMoods) && cur.draftMoods.length) ? cur.draftMoods.slice() : (cur.draftMood ? [cur.draftMood] : []), learned:learned};
+        const patch = {journal:[entry].concat(cur.journal), composing:false, draft:'', draftMood:null, draftMoods:[], moodMore:false, listening:false, toast: learned ? 'Saved. Spark will keep this in mind.' : 'Saved privately. Spark won’t learn from it.'};
         const sgc = detectSG(t);
         if (sgc) return self.set(Object.assign(patch, {screen:'companion', back:'journal', toast:''}, self.sgStart(cur, sgc, entry.id, !learned)));
         if (learned) patch.memories = cur.memories.concat([{id:'m' + Date.now(), text:'You wrote: “' + (t.length > 90 ? t.slice(0, 90) + '…' : t) + '”', src:'From your journal, today', on:true}]);
