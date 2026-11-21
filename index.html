@@ -1506,14 +1506,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </div>
     </sc-for>
     <sc-if value="{{topicHead}}" hint-placeholder-val="{{ false }}"><div style="border-top: 1px solid #26272C; padding-top: 12px"><span class="d" style="font-size: 17px">{{topicHeadText}}</span></div></sc-if>
-    <sc-for list="{{topicList}}" as="g" hint-placeholder-count="4">
-      <div>
-        <span style="display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8B8B95; margin: 0 2px 8px">{{g.title}}</span>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px">
-          <sc-for list="{{g.items}}" as="q" hint-placeholder-count="3"><button class="chip" style="min-height: 42px; font-size: 14px; padding: 0 16px; {{q.st}}" onClick="{{q.pick}}">{{q.label}}</button></sc-for>
-        </div>
-      </div>
-    </sc-for>
   </div>
   <sc-if value="{{noTopicsLeft}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 0; font-size: 14px">We’ve covered everything for now. I’m here whenever you need me.</p></sc-if>
   <sc-if value="{{moreToggle}}" hint-placeholder-val="{{ false }}"><button class="link" style="min-height: 40px; font-size: 14px; padding: 0 2px; margin-top: 6px; color: #B7A6F6" onClick="{{toggleMore}}" aria-expanded="{{moreOpen}}">{{moreLabel}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{moreIc}}"></path></svg></button></sc-if>
@@ -1661,7 +1653,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 85</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 88</p>
 </div>
 </sc-if>
 
@@ -1735,10 +1727,10 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <sc-if value="{{moreSheet}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
   <button aria-label="Close" onClick="{{closeMore}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
-  <div class="rise" role="dialog" aria-label="More questions" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 16px; max-height: 86%; box-sizing: border-box">
-    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">More questions</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{closeMore}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+  <div class="rise" role="dialog" aria-label="Talk to the Spark coach" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 16px; max-height: 86%; box-sizing: border-box">
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Talk to the Spark coach</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{closeMore}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     <div style="overflow-y: auto; display: flex; flex-direction: column; gap: 16px; margin: 0 -4px; padding: 0 4px">
-      <sc-for list="{{moreGroups}}" as="g" hint-placeholder-count="4">
+      <sc-for list="{{sheetGroups}}" as="g" hint-placeholder-count="4">
         <div>
           <span style="display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8B8B95; margin: 0 2px 8px">{{g.title}}</span>
           <div style="display: flex; flex-wrap: wrap; gap: 8px">
@@ -4970,7 +4962,7 @@ class Component extends DCLogic {
     const wAcked = !!(CI.jAck || {})['workout' + (CI.trainedAt || 0)];
     let forYou = CJ.crisis ? [] : (CJ.injury && !CJ.injury.urgent) ? ['injwhat'].concat(CI.gymPending ? ['today'] : ['restwhy']) : CJ.ill ? ['restwhy'] : CI.trained ? (wAcked ? ['restwhy'] : ['howwent','restwhy']) : CI.dayOff ? ['restwhy','missed'] : !CI.gym ? ['today','restwhy'] : ['today'].concat(CI.checked && (CI.lowE || CI.highS) ? ['rough','short'] : ['hype']).concat(CI.env && CI.env.busy >= 1 ? ['busy'] : []);
     forYou = forYou.slice(0, 3);
-    const GROUPS = CJ.crisis ? [['Tough day', ['rough']]] : [['Suggested for you', forYou]].concat([['Get me moving',['hype','cant','reason']],['Tough day',['rough','over','missed','sghelp']],['At the gym',['busy','short','last']],['Good to know',['restwhy']]].map(function(g){ return [g[0], g[1].filter(function(k){ return forYou.indexOf(k) < 0; })]; }));
+    const GROUPS = CJ.crisis ? [['Tough day', ['rough']]] : [['For you', forYou]].concat([['Get me moving',['hype','cant','reason']],['Tough day',['rough','over','missed','sghelp']],['At the gym',['busy','short','last']],['Good to know',['restwhy']]].map(function(g){ return [g[0], g[1].filter(function(k){ return forYou.indexOf(k) < 0; })]; }));
     const asked = st.askCount || {};
     const started = st.chat.some(function(m){ return m.me; });
     const lastSpark = st.chat.slice().reverse().find(function(m){ return m.spark; }) || {};
@@ -4985,13 +4977,13 @@ class Component extends DCLogic {
     const mkChip = function(k, hi){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : hi ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.set({chatMenu:false}); self.say(k, CHAT_Q[k]); }}; };
     const MORE = [['For today', sugg.length ? forYou.filter(function(k){ return ['hype','cant','reason'].indexOf(k) < 0; }) : []], ['Tough day',['rough','over','missed','sghelp']], ['At the gym',['busy','short','last']], ['Good to know',['restwhy']]];
     const moreGroups = (aiChat || CJ.crisis) ? [] : MORE.map(function(g, gi){ return {title:g[0], items:g[1].filter(function(k){ return gi === 0 || forYou.indexOf(k) < 0; }).map(function(k){ return mkChip(k, false); })}; }).filter(function(g){ return g.items.length; });
-    const topicGroups = (aiChat ? [['Get me moving', ['hype','cant','reason']]] : GROUPS).map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return true; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
+    const topicGroups = (aiChat ? [['Get me moving', ['hype','cant','reason']]] : GROUPS).map(function(g){ return {title:g[0], items:g[1].filter(function(k){ return true; }).map(function(k){ return {label:CHAT_Q[k], st: k === 'hype' ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : forYou.indexOf(k) >= 0 ? 'border-color: #B7A6F6; color: #F5F5F2' : '', pick:function(){ self.set({chatMenu:false}); self.say(k, CHAT_Q[k]); }}; })}; }).filter(function(g){ return g.items.length; });
     const showTopics = true;
-    const suggest = sugg.length ? [{title: st.sg ? 'Choose one' : aiChat ? 'Suggested' : 'Suggested for you', items: sugg.map(function(r, i){ const neg = i === sugg.length - 1 && sugg.length > 1; return {label:r[0], st: i === 0 ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : neg ? 'color: #A1A1AA' : 'border-color: #B7A6F6; color: #F5F5F2', pick:function(){ self.say(r[1], r[0]); }}; })}] : [];
+    const suggest = sugg.length ? [{title: st.sg ? 'Choose one' : 'Suggested replies', items: sugg.map(function(r, i){ const neg = i === sugg.length - 1 && sugg.length > 1; return {label:r[0], st: i === 0 ? 'background: #DDF58B; color: #111214; border-color: #DDF58B; font-weight: 700' : neg ? 'color: #A1A1AA' : 'border-color: #B7A6F6; color: #F5F5F2', pick:function(){ self.say(r[1], r[0]); }}; })}] : [];
     const askGroups = suggest;
     const GM = ['hype','cant','reason'];
     const fyKeys = forYou.filter(function(k){ return GM.indexOf(k) < 0; });
-    const topicList = st.sg ? [] : aiChat ? topicGroups : [{title:'Suggested for you', items: sugg.length ? [] : fyKeys.map(function(k){ return mkChip(k, true); })}, {title:'Get me moving', items: GM.map(function(k){ return mkChip(k, false); })}].filter(function(g){ return g.items.length; });
+    const topicList = st.sg ? [] : aiChat ? topicGroups : [{title:'For you', items: sugg.length ? [] : fyKeys.map(function(k){ return mkChip(k, true); })}, {title:'Get me moving', items: GM.map(function(k){ return mkChip(k, false); })}].filter(function(g){ return g.items.length; });
     const topicHead = false;
 
     // Progress
@@ -5559,7 +5551,7 @@ class Component extends DCLogic {
       todayDateLabel: st.fresh ? (function(){ const n = new Date(); return DAYS[(n.getDay() + 6) % 7][2] + ', ' + n.getDate() + ' ' + MONTHS_LONG[n.getMonth()]; })() : 'Sunday, 11 October', monthLabel: st.fresh ? MONTHS_LONG[new Date().getMonth()] : 'October',
       journalView:journalView, journalEmpty: !st.journal.length, showInsights: !st.fresh, insightsEmpty: !!st.fresh, memberSince: st.fresh ? 'Joined Spark today' : 'Training with Spark since August',
       chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #8E8E96' : ''}; }),
-      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: moreGroups.length > 0 && !st.sg, moreLabel: 'More questions', moreOpen: !!st.chatMenu, moreGroups:moreGroups, moreSheet: !!st.chatMenu && st.screen === 'companion' && moreGroups.length > 0 && !st.sg, closeMore:function(){ self.set({chatMenu:false}); }, moreIc: 'M6 15l6-6 6 6', toggleMore:function(){ self.set({chatMenu:true}); }, noTopicsLeft: false && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: '300px', chatPad: showTopics ? '640px' : '320px',
+      askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: (topicList.length + moreGroups.length) > 0 && !st.sg, moreLabel: 'Talk to the Spark coach', moreOpen: !!st.chatMenu, moreGroups:moreGroups, sheetGroups: topicList.concat(moreGroups), moreSheet: !!st.chatMenu && st.screen === 'companion' && (topicList.length + moreGroups.length) > 0 && !st.sg, closeMore:function(){ self.set({chatMenu:false}); }, moreIc: 'M6 15l6-6 6 6', toggleMore:function(){ self.set({chatMenu:true}); }, noTopicsLeft: false && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: '300px', chatPad: showTopics ? '640px' : '320px',
  promptsAll:function(){ self.set({promptsMenu:true}); },
       memoryStatus: st.memoryOn ? 'Your AI coach. Memory on.' : 'Your AI coach. Memory off.',
       onChat:function(e){ self.set({chatDraft:e.target.value}); },
