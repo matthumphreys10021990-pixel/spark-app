@@ -1677,7 +1677,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 94</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 95</p>
 </div>
 </sc-if>
 
@@ -4465,7 +4465,9 @@ class Component extends DCLogic {
 
   inProgress(st){
     // A workout you've started today and haven't finished: leaving the app (back button, a call, screen off) never loses it.
-    const s = st.sess; if (!s || s.ended || !Array.isArray(s.ids)) return false;
+    const s = st.sess; if (!s || s.ended || !Array.isArray(s.ids) || !s.ids.length || !Array.isArray(s.done) || !Array.isArray(s.sets)) return false;
+    if (!(s.cur >= 0 && s.cur < s.ids.length) || !EX[s.ids[s.cur]]) return false;
+    if (!s.ids.some(function(id, i){ return (s.done[i] || 0) < (s.sets[i] || 0); })) return false; // everything's done: that workout is finished
     const t = s.t0 || s.at; if (!t) return false;
     return Date.now() - t < 6 * 3600000 && dkey(new Date(t)) === dkey(new Date());
   }
@@ -4570,7 +4572,19 @@ class Component extends DCLogic {
     };
     return walk(v, '');
   }
-  renderVals(){ const v = this.renderVals0(); this.addGen(v); return this.glueVals(v); }
+  renderVals(){
+    let v;
+    try { v = this.renderVals0(); }
+    catch (e) {
+      // Safety net: if something saved from an older version can't be shown, go back to Today rather than a blank screen.
+      if (this.rescued || !this.state) throw e;
+      this.rescued = true; try { console.error('Spark recovered from', e); } catch (x) {}
+      const st = this.state; const bad = st.sess && !(st.sess.cur >= 0 && st.sess.cur < (st.sess.ids || []).length);
+      this.state = Object.assign({}, st, {screen:'today', back:'today', resting:false, swOpen:false, pvSw:null, sess: bad ? null : st.sess, daySheet:null, addSheet:false});
+      v = this.renderVals0();
+    }
+    this.rescued = false; this.addGen(v); return this.glueVals(v);
+  }
   // Coach words fade in one by one the first time a piece of coach text appears, then stay put on later redraws.
   gen(key, text, quiet, after){
     text = String(text == null ? '' : text).trim(); if (!text) return [];
