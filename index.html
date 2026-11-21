@@ -45,11 +45,18 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .plan-li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
 .pg-chip{border:1px solid #34353B;background:transparent;color:#F5F5F2;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}.pg-chip.on{background:#F5F5F2;color:#111214;border-color:#F5F5F2}
 button{-webkit-tap-highlight-color:transparent}
-button:not(:disabled):not(.nv-c):active{transform:scale(.96)}
-.btn,.chip,.ropt,.itile,.ex-row,.ex-pick,.mnav,.restpill,.numbtn,.pg-chip,.dc{transition:transform .14s ease,background-color .2s ease,box-shadow .2s ease,opacity .2s ease}
+:root{--spring:cubic-bezier(.34,1.18,.64,1);--spring-b:cubic-bezier(.3,1.31,.6,1);--spring-d:.6s;interpolate-size:allow-keywords}
+@supports (animation-timing-function: linear(0, 1)){:root{--spring:linear(0, 0.028, 0.1, 0.198, 0.311, 0.428, 0.541, 0.645, 0.739, 0.819, 0.885, 0.938, 0.979, 1.009, 1.03, 1.044, 1.051, 1.053, 1.052, 1.048, 1.043, 1.037, 1.031, 1.025, 1.019, 1.014, 1.01, 1.006, 1.004, 1.001, 1.0, 0.998, 0.998, 0.997, 0.997, 0.997, 0.997, 0.998, 0.998, 0.998, 1);--spring-b:linear(0, 0.039, 0.139, 0.273, 0.422, 0.57, 0.706, 0.823, 0.92, 0.993, 1.046, 1.079, 1.097, 1.102, 1.098, 1.088, 1.074, 1.059, 1.044, 1.03, 1.018, 1.008, 1.001, 0.995, 0.992, 0.99, 0.99, 0.99, 0.991, 0.992, 0.994, 0.995, 0.997, 0.998, 0.999, 1.0, 1.0, 1.001, 1.001, 1.001, 1)}}
+/* Press: dips quickly, springs back with a touch of inertia. */
+.btn,.chip,.ropt,.itile,.ex-row,.ex-pick,.mnav,.restpill,.numbtn,.pg-chip,.dc,.nv,.nv-c,.ib,.jdel,.tg,.sheet-x{transition:transform var(--spring-d) var(--spring),background-color .25s ease,box-shadow .25s ease,opacity .2s ease,color .2s ease}
+button:not(:disabled):active{transform:scale(.964);transition:transform .1s ease-out,background-color .25s ease,box-shadow .25s ease,opacity .2s ease}
+/* Choosing something gives it a small elastic pop. */
+@keyframes springPop{0%{transform:scale(.946)}100%{transform:scale(1)}}
+.ropt.on,.chip.on,.pg-chip.on,.ex-row.on,.tg.on,.ex-tick{animation:springPop var(--spring-d) var(--spring) both}
 .seg{transition:background-color .45s ease}
 .rm button:active{transform:none}
-@media (prefers-reduced-motion: reduce){button:active{transform:none}}
+.rm .ropt.on,.rm .chip.on,.rm .pg-chip.on,.rm .ex-row.on,.rm .tg.on,.rm .ex-tick{animation:none}
+@media (prefers-reduced-motion: reduce){button:active{transform:none}.ropt.on,.chip.on,.pg-chip.on,.ex-row.on,.tg.on,.ex-tick{animation:none}}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -233,7 +240,7 @@ button.dc.d-tap{cursor:pointer}
 .card{background:#1C1D21;border-radius:28px;padding:20px}
 .tag{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#26272C;color:#D4D4D8;font-size:13px;font-weight:500}
 .tg{appearance:none;cursor:pointer;width:52px;height:32px;flex:none;border-radius:999px;background:#34353B;border:0;position:relative;padding:0}
-.tg::after{content:'';position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#F5F5F2;transition:left .2s ease}
+.tg::after{content:'';position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#F5F5F2;transition:left var(--spring-d) var(--spring),background-color .2s ease}
 .tg.on{background:#DDF58B}
 .tg.on::after{left:24px;background:#111214}
 .field{width:100%;background:#1C1D21;color:#F5F5F2;border:1.5px solid #2E2F35;border-radius:20px;font:inherit;font-size:16px;padding:14px 16px;outline:none;resize:none}
@@ -327,13 +334,25 @@ button.dc.d-tap{cursor:pointer}
 .d-blank{visibility:hidden}
 .d-today{box-shadow:0 0 0 2px #F5F5F2}
 .nav{position:absolute;left:18px;right:18px;bottom:18px;height:72px;border-radius:999px;background:#F5F5F2;display:flex;align-items:center;justify-content:space-between;padding:0 10px;box-shadow:0 16px 40px rgba(0,0,0,.55)}
-.nv{appearance:none;border:0;cursor:pointer;min-width:52px;height:52px;border-radius:999px;background:#E4E4DE;color:#111214;display:flex;align-items:center;justify-content:center;padding:0 15px;flex:none;transition:background-color .25s ease,padding .25s ease}
-.nv-l{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;font-size:13px;font-weight:700;transition:max-width .3s ease,opacity .2s ease,margin .3s ease}
-.nv.on{padding:0 16px 0 14px}.nv.on .nv-l{max-width:90px;opacity:1;margin-left:7px}
-@media (max-width:380px){.nv.on .nv-l{max-width:0;opacity:0;margin-left:0}.nv.on{padding:0 15px}}
-.rm .nv,.rm .nv-l{transition:none}
+.nv{appearance:none;border:0;cursor:pointer;width:52px;min-width:44px;height:52px;border-radius:999px;background:#E4E4DE;color:#111214;display:flex;align-items:center;justify-content:center;padding:0 11px;flex:0 1 52px;transition:background-color .25s ease}
+.nv.on{width:auto;min-width:52px;flex:none}
+.nv-l{font-size:13px;font-weight:700}
+/* The tapped tab says its name, then folds back to an icon so the bar sits centred again. */
+@keyframes nvOpen{0%{width:0;margin-left:0;opacity:0}100%{width:max-content;margin-left:7px;opacity:1}}
+@keyframes nvClose{0%{width:max-content;margin-left:7px;opacity:1}70%{opacity:.6}100%{width:0;margin-left:0;opacity:0}}
+.nv-l{display:inline-block;width:0;max-width:none;opacity:0;overflow:hidden;white-space:nowrap;vertical-align:middle}
+.nv.on .nv-l,.nv-c.on .nv-l{animation:nvOpen .75s var(--spring-b) both,nvClose .45s cubic-bezier(.4,0,.2,1) 1.25s forwards}
+@keyframes nvPop{0%{transform:scale(.937)}100%{transform:scale(1)}}
+@keyframes nvSettle{0%{transform:scale(1.036,.964)}100%{transform:scale(1)}}
+.nv.on,.nv-c.on{animation:nvPop .75s var(--spring-b) both,nvSettle .5s var(--spring-b) 1.68s forwards}
+.rm .nv.on,.rm .nv-c.on{animation:none}
+@media (prefers-reduced-motion: reduce){.nv.on,.nv-c.on{animation:none}}
+.nv-c .nv-l{color:#DDF58B}
+@media (max-width:380px){.nv.on .nv-l,.nv-c.on .nv-l{animation:none}}
+.rm .nv.on .nv-l,.rm .nv-c.on .nv-l{animation:none}
+@media (prefers-reduced-motion: reduce){.nv.on .nv-l,.nv-c.on .nv-l{animation:none}}
 .nv.on{background:#B7A6F6}
-.nv-c{appearance:none;border:0;cursor:pointer;width:60px;height:60px;border-radius:50%;background:#111214;display:flex;align-items:center;justify-content:center;padding:0}
+.nv-c{appearance:none;border:0;cursor:pointer;min-width:60px;height:60px;border-radius:999px;background:#111214;display:flex;align-items:center;justify-content:center;padding:0 13px;flex:none}
 .stepper{display:flex;align-items:center;justify-content:space-between;background:#E7E7E0;border-radius:22px;padding:8px}
 .stepper .v{font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.02em;line-height:1;color:#111214}
 .num{width:32px;height:32px;flex:none;border-radius:50%;background:#26272C;color:#F5F5F2;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
@@ -358,7 +377,7 @@ button.dc.d-tap{cursor:pointer}
 .rm .bw-in,.rm .bw-out{display:none}.rm .bw-still{display:flex}
 @media (prefers-reduced-motion: reduce){.bw-in,.bw-out{display:none}.bw-still{display:flex}}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.rise{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.rise{animation:rise .6s var(--spring) both}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(221,245,139,.5)}50%{box-shadow:0 0 0 12px rgba(221,245,139,0)}}
 .listening{animation:pulse 1.6s ease-in-out infinite;background:#DDF58B !important;color:#111214 !important}
 .rm .breathe,.rm .rise,.rm .listening{animation:none}
@@ -380,7 +399,7 @@ button.dc.d-tap{cursor:pointer}
 @keyframes coachPulse{0%{box-shadow:0 0 0 0 rgba(221,245,139,.38),0 0 0 0 rgba(183,166,246,.22)}60%{box-shadow:0 0 0 9px rgba(221,245,139,0),0 0 0 16px rgba(183,166,246,0)}100%{box-shadow:0 0 0 0 rgba(221,245,139,0),0 0 0 0 rgba(183,166,246,0)}}
 @keyframes coachDisc{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .nv-c.pulse{position:relative;isolation:isolate;background:transparent}
-.nv-c.pulse::before{content:'';position:absolute;inset:0;border-radius:50%;background:#111214;z-index:-1;animation:coachDisc 3.2s ease-in-out infinite,coachPulse 3.2s ease-out infinite}
+.nv-c.pulse::before{content:'';position:absolute;inset:0;border-radius:999px;background:#111214;z-index:-1;animation:coachDisc 3.2s ease-in-out infinite,coachPulse 3.2s ease-out infinite}
 .rm .nv-c.pulse::before{animation:none}
 @media (prefers-reduced-motion: reduce){.nv-c.pulse::before{animation:none}}
 @keyframes goGlow{0%,100%{box-shadow:0 0 0 0 rgba(221,245,139,.35)}50%{box-shadow:0 0 0 10px rgba(221,245,139,0)}}
@@ -1625,7 +1644,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 69</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 77</p>
 </div>
 </sc-if>
 
@@ -1921,7 +1940,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <nav class="nav {{tourNavCls}}" aria-label="Main">
   <button class="nv {{navOn.today}} {{tourHi.today}}" aria-label="Today" onClick="{{nav.today}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span class="nv-l" aria-hidden="true">Today</span></button>
   <button class="nv {{navOn.routine}} {{tourHi.routine}}" aria-label="Your week" onClick="{{nav.routine}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"></rect><path d="M4 10h16M8 3v4M16 3v4"></path></svg><span class="nv-l" aria-hidden="true">Your week</span></button>
-  <button class="nv-c pulse {{tourHi.companion}}" aria-label="Spark AI Coach" onClick="{{nav.companion}}"><img src="img/logo.png" alt="" style="width: 34px; height: auto"></button>
+  <button class="nv-c pulse {{navOn.companion}} {{tourHi.companion}}" aria-label="Spark" onClick="{{nav.companion}}"><img src="img/logo.png" alt="" style="width: 34px; height: auto"><span class="nv-l" aria-hidden="true">Spark</span></button>
   <button class="nv {{navOn.journal}} {{tourHi.journal}}" aria-label="Journal" onClick="{{nav.journal}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3z"></path><path d="M5 18a3 3 0 0 1 3-3h11M9 8h6"></path></svg><span class="nv-l" aria-hidden="true">Journal</span></button>
   <button class="nv {{navOn.settings}} {{tourHi.settings}}" aria-label="Settings" onClick="{{nav.settings}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"></path></svg><span class="nv-l" aria-hidden="true">Settings</span></button>
 </nav>
@@ -4456,7 +4475,7 @@ class Component extends DCLogic {
     const go = function(k){ return function(){ self.go(k); }; };
     const nav = {}; ['today','checkin','routine','prep','active','adapt','journal','companion','memories','settings'].forEach(function(k){ nav[k] = go(k); }); nav.progress = go('today');
     nav.companion = function(){ self.go('companion'); self.chatOnOpen(); };
-    const navOn = {today:'',routine:'',journal:'',settings:''};
+    const navOn = {today:'',routine:'',journal:'',settings:'',companion:''};
     if (navOn[scr] !== undefined) navOn[scr] = 'on';
     if (scr === 'memories' && navOn[st.back] !== undefined) navOn[st.back] = 'on';
     const todayFoci = self.envFoci(st);
