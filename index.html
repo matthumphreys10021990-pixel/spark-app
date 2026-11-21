@@ -43,6 +43,13 @@ a{color:#DDF58B}a:hover{color:#F5F5F2}
 .plan-box{border-radius:24px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:inset 0 0 0 1.5px #2A2B30}
 .plan-box.hi{box-shadow:inset 0 0 0 2px #DDF58B}
 .plan-li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
+.pg-chip{border:1px solid #34353B;background:transparent;color:#F5F5F2;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}.pg-chip.on{background:#F5F5F2;color:#111214;border-color:#F5F5F2}
+button{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):not(.nv-c):active{transform:scale(.96)}
+.btn,.chip,.ropt,.itile,.ex-row,.ex-pick,.mnav,.restpill,.numbtn,.pg-chip,.dc{transition:transform .14s ease,background-color .2s ease,box-shadow .2s ease,opacity .2s ease}
+.seg{transition:background-color .45s ease}
+.rm button:active{transform:none}
+@media (prefers-reduced-motion: reduce){button:active{transform:none}}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -74,7 +81,7 @@ button.dc.d-tap{cursor:pointer}
 .ex-row .ex-tick{opacity:0;color:#DDF58B;flex:none}
 .ex-row.on{box-shadow:inset 0 0 0 1.5px #DDF58B}
 .ex-row.on .ex-tick{opacity:1}
-.mnav{appearance:none;cursor:pointer;width:36px;height:36px;border-radius:50%;border:0;background:#26272C;color:#F5F5F2;display:flex;align-items:center;justify-content:center;flex:none}
+.mnav{appearance:none;cursor:pointer;width:40px;height:40px;border-radius:50%;border:0;background:#26272C;color:#F5F5F2;display:flex;align-items:center;justify-content:center;flex:none}
 .add-tile{appearance:none;cursor:pointer;font:inherit;color:#F5F5F2;width:100%;border:0;border-radius:24px;background:#1C1D21;box-shadow:inset 0 0 0 1.5px #2A2B30;padding:14px 16px;display:flex;align-items:center;gap:14px}
 .add-plus{width:44px;height:44px;flex:none;border-radius:50%;background:#DDF58B;color:#111214;display:flex;align-items:center;justify-content:center}
 .adj-note{background:rgba(183,166,246,.1);box-shadow:inset 0 0 0 1.5px rgba(183,166,246,.28);border-radius:22px;padding:14px 16px;display:flex;flex-direction:column}
@@ -231,7 +238,7 @@ button.dc.d-tap{cursor:pointer}
 .tg.on::after{left:24px;background:#111214}
 .field{width:100%;background:#1C1D21;color:#F5F5F2;border:1.5px solid #2E2F35;border-radius:20px;font:inherit;font-size:16px;padding:14px 16px;outline:none;resize:none}
 .field:focus{border-color:#B7A6F6}
-.field::placeholder{color:#71717A}
+.field::placeholder{color:#8E8E96}
 /* photo slots: styled until real photography is dropped in */
 .ph{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 78% 18%,rgba(183,166,246,.55),rgba(183,166,246,0) 55%),radial-gradient(90% 70% at 10% 100%,rgba(221,245,139,.28),rgba(221,245,139,0) 60%),linear-gradient(160deg,#2C2C35 0%,#18181C 100%)}
 .ph2{position:relative;overflow:hidden;background:radial-gradient(110% 90% at 20% 15%,rgba(166,216,250,.5),rgba(166,216,250,0) 55%),radial-gradient(90% 70% at 90% 100%,rgba(183,166,246,.35),rgba(183,166,246,0) 60%),linear-gradient(200deg,#2A2E36 0%,#16171B 100%)}
@@ -320,7 +327,11 @@ button.dc.d-tap{cursor:pointer}
 .d-blank{visibility:hidden}
 .d-today{box-shadow:0 0 0 2px #F5F5F2}
 .nav{position:absolute;left:18px;right:18px;bottom:18px;height:72px;border-radius:999px;background:#F5F5F2;display:flex;align-items:center;justify-content:space-between;padding:0 10px;box-shadow:0 16px 40px rgba(0,0,0,.55)}
-.nv{appearance:none;border:0;cursor:pointer;width:52px;height:52px;border-radius:50%;background:#E4E4DE;color:#111214;display:flex;align-items:center;justify-content:center;padding:0}
+.nv{appearance:none;border:0;cursor:pointer;min-width:52px;height:52px;border-radius:999px;background:#E4E4DE;color:#111214;display:flex;align-items:center;justify-content:center;padding:0 15px;flex:none;transition:background-color .25s ease,padding .25s ease}
+.nv-l{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;font-size:13px;font-weight:700;transition:max-width .3s ease,opacity .2s ease,margin .3s ease}
+.nv.on{padding:0 16px 0 14px}.nv.on .nv-l{max-width:90px;opacity:1;margin-left:7px}
+@media (max-width:380px){.nv.on .nv-l{max-width:0;opacity:0;margin-left:0}.nv.on{padding:0 15px}}
+.rm .nv,.rm .nv-l{transition:none}
 .nv.on{background:#B7A6F6}
 .nv-c{appearance:none;border:0;cursor:pointer;width:60px;height:60px;border-radius:50%;background:#111214;display:flex;align-items:center;justify-content:center;padding:0}
 .stepper{display:flex;align-items:center;justify-content:space-between;background:#E7E7E0;border-radius:22px;padding:8px}
@@ -616,7 +627,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <span style="height: 12px; display: flex; align-items: center; justify-content: center" aria-label="{{d.aria}}" role="img">
           <sc-if value="{{d.isDone}}" hint-placeholder-val="{{ false }}"><svg width="13" height="12" viewBox="0 0 13 12" aria-hidden="true"><path d="M1.5 6.5l3.2 3.2L11.5 2" fill="none" stroke="#DDF58B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></sc-if>
           <sc-if value="{{d.isPlanned}}" hint-placeholder-val="{{ false }}"><span style="width: 7px; height: 7px; border-radius: 50%; background: #B7A6F6"></span></sc-if>
-          <sc-if value="{{d.isRested}}" hint-placeholder-val="{{ false }}"><span style="width: 10px; height: 2.5px; border-radius: 999px; background: #71717A"></span></sc-if>
+          <sc-if value="{{d.isRested}}" hint-placeholder-val="{{ false }}"><span style="width: 10px; height: 2.5px; border-radius: 999px; background: #8E8E96"></span></sc-if>
         </span>
         </sc-if>
       </button>
@@ -720,7 +731,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 
   <section aria-label="Your progress" style="padding: 0 20px; margin-top: 34px">
     <h2 class="d" style="font-size: 28px">Your progress</h2>
-    <p class="mut" style="margin: 6px 0 0; font-size: 15px">What you did, not what you didn’t.</p>
+    <p style="margin: 8px 0 0; font-size: 17px; font-weight: 600; line-height: 1.4">{{pg.headline}}</p>
     <sc-if value="{{progEmpty}}" hint-placeholder-val="{{ false }}">
     <div class="card" style="margin-top: 14px; display: flex; gap: 14px; align-items: flex-start">
       <span style="width: 44px; height: 44px; flex: none; border-radius: 50%; background: #B7A6F6; color: #111214; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M7 15l4-4 3 3 5-6"></path></svg></span>
@@ -728,36 +739,39 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </div>
     </sc-if>
     <sc-if value="{{progHas}}" hint-placeholder-val="{{ true }}">
-  <sc-if value="{{showStrength}}" hint-placeholder-val="{{ false }}">
-  <div class="card" style="margin-top: 14px">
-    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
-      <span style="min-width: 0"><span style="display: block; font-weight: 600; font-size: 17px">Your strength</span><span class="mut" style="font-size: 14px">{{strength.sub}}</span></span>
-      <span class="row" style="flex: none; gap: 6px"><sc-for list="{{strength.pills}}" as="p" hint-placeholder-count="1"><span style="border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; {{p.st}}">{{p.txt}}</span></sc-for></span>
+  <div style="display: grid; grid-template-columns: repeat({{pg.tileN}}, minmax(0, 1fr)); gap: 8px; margin-top: 16px">
+    <sc-for list="{{pg.tiles}}" as="t" hint-placeholder-count="3"><div style="border-radius: 20px; padding: 14px; {{t.st}}"><span class="n9" style="font-size: 26px; display: block; color: {{t.nc}}">{{t.val}}</span><span style="display: block; font-size: 12px; font-weight: 500; line-height: 1.35; margin-top: 6px; color: #C4C4CC">{{t.label}}</span><sc-if value="{{t.hasSub}}" hint-placeholder-val="{{ true }}"><span style="display: block; font-size: 12px; font-weight: 700; line-height: 1.35; margin-top: 4px; color: #DDF58B">{{t.sub}}</span></sc-if></div></sc-for>
+  </div>
+  <sc-if value="{{pg.hasLifts}}" hint-placeholder-val="{{ true }}">
+  <h3 class="d" style="font-size: 20px; margin-top: 26px">Your strength</h3>
+  <div class="card" style="margin-top: 12px; padding-bottom: 12px">
+    <div class="row" style="justify-content: space-between; margin-top: 0; background: #111214; border-radius: 999px; padding: 4px; gap: 4px">
+      <sc-if value="{{pg.many}}" hint-placeholder-val="{{ true }}"><button class="mnav" aria-label="Previous exercise" onClick="{{pg.prev}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button></sc-if>
+      <button class="ex-pick" aria-label="Choose an exercise, showing {{pg.name}}" onClick="{{pg.openPick}}"><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{pg.name}}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 9l6 6 6-6"></path></svg></button>
+      <sc-if value="{{pg.many}}" hint-placeholder-val="{{ true }}"><button class="mnav" aria-label="Next exercise" onClick="{{pg.next}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-if>
     </div>
-    <div class="row" style="justify-content: space-between; margin-top: 12px; background: #111214; border-radius: 999px; padding: 4px; gap: 4px">
-      <sc-if value="{{strength.many}}" hint-placeholder-val="{{ true }}"><button class="mnav" aria-label="Previous exercise" onClick="{{strength.prev}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button></sc-if>
-      <button class="ex-pick" aria-label="Choose an exercise, showing {{strength.name}}" onClick="{{strength.openPick}}"><span style="min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{strength.name}}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 9l6 6 6-6"></path></svg></button>
-      <sc-if value="{{strength.many}}" hint-placeholder-val="{{ true }}"><button class="mnav" aria-label="Next exercise" onClick="{{strength.next}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-if>
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 14px">
+      <span style="min-width: 0"><span class="mut" style="display: block; font-size: 14px; line-height: 1.4; padding-top: 4px">{{pg.c.sub}}</span></span>
+      <span style="flex: none; text-align: right"><sc-if value="{{pg.c.up}}" hint-placeholder-val="{{ true }}"><span class="n9" style="font-size: 24px; color: #DDF58B; display: block">{{pg.c.gain}}</span></sc-if><sc-if value="{{pg.c.flat}}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 14px; font-weight: 600; color: #A1A1AA; padding-top: 3px">Holding steady</span></sc-if></span>
     </div>
-    <sc-if value="{{strength.showModes}}" hint-placeholder-val="{{ true }}">
-    <div class="mode-seg" role="group" aria-label="Show"><sc-for list="{{strength.modes}}" as="m" hint-placeholder-count="3"><button class="{{m.cls}}" aria-pressed="{{m.on}}" onClick="{{m.pick}}"><i style="background: {{m.dot}}"></i>{{m.label}}</button></sc-for></div>
+    <sc-if value="{{pg.c.multi}}" hint-placeholder-val="{{ true }}">
+    <svg viewBox="0 0 300 108" width="100%" height="108" role="img" aria-label="{{pg.c.aria}}" style="margin-top: 8px; display: block">
+      <defs><linearGradient id="{{pg.c.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{pg.c.color}}" stop-opacity=".28"></stop><stop offset="1" stop-color="{{pg.c.color}}" stop-opacity="0"></stop></linearGradient></defs>
+      <path d="M14 100H286" stroke="#26272C" stroke-width="1"></path>
+      <path d="{{pg.c.area}}" fill="url(#{{pg.c.gid}})"></path>
+      <polyline points="{{pg.c.pts}}" fill="none" stroke="{{pg.c.color}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+      <sc-for list="{{pg.c.dots}}" as="d" hint-placeholder-count="5"><circle cx="{{d.cx}}" cy="{{d.cy}}" r="3" fill="{{pg.c.color}}"></circle></sc-for>
+      <circle cx="{{pg.c.fx}}" cy="{{pg.c.fy}}" r="4.5" fill="#1C1D21" stroke="{{pg.c.color}}" stroke-width="2.5"></circle>
+      <circle cx="{{pg.c.lx}}" cy="{{pg.c.ly}}" r="6" fill="{{pg.c.color}}" stroke="#1C1D21" stroke-width="3"></circle>
+      <text x="{{pg.c.fx}}" y="{{pg.c.fty}}" fill="#A1A1AA" font-size="13" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="start">{{pg.c.startTxt}}</text>
+      <text x="{{pg.c.lx}}" y="{{pg.c.lty}}" fill="#F5F5F2" font-size="14" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="end">{{pg.c.lastTxt}}</text>
+      </svg>
     </sc-if>
-    <svg viewBox="0 0 340 150" width="100%" height="150" role="img" aria-label="{{strength.aria}}" style="margin-top: 12px">
-      <defs><linearGradient id="spW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B7A6F6" stop-opacity=".35"></stop><stop offset="1" stop-color="#B7A6F6" stop-opacity="0"></stop></linearGradient><linearGradient id="spR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DDF58B" stop-opacity=".35"></stop><stop offset="1" stop-color="#DDF58B" stop-opacity="0"></stop></linearGradient></defs>
-      <path d="M24 40H316M24 85H316M24 130H316" stroke="#26272C" stroke-width="1"></path>
-      <sc-for list="{{strength.lines}}" as="l" hint-placeholder-count="1">
-        <sc-if value="{{l.multi}}" hint-placeholder-val="{{ true }}"><path d="{{l.area}}" fill="{{l.fill}}"></path><polyline points="{{l.pts}}" fill="none" stroke="{{l.color}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline></sc-if>
-        <sc-for list="{{l.dots}}" as="d" hint-placeholder-count="5"><circle cx="{{d.cx}}" cy="{{d.cy}}" r="3.5" fill="{{d.color}}"></circle></sc-for>
-        <circle cx="{{l.lx}}" cy="{{l.ly}}" r="6" fill="{{l.color}}" stroke="#111214" stroke-width="3"></circle>
-      </sc-for>
-      <text x="24" y="148" fill="#71717A" font-size="11" font-family="Outfit, system-ui, sans-serif">{{strength.from}}</text>
-      <text x="316" y="148" fill="#F5F5F2" font-size="11" font-family="Outfit, system-ui, sans-serif" text-anchor="end">{{strength.now}}</text>
-    </svg>
-    <sc-if value="{{strength.both}}" hint-placeholder-val="{{ false }}"><div class="row" style="gap: 16px; margin-top: 6px; font-size: 13px"><span class="row" style="gap: 6px"><i style="width: 10px; height: 10px; border-radius: 50%; background: #B7A6F6"></i>Weight: {{strength.legendW}}</span><span class="row" style="gap: 6px"><i style="width: 10px; height: 10px; border-radius: 50%; background: #DDF58B"></i>Reps: {{strength.legendR}}</span></div></sc-if>
-    <sc-if value="{{strength.single}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 8px 0 0; font-size: 13px; line-height: 1.45">{{strength.hint}}</p></sc-if>
+    <sc-if value="{{pg.c.single}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 12px 0 4px; font-size: 14px; line-height: 1.5">{{pg.c.hint}}</p></sc-if>
   </div>
   </sc-if>
-  <div class="card" style="margin-top: 12px">
+  <sc-if value="{{pg.noLifts}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top: 14px"><span style="display: block; font-weight: 600; font-size: 17px">Your strength</span><p class="mut" style="margin: 6px 0 0; font-size: 14px; line-height: 1.5">{{chartEmptyText}}</p></div></sc-if>
+  <div class="card" style="margin-top: 16px">
     <span style="display: block; font-weight: 600; font-size: 17px">Workout consistency</span>
     <div class="row" style="justify-content: space-between; margin-top: 10px; background: #111214; border-radius: 999px; padding: 4px">
       <span class="row" style="gap: 4px; width: 100%; justify-content: space-between"><button class="mnav" aria-label="Previous month" style="{{progNav.prevSt}}" onClick="{{progNav.prev}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font-size: 15px; font-weight: 600; text-align: center" aria-live="polite">{{progNav.label}}</span><button class="mnav" aria-label="Next month" style="{{progNav.nextSt}}" onClick="{{progNav.next}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></span></div>
@@ -768,41 +782,17 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </div>
     <p class="mut" style="margin: 14px 2px 0; font-size: 13px">Tap a green day to see that day’s workout.</p>
   </div>
-  <sc-if value="{{showChart}}" hint-placeholder-val="{{ true }}">
-  <div class="card" style="margin-top: 12px">
-    <div class="row" style="justify-content: space-between; align-items: flex-start">
-      <span><span style="display: block; font-weight: 600; font-size: 17px">Chest press</span><span class="mut" style="font-size: 14px">Working weight, last 6 weeks</span></span>
-      <span style="background: #DDF58B; color: #111214; border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px">{{chart.gain}}</span>
-    </div>
-    <svg viewBox="0 0 340 150" width="100%" height="150" role="img" aria-label="Chest press working weight rising from 40 to {{chart.last}} kilograms over six weeks" style="margin-top: 12px">
-      <defs><linearGradient id="spArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DDF58B" stop-opacity=".35"></stop><stop offset="1" stop-color="#DDF58B" stop-opacity="0"></stop></linearGradient></defs>
-      <path d="M24 40H316M24 85H316M24 130H316" stroke="#26272C" stroke-width="1"></path>
-      <path d="{{chart.area}}" fill="url(#spArea)"></path>
-      <polyline points="{{chart.pts}}" fill="none" stroke="#DDF58B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
-      <circle cx="{{chart.lx}}" cy="{{chart.ly}}" r="6" fill="#DDF58B" stroke="#111214" stroke-width="3"></circle>
-      <text x="24" y="148" fill="#71717A" font-size="11" font-family="Outfit, system-ui, sans-serif">6 weeks ago</text>
-      <text x="316" y="148" fill="#F5F5F2" font-size="11" font-family="Outfit, system-ui, sans-serif" text-anchor="end">Now: {{chart.last}} kg</text>
-    </svg>
-  </div>
-  </sc-if>
-  <sc-if value="{{chartEmpty}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top: 12px"><span style="display: block; font-weight: 600; font-size: 17px">Your strength</span><p class="mut" style="margin: 6px 0 0; font-size: 14px; line-height: 1.5">{{chartEmptyText}}</p></div></sc-if>
   <h3 class="d" style="font-size: 20px; margin-top: 26px">Personal bests</h3>
   <sc-if value="{{pbEmpty}}" hint-placeholder-val="{{ false }}"><div class="card" style="margin-top: 12px"><p class="mut" style="margin: 0; font-size: 14px; line-height: 1.5">Your personal bests will show up here as you set them.</p></div></sc-if>
   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px">
-    <sc-for list="{{pbList}}" as="p" hint-placeholder-count="4"><div style="border-radius: 22px; padding: 16px; {{p.st}}"><span class="n9" style="font-size: 26px; display: block">{{p.val}}</span><span style="display: block; font-weight: 600; font-size: 15px; margin-top: 6px">{{p.name}}</span><span style="font-size: 13px; opacity: .7">{{p.when}}</span></div></sc-for>
+    <sc-for list="{{pbList}}" as="p" hint-placeholder-count="4"><div style="border-radius: 22px; padding: 16px; {{p.st}}"><span class="n9" style="font-size: 26px; display: block; color: var(--pbn)">{{p.val}}</span><span style="display: block; font-weight: 600; font-size: 15px; margin-top: 6px">{{p.name}}</span><span style="font-size: 13px; opacity: .7">{{p.when}}</span></div></sc-for>
   </div>
+  <sc-if value="{{pg.hasAdapt}}" hint-placeholder-val="{{ true }}">
   <h3 class="d" style="font-size: 20px; margin-top: 26px">Wins that count too</h3>
   <div class="card" style="margin-top: 12px; padding: 6px 20px">
-    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">{{adaptTotal}}</span><span style="font-size: 15px; line-height: 1.4">times you adapted instead of leaving</span></div>
-    <sc-if value="{{showDemoWins}}" hint-placeholder-val="{{ true }}">
-    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">4</span><span style="font-size: 15px; line-height: 1.4">walks on low-⁠energy days</span></div>
-    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">1st</span><span style="font-size: 15px; line-height: 1.4">morning session, and your strongest yet</span></div>
-    </sc-if>
-    <sc-if value="{{freshWins}}" hint-placeholder-val="{{ false }}">
-    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">{{sessCount}}</span><span style="font-size: 15px; line-height: 1.4">workouts done with Spark</span></div>
-    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">{{jCount}}</span><span style="font-size: 15px; line-height: 1.4">journal entries written</span></div>
-    </sc-if>
+    <div class="line"><span class="n9" style="font-size: 26px; color: #B7A6F6; width: 56px">{{adaptTotal}}</span><span style="font-size: 15px; line-height: 1.4">{{pg.adaptLabel}}</span></div>
   </div>
+  </sc-if>
   <button class="btn b-surf full" style="margin-top: 16px" onClick="{{nav.memories}}">Insights and memories</button>
     </sc-if>
   </section>
@@ -1013,7 +1003,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div class="row" style="gap: 12px">
       <button class="ib ws-ib" aria-label="Pause" onClick="{{pause}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5"></rect><rect x="14" y="5" width="4" height="14" rx="1.5"></rect></svg></button>
       <span style="flex: 1; min-width: 0">
-        <span class="row" style="justify-content: space-between; gap: 8px"><span class="ws-mut" style="font-size: 13px; font-weight: 600">Exercise {{act.pos}} of {{act.count}}</span><sc-if value="{{quiet}}" hint-placeholder-val="{{ false }}"><button class="ws-mut" onClick="{{quietOff}}" style="appearance: none; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; padding: 0">Quiet mode · Turn off</button></sc-if></span>
+        <span class="row" style="justify-content: space-between; gap: 8px"><span class="ws-mut" style="font-size: 13px; font-weight: 600">Exercise {{act.pos}} of {{act.count}} <span style="opacity: .75; font-weight: 500">· {{act.left}}</span></span><sc-if value="{{quiet}}" hint-placeholder-val="{{ false }}"><button class="ws-mut" onClick="{{quietOff}}" style="appearance: none; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; padding: 0">Quiet mode · Turn off</button></sc-if></span>
         <span class="row {{barsCls}}" style="gap: 5px; margin-top: 8px"><sc-for list="{{act.bars}}" as="b" hint-placeholder-count="4"><span class="seg {{b.cls}}" style="height: 6px"></span></sc-for></span>
       </span>
       <button class="ws-end" onClick="{{finish}}">End</button>
@@ -1143,7 +1133,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
                 <radialGradient id="spLime" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#E9FBAE"></stop><stop offset=".6" stop-color="#DDF58B"></stop><stop offset="1" stop-color="#C6DE74"></stop></radialGradient>
                 <radialGradient id="spLav" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#CBBEFA"></stop><stop offset=".6" stop-color="#B7A6F6"></stop><stop offset="1" stop-color="#9D8BE4"></stop></radialGradient>
                 <radialGradient id="spSky" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#C2E5FC"></stop><stop offset=".6" stop-color="#A6D8FA"></stop><stop offset="1" stop-color="#8BC0E8"></stop></radialGradient>
-                <radialGradient id="spBearing" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#D4D4D8"></stop><stop offset=".55" stop-color="#A1A1AA"></stop><stop offset="1" stop-color="#71717A"></stop></radialGradient>
+                <radialGradient id="spBearing" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#D4D4D8"></stop><stop offset=".55" stop-color="#A1A1AA"></stop><stop offset="1" stop-color="#8E8E96"></stop></radialGradient>
                 <radialGradient id="spBall" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#A1A1AA"></stop><stop offset="1" stop-color="#6B6B73"></stop></radialGradient>
                 <radialGradient id="spCap" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FAFAF7"></stop><stop offset=".6" stop-color="#F3F3EE"></stop><stop offset="1" stop-color="#DCDCD4"></stop></radialGradient>
                 <mask id="spHoles" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200"><rect x="0" y="0" width="200" height="200" fill="#FFFFFF"></rect><circle cx="100" cy="34" r="5.4" fill="#000000"></circle><circle cx="157" cy="133" r="5.4" fill="#000000"></circle><circle cx="43" cy="133" r="5.4" fill="#000000"></circle></mask>
@@ -1269,6 +1259,11 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <button onClick="{{goCalm}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: #1C1D21; color: #F5F5F2; border: 0; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
       <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#B7A6F6" stroke-width="3"></circle><circle cx="20" cy="20" r="8" fill="#B7A6F6"></circle></svg>
       <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 17px">I'm overwhelmed</span><span class="mut" style="font-size: 14px">Take me somewhere quiet first</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+    <button onClick="{{endHere}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: transparent; color: #F5F5F2; border: 1.5px solid #34353B; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: #26272C; display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="#F5F5F2" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"></rect></svg></span>
+      <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 17px">End the workout here</span><span class="mut" style="font-size: 14px">Everything you’ve logged is saved</span></span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
     </button>
     <sc-if value="{{adaptAI}}" hint-placeholder-val="{{ false }}">
@@ -1398,7 +1393,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <button class="chip" onClick="{{nav.memories}}">Insights</button>
   </div>
   <p class="mut" style="margin: 8px 0 18px; font-size: 15px">Private to you. Spark only learns from entries you allow.</p>
-  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}"><div class="toast rise" style="margin-bottom: 14px">{{toast}}</div></sc-if>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}"><div class="toast rise" style="margin-bottom: 14px; justify-content: space-between; gap: 12px"><span>{{toast}}</span><sc-if value="{{hasJUndo}}" hint-placeholder-val="{{ false }}"><button class="btn sm" style="background: #111214; color: #F5F5F2; flex: none" onClick="{{jUndoNow}}">Undo</button></sc-if></div></sc-if>
 
   <sc-if value="{{notComposing}}" hint-placeholder-val="{{ true }}">
     <button onClick="{{compose}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; text-align: left; border: 0; background: #B7A6F6; color: #111214; border-radius: 28px; padding: 20px; display: flex; align-items: center; gap: 14px; position: relative; overflow: hidden">
@@ -1630,7 +1625,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 63</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 69</p>
 </div>
 </sc-if>
 
@@ -1641,7 +1636,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <h1 class="d" style="font-size: 34px; margin-top: 20px">{{rv.title}}</h1>
   <p class="mut" style="margin: 8px 0 0; font-size: 15px">{{rv.sub}}</p>
   <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 18px">
-    <div style="background: #DDF58B; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 24px; display: block">{{rv.volTxt}}</span><span style="font-size: 12px; font-weight: 500">{{rv.volUnit}}</span></div>
+    <div style="background: #DDF58B; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 22px; display: block; white-space: nowrap">{{rv.volTxt}}</span><span style="font-size: 12px; font-weight: 500">{{rv.volUnit}}</span></div>
     <div style="background: #B7A6F6; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 24px; display: block">{{rv.sets}}</span><span style="font-size: 12px; font-weight: 500">Sets done</span></div>
     <div style="background: #F5F5F2; color: #111214; border-radius: 20px; padding: 14px"><span class="n9" style="font-size: 24px; display: block">{{rv.changeTxt}}</span><span style="font-size: 12px; font-weight: 500">{{rv.changeSub}}</span></div>
   </div>
@@ -1681,7 +1676,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <button aria-label="Close" onClick="{{ciAskClose}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
   <div class="rise" role="dialog" aria-label="Quick check-in first?" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Quick check-in first?</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{ciAskClose}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
-    <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">Four quick taps on energy, mood, stress and motivation help me pitch today’s session right. Skip it and I’ll assume you’re feeling good and up for a proper session.</p>
+    <p class="mut" style="margin: 0; font-size: 15px; line-height: 1.5">Four quick taps so today fits how you feel. Skip and I’ll plan a normal session.</p>
     <button class="btn b-lime full" onClick="{{ciAskDo}}">Do the check-in</button>
     <button class="btn b-ghost full" onClick="{{ciAskSkip}}">Skip, I’m good to go</button>
   </div>
@@ -1689,13 +1684,13 @@ body.kb [data-chat-wrap]{bottom:0!important}
 </sc-if>
 
 <!-- ================= EXERCISE PICKER ================= -->
-<sc-if value="{{strength.pickOn}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{pg.pickOn}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end">
-  <button aria-label="Close" onClick="{{strength.closePick}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
+  <button aria-label="Close" onClick="{{pg.closePick}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.55); cursor: pointer"></button>
   <div class="rise" role="dialog" aria-label="Choose an exercise" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 12px; max-height: 86%; box-sizing: border-box">
-    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Choose an exercise</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{strength.closePick}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="row" style="justify-content: space-between; align-items: center; gap: 12px"><h2 class="d" style="font-size: 26px">Choose an exercise</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{pg.closePick}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     <div style="overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 0 -4px; padding: 0 4px">
-      <sc-for list="{{strength.picks}}" as="p" hint-placeholder-count="6"><button class="ex-row {{p.cls}}" aria-pressed="{{p.on}}" onClick="{{p.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{p.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{p.sub}}</span></span><svg class="ex-tick" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></button></sc-for>
+      <sc-for list="{{pg.picks}}" as="p" hint-placeholder-count="6"><button class="ex-row {{p.cls}}" aria-pressed="{{p.on}}" onClick="{{p.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{p.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{p.sub}}</span></span><svg class="ex-tick" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></button></sc-for>
     </div>
   </div>
 </div>
@@ -1924,11 +1919,11 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <!-- ================= BOTTOM NAV ================= -->
 <sc-if value="{{showNav}}" hint-placeholder-val="{{ false }}">
 <nav class="nav {{tourNavCls}}" aria-label="Main">
-  <button class="nv {{navOn.today}} {{tourHi.today}}" aria-label="Today" onClick="{{nav.today}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></button>
-  <button class="nv {{navOn.routine}} {{tourHi.routine}}" aria-label="Your week" onClick="{{nav.routine}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"></rect><path d="M4 10h16M8 3v4M16 3v4"></path></svg></button>
+  <button class="nv {{navOn.today}} {{tourHi.today}}" aria-label="Today" onClick="{{nav.today}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span class="nv-l" aria-hidden="true">Today</span></button>
+  <button class="nv {{navOn.routine}} {{tourHi.routine}}" aria-label="Your week" onClick="{{nav.routine}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"></rect><path d="M4 10h16M8 3v4M16 3v4"></path></svg><span class="nv-l" aria-hidden="true">Your week</span></button>
   <button class="nv-c pulse {{tourHi.companion}}" aria-label="Spark AI Coach" onClick="{{nav.companion}}"><img src="img/logo.png" alt="" style="width: 34px; height: auto"></button>
-  <button class="nv {{navOn.journal}} {{tourHi.journal}}" aria-label="Journal" onClick="{{nav.journal}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3z"></path><path d="M5 18a3 3 0 0 1 3-3h11M9 8h6"></path></svg></button>
-  <button class="nv {{navOn.settings}} {{tourHi.settings}}" aria-label="Settings" onClick="{{nav.settings}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"></path></svg></button>
+  <button class="nv {{navOn.journal}} {{tourHi.journal}}" aria-label="Journal" onClick="{{nav.journal}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v14H8a3 3 0 0 1-3-3z"></path><path d="M5 18a3 3 0 0 1 3-3h11M9 8h6"></path></svg><span class="nv-l" aria-hidden="true">Journal</span></button>
+  <button class="nv {{navOn.settings}} {{tourHi.settings}}" aria-label="Settings" onClick="{{nav.settings}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.56-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"></path></svg><span class="nv-l" aria-hidden="true">Settings</span></button>
 </nav>
 </sc-if>
 
@@ -3023,8 +3018,8 @@ class Component extends DCLogic {
       const Y = recent.filter(function(w){ return keyOf(w) === yk; });
       if (Y.length) { const pb = Y.map(pbName).filter(Boolean)[0];
         add('yesterday', SRC.log, 'Yesterday: ' + setsOf(Y) + ' sets of ' + (Y.length >= 2 ? 'training across ' + nw(Y.length) + ' sessions' : fl(Y[0])) + (pb ? ', and a new best on the ' + pb : '') + '. ' + pickW(['Today’s rest is what turns that into strength.', 'Today is when that turns into strength.'])); }
-      if (thisWeek.length >= 2) add('week', SRC.week, cap(nw(thisWeek.length)) + ' sessions this week, ' + setsOf(thisWeek) + ' sets in total.' + (lastWeek.length && thisWeek.length > lastWeek.length ? ' More than last week.' : ''));
-      else if (!thisWeek.length && lastWeek.length >= 2) add('week', SRC.week, 'Last week: ' + nw(lastWeek.length) + ' sessions and ' + setsOf(lastWeek) + ' sets. A solid base for this one.');
+      if (thisWeek.length >= 2) add('week', SRC.week, cap(nw(thisWeek.length)) + ' sessions this week' + (lastWeek.length && thisWeek.length > lastWeek.length ? ', already more than last week.' : lastWeek.length && thisWeek.length === lastWeek.length ? ', level with last week already.' : '. Rest is part of the plan.'));
+      else if (!thisWeek.length && lastWeek.length >= 2) add('week', SRC.week, 'Last week you trained ' + nw(lastWeek.length) + ' times. A solid base for this one.');
       const jr = JL.filter(function(j){ return day0(now) - day0(new Date(j.at)) <= 7 * DAYMS; }).sort(function(a, b){ return b.at - a.at; }).map(function(j){ return {j:j, q:posQuote(j)}; }).filter(function(x){ return x.q; })[0];
       if (jr) { const dn = dayName(jr.j.at); add('words', SRC.journal, (dn === 'today' ? 'Earlier today' : dn === 'yesterday' ? 'Yesterday' : 'On ' + dn) + ' you wrote ‘' + jr.q + '’. Rest well and keep that going.'); }
       add('mood', SRC.mood, moodLine);
@@ -4257,10 +4252,13 @@ class Component extends DCLogic {
     if (ups) ins.push('You went up on ' + ups + ' of ' + rows.length + (rows.length === 1 ? ' exercise' : ' exercises') + ' compared with last time.');
     else if (sames && !news) ins.push('Same weights as last time across the board. Consistency is how strength gets built.');
     if (news) ins.push(news === rows.length ? 'Everything was new today, so these numbers are your starting point.' : news + (news === 1 ? ' exercise was' : ' exercises were') + ' new today, so that’s a fresh baseline.');
-    if (change != null) ins.push('Total lifted ' + (change >= 0 ? 'up ' + change + '%' : 'down ' + Math.abs(change) + '%') + ' on your last ' + w.focus.toLowerCase() + ' session.');
     if (sets < planned) ins.push('You did ' + sets + ' of ' + planned + ' planned sets and stopped when you needed to. That still counts.');
     if (wk.length) ins.push(wkDone + ' of ' + wk.length + ' sessions done this week' + (wkDone >= wk.length ? '. Target hit.' : '.'));
-    return {w:w, rows:rows, sets:sets, planned:planned, vol:v, volTxt: v ? wtBig(v) : '0', volUnit: WU === 'lb' ? 'lbs lifted' : 'kg lifted', change:change, changeTxt: change == null ? 'First' : (change >= 0 ? '+' : '−') + Math.abs(change) + '%', changeSub: change == null ? (sameFocus ? 'session' : 'of its kind') : 'vs last time', ins:ins, ups:ups, wkDone:wkDone, wkN:wk.length};
+    const bestUp = (w.items || []).map(function(it){ if (it.prevKg == null && it.prevReps == null) return null; if (!it.bw && it.kg > it.prevKg + 0.01) return {it:it, w:true, d:toU(it.kg) - toU(it.prevKg), p:(it.kg - it.prevKg) / Math.max(1, it.prevKg)}; if ((it.bw || Math.abs(it.kg - it.prevKg) < 0.01) && it.reps > it.prevReps) return {it:it, w:false, d:it.reps - it.prevReps, p:(it.reps - it.prevReps) / Math.max(1, it.prevReps) * 0.5}; return null; }).filter(Boolean).sort(function(a, b){ return (b.w - a.w) || (b.p - a.p); })[0];
+    const ru = function(it){ const u = it.repUnit || 'reps'; return /second/.test(u) ? 'sec' : /minute/.test(u) ? 'min' : 'reps'; };
+    const upTxt = bestUp ? '+' + (bestUp.w ? fmt(Math.round(bestUp.d * 4) / 4) + (WU === 'lb' ? ' lbs' : ' kg') : bestUp.d + ' ' + ru(bestUp.it)) : (sames ? 'Steady' : 'New');
+    const upSub = bestUp ? bestUp.it.name + ' on last time' : (sames ? 'Same as last time' : 'Your starting point');
+    return {w:w, rows:rows, sets:sets, planned:planned, vol:v, volTxt: upTxt, volUnit: upSub, change:change, changeTxt: w.pbN ? String(w.pbN) : ups ? ups + ' of ' + rows.length : String(rows.length), changeSub: w.pbN ? (w.pbN === 1 ? 'New best' : 'New bests') : ups ? 'Went up' : (rows.length === 1 ? 'Exercise done' : 'Exercises done'), ins:ins, ups:ups, wkDone:wkDone, wkN:wk.length};
   }
   reviewCoach(){
     const self = this; const st = this.S(); const R = this.reviewData(st); const rv = st.review || {}; if (!R) return;
@@ -4295,23 +4293,34 @@ class Component extends DCLogic {
     if (this.S().kgEdit) this.commitKg();
     const st = this.S(); const s = clone(st.sess); const i = s.cur; const id = s.ids[i]; const ex = EX[id];
     if (s.done[i] >= s.sets[i]) return;
+    // What the previous set of this exercise was logged at, this workout.
+    if (!s.lastSet) s.lastSet = {}; const prevSet = s.done[i] > 0 ? s.lastSet[i] : null;
     s.done[i] += 1; if (!s.t0) s.t0 = Date.now();
+    s.lastSet[i] = {kg:s.kg[i], reps:s.reps[i]};
     let pbNow = null; let toast = '';
     const already = s.pbs.some(function(p){ return p.id === id; });
     const best = this.bestOf(st, id);
     if (!ex.bw && best != null && s.kg[i] > best && !already) {
       pbNow = {name:ex.name, kgN:s.kg[i], prevN:best, kg:wt(s.kg[i]), prev:wt(best) + ' ' + uu(ex.unit), unit:ex.unit};
       s.pbs.push({id:id, name:ex.name, kgN:s.kg[i], prevN:best, kg:wt(s.kg[i]), prev:wt(best) + ' ' + uu(ex.unit), unit:ex.unit});
-    } else {
-      toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work.' : 'Set logged. Rest for a minute, then go again.';
     }
+    // Beat last time (heavier, or more reps at the same weight): a small celebration, once per exercise.
+    let beat = false; const base = this.lastOf(st, id);
+    // Any step up gets a celebration: on the previous set this workout, or (first set) on last time / the planned start.
+    const ref = prevSet || base; const refName = prevSet ? 'Up on your last set' : base.first ? 'More than planned' : 'Up on last time';
+    if (!pbNow && ref && ref.kg != null) {
+      const upKg = !ex.bw && s.kg[i] > ref.kg + 0.01;
+      const upReps = (ex.bw || Math.abs(s.kg[i] - ref.kg) < 0.01) && ref.reps != null && s.reps[i] > ref.reps;
+      if (upKg || upReps) { beat = true; toast = refName + ': ' + (upKg ? wt(ref.kg) + ' → ' + wt(s.kg[i]) + ' ' + uu(ex.unit).replace(/ each.*$/, '') : ref.reps + ' → ' + s.reps[i] + ' ' + (ex.repUnit || 'reps')); }
+    }
+    if (!pbNow && !beat) toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work.' : 'Set logged. Rest for a minute, then go again.';
     const lastOfAll = s.cur >= s.ids.length - 1 && s.done[i] >= s.sets[i];
     const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
     const patch = {sess:s, pbNow:pbNow, toast:toast};
-    if (pbNow) { const self0 = this; setTimeout(function(){ self0.burst(false); }, 30); }
+    if (pbNow || beat) { const self0 = this; setTimeout(function(){ self0.burst(false); }, 30); }
     if (!lastOfAll) {
       patch.resting = true; patch.stimTab = 'spin'; patch.lightOn = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
-      if (toast) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
+      if (toast && !beat) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
     }
     this.set(patch);
   }
@@ -4521,7 +4530,7 @@ class Component extends DCLogic {
       else { kicker = 'Rewards preview'; value = money(rwOff); sub = rwPts ? 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. You’d have ' + money(rwOff) + ' off so far.' : 'Spark AI members earn up to ' + money(PRICING.maxOff) + ' off each month for staying active. Workouts, check-ins and journal entries all count.'; }
       const mode = st.rwSheet;
       const pctR = PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100);
-      return {ringOff: (157.08 * (1 - pctR / 100)).toFixed(1), ringCol: PL === 'paid' ? '#DDF58B' : '#B7A6F6', medalCol: PL === 'paused' ? '#71717A' : PL === 'paid' ? '#DDF58B' : '#B7A6F6', short: PL === 'paused' ? 'II' : rwFull && PL === 'paid' ? '✓' : money(rwOff),
+      return {ringOff: (157.08 * (1 - pctR / 100)).toFixed(1), ringCol: PL === 'paid' ? '#DDF58B' : '#B7A6F6', medalCol: PL === 'paused' ? '#8E8E96' : PL === 'paid' ? '#DDF58B' : '#B7A6F6', short: PL === 'paused' ? 'II' : rwFull && PL === 'paid' ? '✓' : money(rwOff),
         kicker:kicker, value:value, bigValue: PL === 'paused' ? 'Paused' : value, sub:sub, pct: PL === 'paused' ? 0 : Math.round(rwPts / PRICING.barMax * 100),
         fillSt: PL === 'paid' ? 'background: #DDF58B' : 'background: #B7A6F6', aria: kicker + '. ' + value + '. ' + sub,
         priceTxt: money(PRICING.price), rewardTxt: money(PRICING.rewardPrice),
@@ -4603,7 +4612,7 @@ class Component extends DCLogic {
       if (editing && !locked) cellSt = set ? (d.today ? 'background: #DDF58B; color: #111214; border: 2px solid #DDF58B' : 'border: 2px solid #DDF58B; color: #F5F5F2') : 'border: 2px dashed #4A4B53; color: #A1A1AA';
       if (editing && locked) cellSt = (d.today ? 'background: #DDF58B; color: #111214' : 'color: #5E5E66');
       return {d:d.d.charAt(0), n:d.n, st:cellSt,
-        tag: locked ? '' : (set ? (focusLabel(d.focus).split(' ')[0] || 'Gym') : 'Rest'), tagSt: set ? 'color: #DDF58B' : 'color: #71717A',
+        tag: locked ? '' : (set ? (focusLabel(d.focus).split(' ')[0] || 'Gym') : 'Rest'), tagSt: set ? 'color: #DDF58B' : 'color: #8E8E96',
         cursor: !locked ? 'pointer' : 'default',
         btnLabel: d.d + ' ' + d.n + ': ' + (set ? 'workout day' : 'rest day') + (!locked ? '. Tap to plan this day.' : ''),
         toggle:function(){ const cur = self.S(); if (locked) return; return self.set({daySheet:{key:weekKey, d:d.d}}); if (false) { const lo = LENS.find(function(l){ return l[0] === cur.sessLen; }) || LENS[2]; const def = lo[2] === 'min' ? 'walk' : lo[2]; const src = cur.weekOffset ? (cur.nextWeek || nextWeek) : cur.week; const patch = {dayOff: d.today ? false : cur.dayOff}; patch[weekKey] = src.map(function(x){ return x.d === d.d ? Object.assign({}, x, {t: x.t === 'rest' ? def : 'rest'}) : x; }); self.set(patch); } },
@@ -4729,7 +4738,7 @@ class Component extends DCLogic {
       const last = i >= s.ids.length - 1;
       const bolts = []; for (let k = 0; k < s.sets[i]; k++) bolts.push({st: k < s.done[i] ? 'background: #B7A6F6' : 'background: #DCDCD5'});
       act = {
-        pos:i + 1, count:s.ids.length,
+        pos:i + 1, count:s.ids.length, left: (function(){ const tot = s.sets.reduce(function(a, b){ return a + b; }, 0); const rem = s.sets.reduce(function(a, b, k){ return a + Math.max(0, b - s.done[k]); }, 0); const mins = (PLANS[s.plan] || {}).mins || 30; const m = Math.round(mins * rem / Math.max(1, tot)); return rem <= 1 ? 'Last set' : m <= 1 ? 'Nearly there' : 'About ' + m + ' min left'; })(),
         bars:s.ids.map(function(_, k){ return {cls: k < i ? 'sg-done' : (k === i ? 'sg-now' : 'sg-next')}; }),
         ex:{name:ex.name, areaText:areaText(ex.area)}, cues:ex.cues.map(function(t, k){ return {n:k + 1, t:t}; }),
         setBolts:bolts.slice().reverse(), setLine: allDone ? 'All sets done' : 'Set ' + (s.done[i] + 1) + ' of ' + s.sets[i],
@@ -4777,7 +4786,7 @@ class Component extends DCLogic {
     }
     const bump = function(field, dir){ return function(){
       const cur = self.S(); const s = clone(cur.sess); const i = s.cur; const ex = EX[s.ids[i]];
-      if (field === 'kg') { if (cur.kgEdit) { const v0 = parseFloat(String(cur.kgDraft).replace(',', '.')); if (isFinite(v0) && v0 >= 0) s.kg[i] = fromU(v0); } const u = Math.round(toU(s.kg[i]) * 4) / 4; s.kg[i] = Math.max(0, fromU(Math.max(0, u + dir * 0.25))); if (WU === 'kg') s.kg[i] = Math.round(s.kg[i] * 100) / 100; } else s.reps[i] = Math.max(1, s.reps[i] + dir);
+      if (field === 'kg') { if (cur.kgEdit) { const v0 = parseFloat(String(cur.kgDraft).replace(',', '.')); if (isFinite(v0) && v0 >= 0) s.kg[i] = fromU(v0); } const u = Math.round(toU(s.kg[i]) * 4) / 4; const st0 = ex.step || 2.5; const stepU = WU === 'lb' ? (st0 >= 5 ? 10 : st0 >= 2 ? 5 : 2.5) : st0; s.kg[i] = Math.max(0, fromU(Math.max(0, Math.round((u + dir * stepU) * 4) / 4))); if (WU === 'kg') s.kg[i] = Math.round(s.kg[i] * 100) / 100; } else s.reps[i] = Math.max(1, s.reps[i] + dir);
       self.set({sess:s, kgEdit:false, kgDraft:null});
     }; };
 
@@ -4874,7 +4883,7 @@ class Component extends DCLogic {
     const journalView = st.journal.map(function(j){ const learned = !!j.learned && st.memoryOn; return {when:whenOf(j), text:j.text, tags:j.tags, learned:learned, hasPb:!!j.pb, pb:j.pb || '',
       delLabel:'Delete journal entry from ' + whenOf(j), confirming: st.jConfirm === j.id,
       confirmText: 'Delete this entry? You can’t undo this.' + (learned ? ' Anything Spark already learned from it stays in Insights and memories, where you can forget it too.' : ''),
-      del:function(){ self.set({jConfirm: self.S().jConfirm === j.id ? null : j.id}); },
+      del:function(){ const cur = self.S(); const idx = cur.journal.findIndex(function(x){ return x.id === j.id; }); self.set({journal: cur.journal.filter(function(x){ return x.id !== j.id; }), jUndo:{entry:j, idx:idx}, toast:'Entry deleted.'}); },
       no:function(){ self.set({jConfirm:null}); },
       yes:function(){ const cur = self.S(); self.set({journal: cur.journal.filter(function(x){ return x.id !== j.id; }), jConfirm:null, toast:'Entry deleted.'}); }}; });
 
@@ -4949,57 +4958,86 @@ class Component extends DCLogic {
         return {head:head, sub:sub, items:(w.items || []).map(function(it){ return {name:it.name, detail:(it.bw ? it.reps + ' ' + (it.repUnit || 'reps') : wt(it.kg) + ' ' + uu(it.unit) + ' × ' + it.reps) + ' · ' + it.sets + (it.sets === 1 ? ' set' : ' sets')}; }), pbs:(w.pbs || []).map(function(p){ return {line:'Personal best: ' + p}; }), hasPbs: !!(w.pbs && w.pbs.length)}; });
       const J = (st.journal || []).filter(function(j){ const t = j.at || (/^j(\d{12,})/.test(j.id || '') ? +j.id.slice(1, 14) : 0); return t && dkey(new Date(t)) === k; }).map(function(j){ return {when: aiPlain(whenOf(j)).replace(/^[^,]*, /, ''), text:j.text}; });
       return {on:true, title:title, sessions:sessions, hasSessions: sessions.length > 0, noDetail: sessions.length === 0, journal:J, hasJournal: J.length > 0}; })();
-    const PBST = ['background: #DDF58B; color: #111214','background: #B7A6F6; color: #111214','background: #1C1D21; color: #F5F5F2','background: #1C1D21; color: #F5F5F2'];
+    const PBST = ['background: #1C1D21; color: #F5F5F2; --pbn: #DDF58B','background: #1C1D21; color: #F5F5F2; --pbn: #B7A6F6','background: #1C1D21; color: #F5F5F2; --pbn: #A6D8FA','background: #1C1D21; color: #F5F5F2; --pbn: #F5F5F2'];
     const pbRaw = [{name:'Bench press',val:'80 kg',when:'8 October'},{name:'Chest press',val:'50 kg',when:'24 September'},{name:'Lat pulldown',val:'50 kg',when:'17 September'},{name:'Longest walk',val:'42 min',when:'27 September'}];
     if (st.sess && st.doneToday) st.sess.pbs.forEach(function(p){ pbRaw.unshift({name:p.name, val:wt(p.kgN != null ? p.kgN : parseFloat(p.kg)) + ' ' + uu(p.unit), when:'Today'}); });
     const pbList = (st.fresh ? (st.pbLog || []).slice().reverse() : pbRaw).slice(0, 4).map(function(p, k){ return Object.assign({}, p, p.kgN != null ? {val: wt(p.kgN) + ' ' + uu(p.unit).replace(/ each.*$/, ''), when: p.at ? aiPlain(whenOf({at:p.at})).replace(/, \d\d:\d\d$/, '') : p.when} : {}, {st:PBST[k]}); });
-    // Strength chart: one point per session for the chosen exercise (heaviest weight, or best reps for bodyweight moves).
-    const strength = (function(){
-      // One point per session for the chosen exercise: weight (heaviest set) and reps. "All workouts" uses total lifted and total reps.
-      const L = (st.sessLog || []); const byEx = {};
-      L.forEach(function(w){ (w.items || []).forEach(function(it){ const k = it.name; if (!byEx[k]) byEx[k] = {name:k, bw:!!it.bw, unit:it.unit || 'kg', repUnit:it.repUnit || 'reps', pts:[]}; byEx[k].pts.push({at:w.at, w: it.bw ? null : it.kg, r: it.reps}); }); });
-      const list = Object.keys(byEx).map(function(k){ return byEx[k]; }).sort(function(a, b){ return (b.pts.length - a.pts.length) || (b.pts[b.pts.length - 1].at - a.pts[a.pts.length - 1].at); });
-      const volPts = L.map(function(w){ const it = w.items || []; return {at:w.at, w: it.reduce(function(a, x){ return a + (x.bw ? 0 : x.kg * x.reps * x.sets); }, 0), r: it.reduce(function(a, x){ return a + x.reps * x.sets; }, 0)}; }).filter(function(p){ return p.w > 0 || p.r > 0; });
-      if (volPts.length) list.unshift({name:'All workouts', all:true, unit:'kg', repUnit:'reps', pts:volPts});
-      if (!list.length) return {on:false};
-      const idx = Math.max(0, list.findIndex(function(e){ return e.name === st.progEx; })); const E = list[idx];
-      const hasW = !E.bw && E.pts.some(function(p){ return p.w > 0; });
-      const mode = !hasW ? 'reps' : (['weight','reps','both'].indexOf(st.progMode) >= 0 ? st.progMode : 'weight');
-      const P0 = E.pts.slice(-12); const n = P0.length;
-      const xs = P0.map(function(_, k){ return n === 1 ? 170 : 24 + k * (292 / (n - 1)); });
-      const big = function(raw){ return wtBig(raw) + (WU === 'lb' ? ' lbs' : ' kg'); };
-      const fmtW = function(raw){ return E.all ? big(raw) : wt(raw) + ' ' + uu(E.unit).replace(/ each.*$/, ''); };
-      const fmtR = function(raw){ return raw + ' ' + (E.all ? 'reps' : E.repUnit); };
-      const series = function(vals, color, grad){
-        let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals); if (hi - lo < 1) { lo -= 2; hi += 2; } const pad = (hi - lo) * 0.15; lo -= pad; hi += pad;
-        const ys = vals.map(function(v){ return 130 - (v - lo) / (hi - lo) * 100; });
-        const pts = xs.map(function(x, k){ return x.toFixed(1) + ',' + ys[k].toFixed(1); });
-        return {color:color, grad:grad, pts:pts.join(' '), area: n > 1 ? 'M' + xs[0].toFixed(1) + ',130 L' + pts.join(' L') + ' L' + xs[n - 1].toFixed(1) + ',130 Z' : '', lx:xs[n - 1].toFixed(1), ly:ys[n - 1].toFixed(1),
-          dots: xs.map(function(x, k){ return {cx:x.toFixed(1), cy:ys[k].toFixed(1), color:color}; }), multi: n > 1, fill: 'url(#' + grad + ')'};
-      };
-      const wVals = P0.map(function(p){ return toU(p.w || 0); }), rVals = P0.map(function(p){ return p.r || 0; });
-      const lines = [];
-      if (mode !== 'reps') lines.push(series(wVals, '#B7A6F6', 'spW'));
-      if (mode !== 'weight') lines.push(series(rVals, '#DDF58B', 'spR'));
-      if (mode === 'both') lines.forEach(function(l){ l.area = ''; });
-      const first = P0[0], last = P0[n - 1];
-      const pill = function(kind){ if (n === 1) return null;
-        if (kind === 'w') { const d = toU(last.w || 0) - toU(first.w || 0); return {txt: E.all ? (d >= 0 ? '+' : '−') + Math.abs(Math.round(d / Math.max(1, toU(first.w || 0)) * 100)) + '%' : (d > 0 ? '+' : d < 0 ? '−' : '±') + fmt(Math.abs(Math.round(d * 4) / 4)) + ' ' + (WU === 'lb' ? 'lbs' : 'kg'), st: d > 0 ? 'background: #B7A6F6; color: #111214' : 'background: #26272C; color: #F5F5F2'}; }
-        const d = (last.r || 0) - (first.r || 0); return {txt: (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(d) + ' reps', st: d > 0 ? 'background: #DDF58B; color: #111214' : 'background: #26272C; color: #F5F5F2'}; };
-      const pills = n === 1 ? [{txt:'First log', st:'background: #26272C; color: #F5F5F2'}] : (mode === 'weight' ? [pill('w')] : mode === 'reps' ? [pill('r')] : [pill('w'), pill('r')]);
+    // Your progress: headline, own-past comparisons and one meaningful line per exercise.
+    const pg = (function(){
+      const T = Date.now(); const DM = 24 * 60 * 60 * 1000;
+      let L = (st.sessLog || []).slice();
+      if (!st.fresh) { const t0 = new Date(2026, 9, 11, 18).getTime(); const mk = function(dAgo, items){ return {at:t0 - dAgo * DM, focus:'Workout', items:items.map(function(x){ return {id:x[0], name:EX[x[0]].name, kg:x[1], reps:x[2], sets:3, unit:EX[x[0]].unit, bw:!!EX[x[0]].bw, repUnit:EX[x[0]].repUnit || 'reps'}; })}; };
+        L = [mk(42,[['chest',40,10],['pulldown',40,10],['legpress',80,10],['plank',0,30]]), mk(35,[['chest',42.5,10],['pulldown',42.5,10],['legpress',90,10],['plank',0,35]]), mk(28,[['chest',42.5,10],['pulldown',45,10],['legpress',95,10],['shoulder',12,10]]), mk(21,[['chest',45,10],['pulldown',45,10],['legpress',100,10],['shoulder',12,10],['plank',0,40]]), mk(14,[['chest',47.5,10],['pulldown',47.5,10],['legpress',100,10],['shoulder',12,10]]), mk(7,[['chest',50,10],['pulldown',50,10],['legpress',110,10],['shoulder',12,10],['plank',0,45],['rdl',30,10]])]; }
+      const NOWd = st.fresh ? new Date(T) : new Date(2026, 9, 11, 18); const m0 = new Date(NOWd.getFullYear(), NOWd.getMonth(), 1).getTime(); const mP = new Date(NOWd.getFullYear(), NOWd.getMonth() - 1, 1).getTime();
+      const inM = function(t){ return t >= m0; }, inP = function(t){ return t >= mP && t < m0; };
+      const dlong = function(t){ const d = new Date(t); return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()]; };
       const dshort = function(t){ const d = new Date(t); return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()].slice(0, 3); };
-      const nowTxt = 'Now: ' + (mode === 'weight' ? fmtW(last.w || 0) : mode === 'reps' ? fmtR(last.r || 0) : fmtW(last.w || 0) + ' · ' + fmtR(last.r || 0));
-      const go = function(dir){ return function(){ const j = (idx + dir + list.length) % list.length; self.set({progEx:list[j].name}); }; };
-      const what = E.all ? (mode === 'weight' ? 'Total lifted' : mode === 'reps' ? 'Total reps' : 'Total lifted and reps') + ' per workout' : (mode === 'weight' ? 'Working weight' : mode === 'reps' ? (E.bw ? 'Best reps' : 'Reps per set') : 'Weight and reps');
-      return {on:true, single: n === 1, name:E.name, many: list.length > 1, prev:go(-1), next:go(1),
-        sub: what + ', ' + (n === 1 ? 'first session' : 'last ' + n + ' sessions'), pills:pills, lines:lines,
-        from: dshort(first.at), now: nowTxt, aria: E.name + ', ' + what.toLowerCase() + ': ' + nowTxt,
-        hint: n === 1 ? 'One session so far. Do it again and your trend line starts here.' : '',
-        showModes: hasW, modes: [['weight','Weight'],['reps','Reps'],['both','Both']].map(function(m){ const on = mode === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', dot: m[0] === 'weight' ? '#B7A6F6' : m[0] === 'reps' ? '#DDF58B' : 'linear-gradient(90deg,#B7A6F6 50%,#DDF58B 50%)', pick:function(){ self.set({progMode:m[0]}); }}; }),
-        both: mode === 'both', legendW: fmtW(last.w || 0), legendR: fmtR(last.r || 0),
-        openPick:function(){ self.set({progPick:true}); },
-        pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); },
-        picks: list.map(function(e, k){ const on = k === idx; return {name:e.name, sub: e.all ? 'Every workout, added up' : e.pts.length + (e.pts.length === 1 ? ' session' : ' sessions') + (e.bw ? ' · bodyweight' : ''), on:on, cls: on ? 'on' : '', pick:function(){ self.set({progEx:e.name, progPick:false}); }}; })};
+      const grpOf = function(id){ const e = EX[id]; if (!e) return null; const p = e.pat; if (p === 'cardio' || p === 'mobility' || p === 'joints') return null; if (/minute/.test(e.repUnit || '')) return null; return muscleOf(p) || (p === 'plank' ? 'core' : null); };
+      const byEx = {};
+      L.forEach(function(w){ (w.items || []).forEach(function(it){ const id = it.id || Object.keys(EX).find(function(k){ return EX[k].name === it.name; }); const g = grpOf(id); if (!g) return; const k = id;
+        if (!byEx[k]) byEx[k] = {id:id, name:it.name, g:g, bw:!!it.bw, unit:it.unit || 'kg', repUnit:it.repUnit || 'reps', pts:[]}; byEx[k].pts.push({at:w.at, w: it.bw ? 0 : (it.kg || 0), r: it.reps || 0}); }); });
+      const all = Object.keys(byEx).map(function(k){ return byEx[k]; });
+      const unitW = WU === 'lb' ? 'lbs' : 'kg';
+      const rU = function(E){ const u = E.repUnit || 'reps'; return /second/.test(u) ? 'seconds' : /round/.test(u) ? 'rounds' : /step/.test(u) ? 'steps' : 'reps'; };
+      const lifts = [], once = [];
+      all.forEach(function(E){ const n = E.pts.length; const hasW = !E.bw && E.pts.some(function(p){ return p.w > 0; }); const flatW = E.pts.every(function(p){ return p.w === E.pts[0].w; }); const useW = hasW && !(flatW && E.pts[n - 1].r > E.pts[0].r);
+        const val = function(p){ return useW ? toU(p.w) : p.r; };
+        const txt = function(p){ return useW ? wt(p.w) + ' ' + unitW : p.r + ' ' + rU(E); };
+        if (n < 2) { once.push({name:E.name, val:txt(E.pts[0]), at:E.pts[0].at}); return; }
+        const f = E.pts[0], l = E.pts[n - 1]; const d = val(l) - val(f);
+        const up = useW ? d > 0.01 : d > 0; const gain = up ? '+' + (useW ? fmt(Math.round(d * 4) / 4) + ' ' + unitW : d + ' ' + rU(E).replace('seconds', 'sec')) : '';
+        lifts.push({E:E, n:n, useW:useW, val:val, txt:txt, up:up, gain:gain, pct: up ? d / Math.max(1, val(f)) : 0}); });
+      lifts.sort(function(a, b){ return (b.up - a.up) || (b.useW - a.useW) || (b.pct - a.pct) || (b.n - a.n); });
+      const ups = lifts.filter(function(x){ return x.up; }).length;
+      // Headline
+      const thisM = L.filter(function(w){ return inM(w.at); }).length, lastM = L.filter(function(w){ return inP(w.at); }).length;
+      const mName = MONTHS_LONG[new Date(mP).getMonth()];
+      let headline = '';
+      if (lifts.length && ups === lifts.length) headline = lifts.length === 1 ? 'Your ' + lifts[0].E.name.toLowerCase() + ' is stronger than when you started.' : 'Stronger on all ' + lifts.length + ' of your lifts since you started.';
+      else if (ups) headline = 'Stronger on ' + ups + ' of your ' + lifts.length + ' lifts since you started.';
+      else if (lifts.length) headline = 'Holding steady across your lifts. That’s where strength gets built.';
+      else if (once.length) headline = 'Your first numbers are in. Repeat them and your progress lines start.';
+      else headline = thisM ? (thisM === 1 ? 'One workout done this month.' : thisM + ' workouts done this month.') : 'What you did, not what you didn’t.';
+      // Tiles: only comparisons with your own past
+      const tiles = [];
+      tiles.push({val:String(thisM), label: thisM === 1 ? 'workout this\u00a0month' : 'workouts this\u00a0month', sub: lastM && thisM > lastM ? (thisM - lastM) + ' more than\u00a0' + mName : lastM && thisM === lastM ? 'Level with ' + mName : '', st:'background: #1C1D21; color: #F5F5F2', nc:'#DDF58B'});
+      const pbM = st.fresh ? (st.pbLog || []).filter(function(p){ return p.at && inM(p.at); }).length : 3;
+      tiles.push({val:String(pbM), label: pbM === 1 ? 'personal best this\u00a0month' : 'personal bests this\u00a0month', sub:'', st:'background: #1C1D21; color: #F5F5F2', nc:'#B7A6F6'});
+      const FEELT = ['Better than before','About the same','Tired but okay','Rough, honestly'];
+      const fl = st.fresh ? (st.journal || []).filter(function(j){ return j.at && inM(j.at) && (j.tags || []).some(function(t){ return FEELT.indexOf(t) >= 0; }); }) : null;
+      const fb = fl ? fl.filter(function(j){ return (j.tags || []).indexOf('Better than before') >= 0; }).length : 4; const fn = fl ? fl.length : 5;
+      if (fn) tiles.push({val: fb + ' of ' + fn, label:'workouts you felt better after', sub:'', st:'background: #1C1D21; color: #F5F5F2', nc:'#A6D8FA'});
+      tiles.forEach(function(t){ t.hasSub = !!t.sub; });
+      // Muscle chips
+      const present = MUSCLES.filter(function(m){ return lifts.some(function(x){ return x.E.g === m[0]; }); });
+      const mus = 'all';
+      const chips = [{k:'all', label:'All'}].concat(present.map(function(m){ return {k:m[0], label:m[1]}; })).map(function(c){ const on = c.k === mus; return {label:c.label, on:on, cls: on ? 'on' : '', pick:function(){ self.set({progMus:c.k, progEx:null}); }}; });
+      const shown = lifts.filter(function(x){ return mus === 'all' || x.E.g === mus; });
+      const items = shown.concat(mus === 'all' ? once.slice().sort(function(a, b){ return b.at - a.at; }).map(function(o){ return {single:true, o:o}; }) : []);
+      const keyOf = function(x){ return x.single ? x.o.name : x.E.name; };
+      const idx = Math.max(0, items.findIndex(function(x){ return keyOf(x) === st.progEx; })); const sel = items[idx];
+      const build = function(x){ const E = x.E;
+        let P = E.pts; if (P.length > 16) { const m = 16; P = Array.from({length:m}, function(_, k){ return E.pts[Math.round(k * (E.pts.length - 1) / (m - 1))]; }); }
+        const n = P.length; const vals = P.map(x.val);
+        let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+        const X = function(k){ return 18 + k * (264 / (n - 1)); };
+        const Y = function(v){ return hi - lo < 1e-6 ? 64 : 86 - (v - lo) / (hi - lo) * 46; };
+        const pts = vals.map(function(v, k){ return X(k).toFixed(1) + ',' + Y(v).toFixed(1); });
+        const color = x.up ? '#DDF58B' : '#B7A6F6';
+        const fy = Y(vals[0]), ly = Y(vals[n - 1]);
+        const what = x.useW ? 'Working weight' : /second/.test(E.repUnit) ? 'Longest hold' : 'Best reps';
+        return {multi:true, single:false, hint:'', name:E.name, sub: what + ' since ' + dlong(E.pts[0].at), up:x.up, flat:!x.up, gain:x.gain, color:color, gid:'pgG',
+          pts:pts.join(' '), area:'M' + X(0).toFixed(1) + ',100 L' + pts.join(' L') + ' L' + X(n - 1).toFixed(1) + ',100 Z',
+          dots: vals.slice(1, -1).map(function(v, k){ return {cx:X(k + 1).toFixed(1), cy:Y(v).toFixed(1)}; }),
+          fx:X(0).toFixed(1), fy:fy.toFixed(1), lx:X(n - 1).toFixed(1), ly:ly.toFixed(1), fty:(n > 1 && vals[1] >= vals[0] ? fy + 19 : fy - 11).toFixed(1), lty:(ly - 11 < 14 ? ly + 21 : ly - 11).toFixed(1),
+          startTxt:x.txt(E.pts[0]), lastTxt:x.txt(E.pts[E.pts.length - 1]),
+          aria:E.name + ': ' + what.toLowerCase() + ' from ' + x.txt(E.pts[0]) + ' on ' + dlong(E.pts[0].at) + ' to ' + x.txt(E.pts[E.pts.length - 1]) + ' last time' + (x.up ? ', up ' + x.gain : ', holding steady')}; };
+      const blank = {multi:false, single:false, hint:'', name:'', sub:'', up:false, flat:false, gain:'', color:'#DDF58B', gid:'pgG', pts:'', area:'', dots:[], fx:0, fy:0, lx:0, ly:0, fty:0, lty:0, startTxt:'', lastTxt:'', aria:''};
+      const c = !sel ? blank : sel.single ? Object.assign({}, blank, {single:true, name:sel.o.name, sub:'First logged ' + dlong(sel.o.at) + ': ' + sel.o.val, hint:'One session so far. Do it again and your line starts here.'}) : build(sel);
+      const go = function(dir){ return function(){ const j = (idx + dir + items.length) % items.length; self.set({progEx:keyOf(items[j])}); }; };
+      const picks = items.map(function(x, k){ const on = k === idx; return {name:keyOf(x), sub: x.single ? 'Logged once so far' : x.up ? x.gain + ' since ' + dshort(x.E.pts[0].at) : 'Holding steady', on:on, cls: on ? 'on' : '', pick:function(){ self.set({progEx:keyOf(x), progPick:false}); }}; });
+      const at = st.adaptTotal || 0;
+      return {headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
     })();
     const firstLift = st.fresh && st.hist ? Object.keys(st.hist).filter(function(id){ return !EX[id].bw; })[0] : null;
 
@@ -5354,7 +5392,7 @@ class Component extends DCLogic {
       prepSetsLabel: plan.sets === 1 ? '1 set each' : plan.sets + ' sets each', prepStartLabel: st.plan === 'stretch' ? 'Start stretching' : st.plan === 'walk' ? 'Start my walk' : 'Start workout',
       prepFoot: st.plan === 'stretch' || st.plan === 'walk' ? 'Stop whenever you like. It all counts.' : 'Pause, swap or stop whenever you need.',
       startSession:function(){ const cur = self.S(); const tf = ((cur.week.find(function(d){ return d.today; }) || {}).focus) || []; self.set({sess:self.withHist(mkSession(cur.plan, tf, gearOpts(cur)), cur), screen:'active', back:'prep', toast:'', pbNow:null, showCues:false, adaptStep:'pick', issue:null}); },
-      act:act, toast:st.toast, hasToast: !!st.toast, pbNow: st.pbNow ? (st.pbNow.kgN != null ? Object.assign({}, st.pbNow, {kg:wt(st.pbNow.kgN), unit:uu(st.pbNow.unit), prev:wt(st.pbNow.prevN) + ' ' + uu(st.pbNow.unit)}) : st.pbNow) : {kg:'',unit:'',prev:''}, hasPbNow: !!st.pbNow,
+      act:act, toast:st.toast, hasToast: !!st.toast, hasJUndo: !!st.jUndo && st.screen === 'journal' && st.toast === 'Entry deleted.', jUndoNow:function(){ const cur = self.S(); const u = cur.jUndo; if (!u) return; const J = cur.journal.slice(); J.splice(Math.max(0, Math.min(u.idx, J.length)), 0, u.entry); self.set({journal:J, jUndo:null, toast:'Entry restored.'}); }, pbNow: st.pbNow ? (st.pbNow.kgN != null ? Object.assign({}, st.pbNow, {kg:wt(st.pbNow.kgN), unit:uu(st.pbNow.unit), prev:wt(st.pbNow.prevN) + ' ' + uu(st.pbNow.unit)}) : st.pbNow) : {kg:'',unit:'',prev:''}, hasPbNow: !!st.pbNow,
       quiet:st.quiet, notQuiet: !st.quiet, quietCls: st.quiet ? 'on' : '',
       quietOff:function(){ self.set({quiet:false}); }, toggleQuiet:function(){ self.set({quiet:!self.S().quiet}); },
       showCues:st.showCues, cuesLabel: st.showCues ? 'Hide steps' : 'How to do it',
@@ -5402,6 +5440,7 @@ class Component extends DCLogic {
       rvUseTrial:function(){ const c = self.S(); self.set({review:Object.assign({}, c.review || {}, {useTrial:true, offer:false})}); self.reviewCoach(); },
       rvDecline:function(){ const c = self.S(); self.set({review:Object.assign({}, c.review || {}, {declined:true, offer:false})}); }, rvDone:function(){ self.set({screen:'today', back:null, toast:'Saved to your journal.'}); },
       goCalm:function(){ self.set({screen:'calm', back:'active'}); },
+      endHere:function(){ const cur = self.S(); if (!cur.sess) return self.set({screen:'today'}); self.set({adaptStep:'pick', issue:null, resting:false}); self.finish(); },
       adaptReset:function(){ self.set({adaptStep:'pick', issue:null}); },
       adaptRetry:function(){ self.set({adaptStep:'talk', issue:'equip'}); },
       backToWorkout:function(){ self.set({screen:'active', adaptStep:'pick', issue:null, toast: self.S().issue === 'lost' ? '' : 'Swapped. Pick up where you left off.'}); },
@@ -5444,14 +5483,14 @@ class Component extends DCLogic {
       },
       todayDateLabel: st.fresh ? (function(){ const n = new Date(); return DAYS[(n.getDay() + 6) % 7][2] + ', ' + n.getDate() + ' ' + MONTHS_LONG[n.getMonth()]; })() : 'Sunday, 11 October', monthLabel: st.fresh ? MONTHS_LONG[new Date().getMonth()] : 'October',
       journalView:journalView, journalEmpty: !st.journal.length, showInsights: !st.fresh, insightsEmpty: !!st.fresh, memberSince: st.fresh ? 'Joined Spark today' : 'Training with Spark since August',
-      chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #71717A' : ''}; }),
+      chatView:chatView, quickReplies:quickReplies, chatDraft:st.chatDraft, chatSync: !!st.chatSync, syncItems: ['Today’s plan', 'Your check-in', 'Your workouts', st.memoryOn ? (function(){ const ks = ['injury','ill','sleep','stress','low','sore','period','anxious','time','healing'].filter(function(k){ return CJ[k]; }); if (!ks.length) return 'Your journal and memories'; const x = CJ[ks[0]]; return 'Your journal: ' + ((ks[0] === 'injury' || ks[0] === 'healing') && x.part ? 'your ' + x.part + (ks[0] === 'injury' ? ' injury' : ' on the mend') : JNOTE[ks[0]]); })() : 'Journal skipped (memory off)', 'Your progress'].map(function(l, k){ return {label:l, d:(0.15 + k * 0.28).toFixed(2) + 's', t:(0.4 + k * 0.28).toFixed(2) + 's', st: /skipped/.test(l) ? 'color: #8E8E96' : ''}; }),
       askPrompts:quickReplies, askGroups:askGroups, topicList:topicList, topicHead:topicHead, topicHeadText: sugg.length ? 'Or ask something else' : 'Anything else on your mind?', moreToggle: moreGroups.length > 0 && !st.sg, moreLabel: 'More questions', moreOpen: !!st.chatMenu, moreGroups:moreGroups, moreSheet: !!st.chatMenu && st.screen === 'companion' && moreGroups.length > 0 && !st.sg, closeMore:function(){ self.set({chatMenu:false}); }, moreIc: 'M6 15l6-6 6 6', toggleMore:function(){ self.set({chatMenu:true}); }, noTopicsLeft: false && started && showTopics && !topicGroups.length && !st.sg, getSupport:function(){ self.say('sghelp', 'Show me support numbers'); }, sgActive: !!st.sg, showSupport: !!st.sg && (Date.now() - (st.sgAt || 0)) < 24 * 60 * 60 * 1000, chatThinking: !!st.chatThinking, askLock: st.chatThinking ? 'opacity: .35; pointer-events: none' : '', promptsFollow: false, askMaxH: '300px', chatPad: showTopics ? '640px' : '320px',
  promptsAll:function(){ self.set({promptsMenu:true}); },
       memoryStatus: st.memoryOn ? 'Your AI coach. Memory on.' : 'Your AI coach. Memory off.',
       onChat:function(e){ self.set({chatDraft:e.target.value}); },
       chatKey:function(e){ if (e.key === 'Enter') self.sendFree(); },
       sendChat:function(){ self.sendFree(); },
-      chart:chart, strength:strength, showStrength: !!st.fresh && strength.on, showChart: !st.fresh, chartEmpty: !!st.fresh && !strength.on, chartEmptyText: firstLift ? 'First session logged: ' + EX[firstLift].name.toLowerCase() + ' at ' + wt(st.hist[firstLift].kg) + ' ' + uu(EX[firstLift].unit) + '. Your chart grows from here.' : 'Your weights will show up here after your first workout.', pbEmpty: !pbList.length, showDemoWins: !st.fresh, freshWins: !!st.fresh, sessCount: st.sessCount || 0, jCount: (st.journal || []).length, monthCells:monthCells, monthCount:movedDays.length, progEmpty: !!st.fresh && !Object.keys(st.doneDates || {}).length && !(st.sessLog || []).length && !st.doneToday && !st.trainedToday && !(st.pbLog || []).length, progHas: !(!!st.fresh && !Object.keys(st.doneDates || {}).length && !(st.sessLog || []).length && !st.doneToday && !st.trainedToday && !(st.pbLog || []).length), monthCountLabel: movedDays.length === 1 ? '1 day moved' : movedDays.length + ' days moved', progNav:progNav, progDayV:progDayV, closeProgDay:function(){ self.set({progDay:null}); }, weekHeads:['M','T','W','T','F','S','S'], pbList:pbList, adaptTotal:st.adaptTotal,
+      chart:chart, pg:pg, chartEmptyText: firstLift ? 'First session logged: ' + EX[firstLift].name.toLowerCase() + ' at ' + wt(st.hist[firstLift].kg) + ' ' + uu(EX[firstLift].unit) + '. Your chart grows from here.' : 'Your weights will show up here after your first workout.', pbEmpty: !pbList.length, monthCells:monthCells, monthCount:movedDays.length, progEmpty: !!st.fresh && !Object.keys(st.doneDates || {}).length && !(st.sessLog || []).length && !st.doneToday && !st.trainedToday && !(st.pbLog || []).length, progHas: !(!!st.fresh && !Object.keys(st.doneDates || {}).length && !(st.sessLog || []).length && !st.doneToday && !st.trainedToday && !(st.pbLog || []).length), monthCountLabel: movedDays.length === 1 ? '1 day moved' : movedDays.length + ' days moved', progNav:progNav, progDayV:progDayV, closeProgDay:function(){ self.set({progDay:null}); }, weekHeads:['M','T','W','T','F','S','S'], pbList:pbList, adaptTotal:st.adaptTotal,
       memView:memView, noMemories: st.memories.length === 0, memoryCount:memoryCount,
       memCls: st.memoryOn ? 'on' : '', toggleMemory:function(){ self.set({memoryOn:!self.S().memoryOn}); },
       canType: self.aiReady(st) && !st.chatSync, chatDraftV: st.chatDraft || '', onChatDraft:function(e){ self.set({chatDraft:e.target.value}); },
