@@ -1677,7 +1677,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 96</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 97</p>
 </div>
 </sc-if>
 
@@ -4664,7 +4664,8 @@ class Component extends DCLogic {
     if (scr === 'memories' && navOn[st.back] !== undefined) navOn[st.back] = 'on';
     // The name only plays when you move to a different tab. Sheets and pop-ups on the same page don't replay it.
     const tabNow = Object.keys(navOn).find(function(k){ return navOn[k] === 'on'; }) || '';
-    if (tabNow && tabNow !== self.navLast) { self.navLast = tabNow; self.navAt = Date.now(); }
+    if (self.navLast === undefined) { self.navLast = tabNow; self.navAt = 0; } // opening the app: no name animation, it only plays when you tap a tab
+    else if (tabNow && tabNow !== self.navLast) { self.navLast = tabNow; self.navAt = Date.now(); }
     const navEl = Date.now() - (self.navAt || 0); const navT = navEl < 2300 ? '-' + navEl + 'ms' : '0s';
     if (tabNow && navEl < 2300) navOn[tabNow] = 'on nv-anim';
     const todayFoci = self.envFoci(st);
