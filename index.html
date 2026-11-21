@@ -66,6 +66,7 @@ button:not(:disabled):active{transform:scale(.975);transition:transform .1s ease
 .pv-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .pv-row{display:flex;align-items:center;gap:12px;background:#111214;border-radius:20px;padding:12px 12px 12px 14px}
 .pv-n{width:30px;height:30px;flex:none;border-radius:50%;background:#26272C;color:#DDF58B;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:14px}
+.unit-sw{display:inline-flex;background:#26272C;border-radius:999px;padding:2px;flex:none}.unit-sw button{appearance:none;border:0;background:transparent;color:#A1A1AA;font:inherit;font-size:12px;font-weight:700;padding:5px 9px;min-height:28px;border-radius:999px;cursor:pointer}.unit-sw button.on{background:#F5F5F2;color:#111214}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -714,7 +715,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       </sc-if>
       <button class="btn b-lime full go-btn" style="margin-top: 26px; min-height: 92px; border-radius: 999px; padding: 0 12px 0 12px; justify-content: flex-start; gap: 18px" onClick="{{startWorkout}}">
         <span style="width: 68px; height: 68px; flex: none; border-radius: 50%; background: #111214; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg></span>
-        <span class="d" style="font-size: 26px">Start workout</span>
+        <span class="d" style="font-size: 26px">{{goLabel}}</span>
       </button>
     </section>
     <div class="row" style="gap: 12px; align-items: flex-start; padding: 0 2px">
@@ -1137,7 +1138,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: {{act.gridCols}}; gap: 10px">
       <sc-if value="{{act.hasKg}}" hint-placeholder-val="{{ true }}">
       <div class="numtile">
-        <span class="ws-mut" style="font-size: 13px; font-weight: 600">{{act.kgLabel}}</span>
+        <span class="row" style="justify-content: space-between; gap: 6px; align-self: stretch"><span class="ws-mut" style="font-size: 13px; font-weight: 600">{{act.kgLabel}}</span><span class="unit-sw" role="group" aria-label="Units"><sc-for list="{{act.unitSw}}" as="u" hint-placeholder-count="2"><button class="{{u.cls}}" aria-pressed="{{u.on}}" onClick="{{u.pick}}">{{u.label}}</button></sc-for></span></span>
         <span style="white-space: nowrap; display: flex; align-items: flex-end; height: 54px"><input id="sp-kg" class="kg-in n9" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" aria-label="Weight, tap to type" value="{{act.kgIn}}" style="font-size: {{act.kgSize}}; width: {{act.kgW}}" onFocus="{{kgFocus}}" onChange="{{kgType}}" onBlur="{{kgCommit}}" onKeyDown="{{kgKey}}"><span class="ws-mut" style="font-size: 14px; font-weight: 600; margin-left: 4px">{{act.unitShort}}</span></span>
         <span class="row" style="gap: 8px"><button class="numbtn" aria-label="Less weight" onClick="{{kgDown}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button><button class="numbtn" aria-label="More weight" onClick="{{kgUp}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></span>
       </div>
@@ -1676,7 +1677,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 93</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 94</p>
 </div>
 </sc-if>
 
@@ -2444,7 +2445,7 @@ function buildRealWeek(st, now){
 }
 
 const TIMES = [['early','Early morning','6–8am','early mornings','07:00'],['morning','Morning','8–11am','mornings','09:00'],['lunch','Lunchtime','12–2pm','lunchtimes','12:30'],['afternoon','Afternoon','2–5pm','afternoons','15:00'],['evening','Evening','5–8pm','evenings','18:00'],['late','Late','8–10pm','late evenings','20:30']];
-const LENS = [[10,'10 min','min'],[20,'20 min','short'],[35,'35 min','full'],[45,'45+ min','full']];
+const LENS = [[10,'10 min','min'],[20,'20 min','short'],[35,'35 min','full'],[45,'45+ min','plus']];
 const REMIND = [['30m','30 minutes before','A quick heads-up and check-in'],['1h','1 hour before','Time to check in and get ready'],['night','The night before','Helps you plan ahead'],['none','No reminders','You can turn them on later']];
 const BARRIERS = ['Getting started','Finding time','Busy gyms','Noise and crowds','Knowing what to do','Low motivation','Low energy','Forgetting','Plans changing','Feeling watched','Feeling overwhelmed','Making mistakes','Unavailable equipment','Boredom','Staying consistent','Slow progress','Gym anxiety','Distractions'];
 const STYLES = [
@@ -2919,7 +2920,7 @@ class Component extends DCLogic {
     const w = this.pvWhereOf(st); const e0 = this.planEditsToday(st); const A = adjOn(st) ? st.adj : null; const pk = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
     return e0 && (!e0.where || e0.where === w) ? {day:e0.day, where:w, plan:pk, swaps:Object.assign({}, e0.swaps || {}), removed:Object.assign({}, e0.removed || {})} : {day:dkey(new Date()), where:w, plan:pk, swaps:{}, removed:{}};
   }
-  withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
+  withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); if (!sess.at) sess.at = Date.now(); sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
   coachInfo(st){
     // Everything the coach can "see": today's plan, check-in, quick check, workout, week, goals and (if allowed) memories.
     const self = this; const v = st.vals || {};
@@ -4111,10 +4112,13 @@ class Component extends DCLogic {
     this.say(k, t);
   }
 
+  basePlanOf(st){ st = st || this.S(); const b = st.basePlan; if (st.sessLen >= 45 && (!b || b === 'full')) return 'plus'; return ['min','short','full','plus'].indexOf(b) >= 0 ? b : 'full'; }
   rec(v){
+    // Feeling good gets the length you chose in setup (45+ means 45+). Lower energy or high stress steps it down.
+    const base = this.basePlanOf(this.S());
     if ((v.energy && v.energy <= 1) || (v.motiv && v.motiv <= 1)) return 'min';
-    if ((v.energy && v.energy <= 2) || v.stress >= 4) return 'short';
-    return 'full';
+    if ((v.energy && v.energy <= 2) || v.stress >= 4) return base === 'plus' ? 'full' : base === 'min' ? 'min' : 'short';
+    return base;
   }
 
   switchOpts(st){
@@ -4229,10 +4233,12 @@ class Component extends DCLogic {
     const oldH = st.hist || {}; const t0 = st.sess && st.sess.t0;
     const sLog = (st.sessLog || []).slice(); if (logged) sLog.push({at:Date.now(), id:'s' + Date.now(), plan:st.sess.plan, focus: focusLabel(this.envFoci(st)) || 'Workout', mins: t0 ? Math.max(1, Math.round((Date.now() - t0) / 60000) + 2) : null, adapted: st.sess.adapted || 0,
       items: st.sess.ids.map(function(id, i){ const o = oldH[id]; return st.sess.done[i] > 0 ? {id:id, name:EX[id].name, kg: EX[id].bw ? 0 : st.sess.kg[i], reps:st.sess.reps[i], unit:EX[id].unit, bw:!!EX[id].bw, repUnit:EX[id].repUnit || 'reps', sets:st.sess.done[i], planned:st.sess.sets[i], prevKg: o ? o.kg : null, prevReps: o ? o.reps : null} : null; }).filter(Boolean),
-      pbs: (st.sess.pbs || []).map(function(p){ return p.name + ' ' + (p.kgN != null ? wt(p.kgN) : p.kg) + ' ' + uu(p.unit); }), pbN: (st.sess.pbs || []).length});
+      pbs: (st.sess.pbs || []).map(function(p){ return p.name + ' ' + (p.kgN != null ? wt(p.kgN) : p.kg) + ' ' + uu(p.unit); }), pbN: (st.sess.pbs || []).length,
+      skipped: st.sess.ids.map(function(id, i){ return st.sess.done[i] > 0 ? null : {id:id, name:EX[id].name, planned:st.sess.sets[i]}; }).filter(Boolean), exPlanned: st.sess.ids.length});
     const selfF = this; setTimeout(function(){ selfF.burst(true); }, 60);
     const sessToday = (st.sessToday || 0) + (logged ? 1 : 0);
-    this.set({sessToday:sessToday, sessLog: sLog.slice(-600), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
+    if (st.sess) st.sess.ended = true;
+    this.set({sess: st.sess ? Object.assign({}, st.sess, {ended:true}) : st.sess, sessToday:sessToday, sessLog: sLog.slice(-600), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
     if (logged) this.awardLater('workout');
   }
 
@@ -4340,14 +4346,21 @@ class Component extends DCLogic {
       return {name:it.name, detail:(it.bw ? it.reps + ' ' + (it.repUnit || 'reps') : wt(it.kg) + ' ' + uu(it.unit) + ' × ' + it.reps) + ' · ' + it.sets + (it.sets === 1 ? ' set' : ' sets') + (it.planned && it.sets < it.planned ? ' of ' + it.planned : ''), tag:tag, tagSt:cls, up: tag === 'Heavier' || tag === 'More reps', same: tag === 'Same', down: tag === 'Lighter', isNew: tag === 'New'};
     });
     const sets = (w.items || []).reduce(function(a, it){ return a + it.sets; }, 0);
-    const planned = (w.items || []).reduce(function(a, it){ return a + (it.planned || it.sets); }, 0);
+    const skipped = w.skipped || [];
+    const planned = (w.items || []).reduce(function(a, it){ return a + (it.planned || it.sets); }, 0) + skipped.reduce(function(a, x){ return a + (x.planned || 0); }, 0);
+    const exDone = (w.items || []).length; const exPlanned = w.exPlanned || (exDone + skipped.length);
+    const partial = (w.items || []).filter(function(it){ return it.planned && it.sets < it.planned; }).length;
+    const early = skipped.length > 0 || partial > 0;
+    skipped.forEach(function(x){ rows.push({name:x.name, detail:'Not done today', tag:'Skipped', tagSt:'background: #26272C; color: #A1A1AA', up:false, same:false, down:false, isNew:false, skip:true}); });
     const ups = rows.filter(function(r){ return r.up; }).length, sames = rows.filter(function(r){ return r.same; }).length, news = rows.filter(function(r){ return r.isNew; }).length;
     const change = pv > 0 ? Math.round((v - pv) / pv * 100) : null;
     const wk = (st.week || []).filter(function(d){ return d.t !== 'rest' && !(st.joinKey && d.key && d.key < st.joinKey); });
     const wkDone = (st.week || []).filter(function(d){ return d.moved || (d.today && (st.doneToday || st.trainedToday)); }).length;
     const ins = [];
+    if (skipped.length) ins.push('You did ' + exDone + ' of ' + exPlanned + ' exercises and called it there. Stopping when you need to is part of training, and it all counts.');
+    else if (partial) ins.push('You did every exercise, with a few sets left on the table. That’s still a proper session.');
     if (w.pbN) ins.push(w.pbN === 1 ? 'A new personal best: ' + w.pbs[0] + '.' : w.pbN + ' new personal bests today.');
-    if (ups) ins.push('You went up on ' + ups + ' of ' + rows.length + (rows.length === 1 ? ' exercise' : ' exercises') + ' compared with last time.');
+    if (ups) ins.push('You went up on ' + ups + ' of ' + exDone + (exDone === 1 ? ' exercise' : ' exercises') + ' compared with last time.');
     else if (sames && !news) ins.push('Same weights as last time across the board. Consistency is how strength gets built.');
     if (news) ins.push(news === rows.length ? 'Everything was new today, so these numbers are your starting point.' : news + (news === 1 ? ' exercise was' : ' exercises were') + ' new today, so that’s a fresh baseline.');
     if (sets < planned) ins.push('You did ' + sets + ' of ' + planned + ' planned sets and stopped when you needed to. That still counts.');
@@ -4356,7 +4369,7 @@ class Component extends DCLogic {
     const ru = function(it){ const u = it.repUnit || 'reps'; return /second/.test(u) ? 'sec' : /minute/.test(u) ? 'min' : 'reps'; };
     const upTxt = bestUp ? '+' + (bestUp.w ? fmt(Math.round(bestUp.d * 4) / 4) + (WU === 'lb' ? ' lbs' : ' kg') : bestUp.d + ' ' + ru(bestUp.it)) : (sames ? 'Steady' : 'New');
     const upSub = bestUp ? bestUp.it.name + ' on last time' : (sames ? 'Same as last time' : 'Your starting point');
-    return {w:w, rows:rows, sets:sets, planned:planned, vol:v, volTxt: upTxt, volUnit: upSub, change:change, changeTxt: w.pbN ? String(w.pbN) : ups ? ups + ' of ' + rows.length : String(rows.length), changeSub: w.pbN ? (w.pbN === 1 ? 'New best' : 'New bests') : ups ? 'Went up' : (rows.length === 1 ? 'Exercise done' : 'Exercises done'), ins:ins, ups:ups, wkDone:wkDone, wkN:wk.length};
+    return {early:early, skipped:skipped, exDone:exDone, exPlanned:exPlanned, partial:partial, w:w, rows:rows, sets:sets, planned:planned, vol:v, volTxt: upTxt, volUnit: upSub, change:change, changeTxt: w.pbN ? String(w.pbN) : ups ? ups + ' of ' + exDone : String(exDone), changeSub: w.pbN ? (w.pbN === 1 ? 'New best' : 'New bests') : ups ? 'Went up' : (exDone === 1 ? 'Exercise done' : 'Exercises done'), ins:ins, ups:ups, wkDone:wkDone, wkN:wk.length};
   }
   reviewCoach(){
     const self = this; const st = this.S(); const R = this.reviewData(st); const rv = st.review || {}; if (!R) return;
@@ -4366,7 +4379,9 @@ class Component extends DCLogic {
     let t = '';
     if (R.w.pbN) t += 'A new personal best today. That’s your work paying off. ';
     else if (R.ups) t += 'You went up on ' + R.ups + (R.ups === 1 ? ' exercise' : ' exercises') + ' today. That’s real progress. ';
-    else t += 'You showed up and got it done. That’s the hardest part, every time. ';
+    else if (!R.early) t += 'You showed up and got it done. That’s the hardest part, every time. ';
+    if (R.skipped && R.skipped.length) t += (R.ups || R.w.pbN ? '' : 'You showed up and put the work in. ') + 'You did ' + R.exDone + ' of ' + R.exPlanned + ' exercises today and stopped when it felt right. That still counts. ';
+    else if (R.early) t += (R.ups || R.w.pbN ? '' : 'You showed up and put the work in. ') + 'You got through every exercise, even with a few sets left. That still counts. ';
     if (low) t += 'You mentioned some soreness, so keep an eye on it. Ease off that area next time if it’s still there, and stop at the first twinge. ';
     else if (rough) t += 'It sounds like today was a tough one, and you still did it. Be proud of that. ';
     else if (tired) t += 'Being tired after is normal. It usually means you worked. ';
@@ -4377,7 +4392,7 @@ class Component extends DCLogic {
     const trial = this.planOf(st) === 'free';
     if (trial && !rv.useTrial) return this.set({review:Object.assign({}, rv, {coach:fallback, loading:false, offer: !rv.declined})});
     this.set({review:Object.assign({}, rv, {loading:true, offer:false, trialRun: trial})});
-    const facts = 'WORKOUT JUST FINISHED: ' + R.w.focus + (R.w.mins ? ', about ' + R.w.mins + ' minutes' : '') + ', ' + R.sets + ' of ' + R.planned + ' sets. Exercises: ' + R.rows.map(function(r){ return r.name + ' ' + r.detail + ' (' + r.tag.toLowerCase() + ' vs last time)'; }).join('; ') + '. ' + R.ins.join(' ') + (feel ? ' They said they feel: ' + feel + '.' : '') + (note ? ' Their post-workout journal note: <<<' + note + '>>>' : ' They didn’t write a note.');
+    const facts = 'WORKOUT JUST FINISHED: ' + R.w.focus + (R.w.mins ? ', about ' + R.w.mins + ' minutes' : '') + ', ' + R.sets + ' of ' + R.planned + ' planned sets.' + (R.skipped && R.skipped.length ? ' They ended early: did ' + R.exDone + ' of ' + R.exPlanned + ' exercises and did NOT do: ' + R.skipped.map(function(x){ return x.name; }).join(', ') + '. Do not say they did everything.' : R.early ? ' They did every exercise but not every set.' : '') + ' Exercises done: ' + R.rows.filter(function(r){ return !r.skip; }).map(function(r){ return r.name + ' ' + r.detail + ' (' + r.tag.toLowerCase() + ' vs last time)'; }).join('; ') + '. ' + R.ins.join(' ') + (feel ? ' They said they feel: ' + feel + '.' : '') + (note ? ' Their post-workout journal note: <<<' + note + '>>>' : ' They didn’t write a note.');
     this.aiCoach(st, {mode:'review', typed: note || '(no note)', guide:facts, replies:[]}).then(function(ai){
       const cur = self.S(); const r2 = cur.review || {};
       if (ai && ai.concern) { const p = self.sgStart(cur, ai.concern, r2.entryId || ('c' + Date.now()), false); return self.set(Object.assign(p, {screen:'companion', back:'journal', review:Object.assign({}, r2, {loading:false, coach:fallback})})); }
@@ -4437,18 +4452,28 @@ class Component extends DCLogic {
     const todayW = week.find(function(w){ return w.today; }) || {};
     const midWorkout = st.screen === 'active' && st.sess && st.sess.done && st.sess.done.some(function(x){ return x > 0; });
     const joinKey = st.joinKey || (function(){ let t = Date.now(); (st.journal || []).forEach(function(j){ const a = j.at || (/^j\d{12,}$/.test(j.id || '') ? +j.id.slice(1) : 0); if (a && a < t) t = a; }); if (st.trainedAt && st.trainedAt < t) t = st.trainedAt; return dkey(new Date(t)); })();
+    let routineFix = null; if (st.sessLen >= 45 && st.routine && !st.lenFix45) { routineFix = {}; Object.keys(st.routine).forEach(function(k){ const r = st.routine[k]; routineFix[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); }
     const patch = {joinKey:joinKey, dayKey:tk, doneDates:doneDates, plannedDates:plannedDates, week:week, weekOffset:0,
-      checked:false, checkStep:0, vals:{mood:0,energy:0,stress:0,motiv:0}, plan: plannedDates[tk] || st.basePlan || 'full', dayOff:false, doneToday:false, trainedToday:false, extraToday:false, sessToday:0, addSheet:false, ciAsk:false, ciThenStart:false, ciAssumed:false,
+      checked:false, checkStep:0, vals:{mood:0,energy:0,stress:0,motiv:0}, plan: plannedDates[tk] || this.basePlanOf(st), dayOff:false, doneToday:false, trainedToday:false, extraToday:false, sessToday:0, addSheet:false, ciAsk:false, ciThenStart:false, ciAssumed:false,
       env:{}, envAt:'where', envLadder:false, envEnergy:false, tomorrowPlanned:false, swAsk:null, swOpen:false, toast:'', note:'', feel:null, daySheet:null,
       chat:[GREET], convTurns:0, askCount:{}, startStep:0, chatSig:'', chatMenu:false, chatThinking:false};
+    if (routineFix) { patch.routine = routineFix; patch.lenFix45 = true; patch.basePlan = 'plus'; patch.week = buildRealWeek(Object.assign({}, ns, {routine:routineFix})); }
     if (!midWorkout) { patch.sess = null; if (['active','complete','adapt','env','checkin','calm'].indexOf(st.screen) >= 0) patch.screen = 'today'; }
     return patch;
   }
   dayCheck(){ const st = this.S(); const p = this.rollPatch(st); if (p) this.set(p); const r = this.rewardsRollPatch(this.S()); if (r) this.set(r); }
 
+  inProgress(st){
+    // A workout you've started today and haven't finished: leaving the app (back button, a call, screen off) never loses it.
+    const s = st.sess; if (!s || s.ended || !Array.isArray(s.ids)) return false;
+    const t = s.t0 || s.at; if (!t) return false;
+    return Date.now() - t < 6 * 3600000 && dkey(new Date(t)) === dkey(new Date());
+  }
   componentDidMount(){
     const self = this;
     this.dayCheck();
+    { const st1 = this.S(); if (st1.fresh && st1.sessLen >= 45 && st1.routine && !st1.lenFix45) { const rf = {}; Object.keys(st1.routine).forEach(function(k){ const r = st1.routine[k]; rf[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); const p1 = {routine:rf, lenFix45:true, basePlan:'plus'}; p1.week = buildRealWeek(Object.assign({}, st1, {routine:rf})); if (st1.plan === 'full' && !adjOn(st1)) p1.plan = 'plus'; this.set(p1); } }
+    { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:'Welcome back. Carry on from where you left off.'}); }
     this.dayTick = setInterval(function(){ self.dayCheck(); }, 30000);
     this.tick = setInterval(function(){
       const st = self.S();
@@ -4945,6 +4970,7 @@ class Component extends DCLogic {
         primaryCls:'b-lime', primaryIcSt:'background: #111214; color: #DDF58B', primaryIc: allDone && !last ? 'M5 12h14M13 6l6 6-6 6' : 'M5 12l5 5 9-10',
         setPills: s.sets.slice(i, i + 1).length ? (function(){ const out = []; for (let k = 0; k < s.sets[i]; k++) { const d = k < s.done[i]; const now = k === s.done[i]; out.push({label:'Set ' + (k + 1), done:d, st: d ? 'background: #B7A6F6; color: #111214' : now ? 'background: #DDF58B; color: #111214' : 'background: rgba(245,245,242,.04); color: #A1A1AA; box-shadow: inset 0 0 0 1.5px #3A3B42'}); } return out; })() : [],
         kitLabel: KIT_LABEL[EQUIP[s.ids[i]]] || '',
+        unitSw: [['kg','kg'],['lb','lbs']].map(function(u){ const on = (st.units || 'kg') === u[0]; return {label:u[1], on:on, cls: on ? 'on' : '', pick:function(){ if (self.S().units === u[0] || (!self.S().units && u[0] === 'kg')) return; self.set({units:u[0], kgEdit:false, kgDraft:null, toast: u[0] === 'lb' ? 'Showing pounds. Change it back any time.' : 'Showing kilograms. Change it back any time.'}); }}; }),
         kgLabel: /each side/.test(ex.unit || '') ? 'Weight per side' : /each/.test(ex.unit || '') ? 'Weight per dumbbell' : 'Weight',
         unitShort: uu(ex.unit || '').replace(/ each.*$/, ''),
         kgIn: st.kgEdit ? (st.kgDraft == null ? '' : st.kgDraft) : wt(s.kg[i]), kgW: Math.max(2, (st.kgEdit ? String(st.kgDraft || '') : wt(s.kg[i])).length) + 0.4 + 'ch',
@@ -5383,7 +5409,7 @@ class Component extends DCLogic {
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
     return {
-      is:is, nav:nav, navOn:navOn, navT:navT, pv:pv, showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
+      is:is, nav:nav, navOn:navOn, navT:navT, pv:pv, goLabel: self.inProgress(st) ? 'Carry on' : 'Start workout', showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
       tourClose:function(){ self.set({tour:null}); },
@@ -5522,7 +5548,7 @@ class Component extends DCLogic {
       ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
       ciAskSkip:function(){ const v = {energy:5, mood:4, stress:1, motiv:5}; const cp = self.ciPatch(v); const pe = self.planEditsToday(self.S()); if (pe && (Object.keys(pe.swaps || {}).length || Object.keys(pe.removed || {}).length)) delete cp.plan; /* you've already planned today: skipping keeps it */ self.set(Object.assign({ciAsk:false, checked:true, vals:v, ciAssumed:true}, cp, self.ciLogPatch(v, true))); self.renderVals().startWorkout(); },
       ciAskClose:function(){ self.set({ciAsk:false}); },
-      startWorkout:function(){ const cur = self.S(); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
+      startWorkout:function(){ const cur = self.S(); if (self.inProgress(cur)) return self.set({screen:'active', back:'today', resting:false}); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
       extraWorkout:function(){ const cur = self.S(); beginEnv({extraToday:true, dayOff:false, plan: cur.checked ? self.rec(cur.vals) : 'full'}); },
       env:env, ep:ep,
       calmWorkout: !st.calmFrom, calmOther: !!st.calmFrom,
