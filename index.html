@@ -645,7 +645,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="scroll" style="padding: 22px 0 124px">
   <div class="row" style="justify-content: space-between; padding: 0 20px">
     <div class="row" style="gap: 12px">
-      <span><span class="d" style="font-size: 22px; display: block">Hi {{userName}}</span><span class="mut" style="font-size: 14px">{{todayDateLabel}}</span></span>
+      <span><span class="d" style="font-size: 28px; display: block">Hi {{userName}}</span><span class="mut" style="font-size: 14px">{{todayDateLabel}}</span></span>
     </div>
     <button class="rw-ring" onClick="{{rw.open}}" aria-label="{{rw.aria}}"><svg width="58" height="58" viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="29" r="25" fill="none" stroke="#26272C" stroke-width="5"></circle><circle cx="29" cy="29" r="25" fill="none" stroke="{{rw.ringCol}}" stroke-width="5" stroke-linecap="round" stroke-dasharray="157.08" stroke-dashoffset="{{rw.ringOff}}" transform="rotate(-90 29 29)" style="transition: stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)"></circle></svg><svg class="rw-medal" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="color: {{rw.medalCol}}"><path fill="currentColor" d="M7.6 12.6 5.4 21.2l3.3-1.3 1.9 2.8 1.7-7.4z"></path><path fill="currentColor" d="M16.4 12.6l2.2 8.6-3.3-1.3-1.9 2.8-1.7-7.4z"></path><circle cx="12" cy="9" r="7" fill="currentColor"></circle><path fill="#111214" d="M12 4.9l1.25 2.55 2.8.4-2.03 1.97.48 2.79L12 11.3l-2.5 1.31.48-2.79-2.03-1.97 2.8-.4z"></path></svg></button>
   </div>
@@ -871,22 +871,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   </div>
 
   <sc-if value="{{env.isQ}}" hint-placeholder-val="{{ true }}">
-    <sc-if value="{{env.coachLine}}" hint-placeholder-val="{{ true }}">
-    <div class="row" style="gap: 10px; margin-top: 36px; align-items: flex-start">
-      <span class="av" style="width: 34px; height: 34px"><img src="img/logo.png" alt="" style="width: 20px; height: auto"></span>
-      <span style="flex: 1; font-size: 15px; line-height: 1.45; color: #B7A6F6; font-weight: 500; padding-top: 6px"><sc-for list="{{env.coachW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span>
-    </div>
-    </sc-if>
-    <sc-if value="{{env.coachBox}}" hint-placeholder-val="{{ false }}">
-    <section class="rise" aria-label="Spark AI Coach" style="margin-top: 28px; background: #1C1D21; border-radius: 26px; padding: 18px; box-shadow: inset 0 0 0 1.5px #B7A6F6; display: flex; flex-direction: column; gap: 12px">
-      <div class="row" style="gap: 12px">
-        <span class="av"><img src="img/logo.png" alt="" style="width: 26px; height: auto"></span>
-        <span style="flex: 1"><span style="display: block; font-size: 14px; font-weight: 600; color: #B7A6F6">Spark AI Coach</span><span class="mut" style="display: block; font-size: 13px">Working out an alternative plan</span></span>
-      </div>
-      <p style="margin: 0; font-size: 17px; line-height: 1.45"><sc-for list="{{env.coachW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></p>
-    </section>
-    </sc-if>
-    <h1 class="d" style="font-size: 38px; margin-top: 22px">{{env.q}}</h1>
+    <h1 class="d" style="font-size: {{env.qSize}}; margin-top: 36px">{{env.q}}</h1>
     <sc-if value="{{env.isWhere}}" hint-placeholder-val="{{ true }}">
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 28px">
       <sc-for list="{{env.where}}" as="o" hint-placeholder-count="4">
@@ -1677,7 +1662,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 97</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 99</p>
 </div>
 </sc-if>
 
@@ -2506,7 +2491,7 @@ const IC = {
 };
 const ENV_WHERE = [['gym','At the gym','gym'],['home','At home','home'],['outside','Outside','outside'],['else','Somewhere else','pin']];
 const ENV_SPACE = {
-  gym:{key:'busy',coach:'Got it.',q:'How busy is it?',opts:[[0,'Quiet','Plenty of space and equipment'],[1,'Moderate','Some equipment is taken'],[2,'Very busy','Not much equipment free']]},
+  gym:{key:'busy',coach:'Got it.',q:'How busy is it where you are today?',opts:[[0,'Quiet','Plenty of space and equipment'],[1,'Moderate','Some equipment is taken'],[2,'Very busy','Not much equipment free']]},
   outside:{key:'busy',coach:'Fresh air. Good choice.',q:'How busy is it around you?',opts:[[0,'Quiet','Space to myself'],[1,'A few people','Some people about'],[2,'Very busy','Lots of people around']]},
   home:{key:'kit',coach:'Nice, no travelling.',q:'What have you got to work with?',opts:[['equip','Some equipment','Dumbbells, bands, a bench…'],['floor','Space and a mat','Bodyweight only'],['tiny','Just a little room','Bodyweight, small spot']]},
   else:{key:'kit',coach:'Okay, let’s work with it.',q:'What’s around you?',opts:[['equip','Some equipment','Dumbbells, bands, a bench…'],['floor','Floor space','Bodyweight only'],['tiny','Very little space','Bodyweight, small spot']]}
@@ -4895,7 +4880,7 @@ class Component extends DCLogic {
       env.q = 'What would you like to use?';
       const GEAR = [['machine','Machines', bz ? 'Simple to set up, and easy to grab when it’s busy' : 'Simple to set up and steady'], ['cable','Cables','Smooth, and easy to adjust'], ['free','Free weights','Dumbbells and a bench'], ['mix','Mix it up','Spark picks the best of each']];
       env.opts = GEAR.map(function(o){ const on = E.gear === o[0]; return optRow(o[1], o[2] + (!E.gear && st.gear === o[0] && st.sessCount ? ' · Last time' : ''), on, function(){ const ne = setEnv('gear', o[0]); envAdvance({env:ne, gear:o[0]}); }); }); }
-    if (envAt === 'noise') { env.coach = 'Nearly there.'; env.q = 'How noisy is it?';
+    if (envAt === 'noise') { env.coach = 'Nearly there.'; env.q = 'How noisy is it where you are today?';
       env.opts = ENV_NOISE.map(function(o, idx){ return optRow(o[1], '', E.noise === o[0], function(){ envAdvance({env:setEnv('noise', o[0])}); }, segsFor(idx + 1, 3)); }); }
     if (envAt === 'temp') { env.coach = 'Last one.'; env.q = 'How does the temperature feel?';
       env.opts = ENV_TEMP.map(function(o){ return optRow(o[1], '', E.temp === o[0], function(){ envAdvance({env:setEnv('temp', o[0])}); }, null, IC[o[2]]); }); }
@@ -5575,7 +5560,7 @@ class Component extends DCLogic {
       ciAskClose:function(){ self.set({ciAsk:false}); },
       startWorkout:function(){ const cur = self.S(); if (self.inProgress(cur)) return self.set({screen:'active', back:'today', resting:false}); if (!cur.checked) return self.set({ciAsk:true}); if (adjOn(cur) && cur.adj.plan === 'walk') return self.set({plan:'walk', screen:'prep', back:'today'}); if (adjOn(cur) && cur.adj.plan === 'min') return self.startEnv('mini'); if (adjOn(cur) && cur.adj.where === 'home') return beginEnv({env:{where:'home'}}); beginEnv(); },
       extraWorkout:function(){ const cur = self.S(); beginEnv({extraToday:true, dayOff:false, plan: cur.checked ? self.rec(cur.vals) : 'full'}); },
-      env:env, ep:ep,
+      env:Object.assign(env, {qSize:'32px'}), ep:ep,
       calmWorkout: !st.calmFrom, calmOther: !!st.calmFrom,
       calmNote: st.calmFrom ? (st.calmFrom === 'env' ? 'Take as long as you need. Your plan will be right where you left it.' : 'Stay as long as you like. Nothing else to do.') : 'When you’re ready, pick one. All of them are fine.',
       calmLeaveLabel: st.calmFrom === 'env' ? 'Back to my plan' : 'I’m done',
