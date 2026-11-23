@@ -67,6 +67,8 @@ button:not(:disabled):active{transform:scale(.975);transition:transform .1s ease
 .pv-row{display:flex;align-items:center;gap:12px;background:#111214;border-radius:20px;padding:12px 12px 12px 14px}
 .pv-n{width:30px;height:30px;flex:none;border-radius:50%;background:#26272C;color:#DDF58B;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:14px}
 .unit-sw{display:inline-flex;background:#26272C;border-radius:999px;padding:2px;flex:none}.unit-sw button{appearance:none;border:0;background:transparent;color:#A1A1AA;font:inherit;font-size:12px;font-weight:700;padding:5px 9px;min-height:28px;border-radius:999px;cursor:pointer}.unit-sw button.on{background:#F5F5F2;color:#111214}
+.cx-add{appearance:none;cursor:pointer;font:inherit;color:#F5F5F2;width:100%;border:1.5px dashed #4A4B53;background:transparent;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:14px;text-align:left}
+.cx-num{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#A1A1AA;font-weight:600}.cx-num .field{padding:12px 14px}
 .n9{font-family:'Inter',system-ui,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1;margin:0;font-variant-numeric:tabular-nums}
 .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;touch-action:pan-y;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
@@ -709,6 +711,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
           <button class="btn sm b-ghost" style="flex: none" onClick="{{r.sw}}" aria-label="{{r.aria}}">Switch</button>
         </div>
         </sc-for>
+        <button class="cx-add" style="margin-top: 0" onClick="{{pv.add}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">Add an exercise</span></button>
         <sc-if value="{{pv.edited}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; min-height: 36px; padding: 0 4px; font-size: 14px; color: #B7A6F6" onClick="{{pv.reset}}">Back to the original plan</button></sc-if>
       </div>
       </sc-if>
@@ -1620,6 +1623,12 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <textarea class="field" rows="2" maxlength="300" aria-label="Anything Spark should know" style="font-size: 16px; padding: 12px 14px; resize: none; width: 100%; box-sizing: border-box" placeholder="Anything Spark should know? For example: no kneeling" value="{{about.note}}" onChange="{{about.onNote}}"></textarea>
     <sc-if value="{{about.any}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; padding: 0; min-height: 32px; color: #F4A29A" onClick="{{about.clear}}">Remove all of this</button></sc-if>
   </div>
+  <h3 class="d" style="font-size: 18px; margin-top: 28px">Your exercises</h3>
+  <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
+    <sc-if value="{{myEx.none}}" hint-placeholder-val="{{ true }}"><span class="mut" style="font-size: 14px; line-height: 1.5">Add anything Spark doesn’t list, like a sled push or a boxing bag. It’ll show up when you switch or add an exercise.</span></sc-if>
+    <sc-for list="{{myEx.list}}" as="x" hint-placeholder-count="2"><div class="row" style="gap: 12px"><span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600">{{x.name}}</span><span class="mut" style="font-size: 13px">{{x.sub}}</span></span><button class="link" style="color: #F4A29A" aria-label="{{x.aria}}" onClick="{{x.remove}}">Remove</button></div></sc-for>
+    <button class="btn b-surf full" onClick="{{myEx.add}}">Add your own exercise</button>
+  </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Your plan</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 14px">
     <div class="row" style="align-items: flex-start; gap: 12px"><span style="flex: 1"><span class="d" style="display: block; font-size: 20px">{{spl.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 4px">{{spl.price}}</span></span><button class="link" style="padding: 0; min-height: 32px; color: #B7A6F6" onClick="{{spl.open}}">{{spl.cta}}</button></div>
@@ -1662,7 +1671,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 99</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 101</p>
 </div>
 </sc-if>
 
@@ -1871,11 +1880,11 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="sw-wrap" role="dialog" aria-modal="true" aria-label="Switch exercise">
   <div class="sw-card">
     <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px">
-      <span><span class="tour-kicker">Instead of {{sw.from}}</span><h2 class="d" style="font-size: 26px; margin: 6px 0 0">{{sw.title}}</h2></span>
+      <span><span class="tour-kicker"><sc-if value="{{sw.notAdd}}" hint-placeholder-val="{{ true }}">Instead of </sc-if>{{sw.from}}</span><h2 class="d" style="font-size: 26px; margin: 6px 0 0">{{sw.title}}</h2></span>
       <button class="tour-x" aria-label="Close" onClick="{{sw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     </div>
     <p class="mut" style="margin: 8px 0 14px; font-size: 14px; line-height: 1.5">{{sw.sub}}</p>
-    <div class="sw-tabs" role="tablist" aria-label="What to switch to" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 14px"><sc-for list="{{sw.modes}}" as="t" hint-placeholder-count="2"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="font-size: 14px"><span class="sw-tab-l">{{t.label}}</span></button></sc-for></div>
+    <sc-if value="{{sw.notAdd}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="What to switch to" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 14px"><sc-for list="{{sw.modes}}" as="t" hint-placeholder-count="2"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="font-size: 14px"><span class="sw-tab-l">{{t.label}}</span></button></sc-for></div></sc-if>
     <sc-if value="{{sw.same}}" hint-placeholder-val="{{ true }}">
     <sc-if value="{{sw.hasTabs}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="Kit" style="grid-template-columns: {{sw.tabCols}}"><sc-for list="{{sw.tabs}}" as="t" hint-placeholder-count="4"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}"><span class="sw-tab-l">{{t.label}}</span><span class="sw-tab-n">{{t.count}}</span></button></sc-for></div></sc-if>
     <sc-if value="{{sw.tabEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 6px 4px 0; font-size: 14px; line-height: 1.5">{{sw.tabEmptyText}}</p></sc-if>
@@ -1889,11 +1898,39 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{sw.mEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 0 4px; font-size: 14px; line-height: 1.5">Nothing for that one with the kit you’ve got. Try another muscle group.</p></sc-if>
     <div style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{sw.mOpts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}</span></span><span class="mut" style="font-size: 13px; flex: none">{{o.kit}}</span></button></sc-for></div>
     </sc-if>
+    <button class="cx-add" onClick="{{sw.addOwn}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span style="flex: 1; text-align: left"><span style="display: block; font-weight: 600">Add your own exercise</span><span class="mut" style="font-size: 13px">Sled push, boxing bag, anything that’s not listed</span></span></button>
     <sc-if value="{{sw.pv}}" hint-placeholder-val="{{ false }}">
     <div class="row" style="margin-top: 16px"><span style="flex: 1"><span style="display: block; font-weight: 600">{{sw.neverLabel}}</span><span class="mut" style="font-size: 13px">Spark will use your pick from now on.</span></span><button class="tg {{sw.neverCls}}" aria-pressed="{{sw.never}}" aria-label="{{sw.neverLabel}}" onClick="{{sw.toggleNever}}"></button></div>
     <button class="btn b-ghost full" style="margin-top: 14px" onClick="{{sw.skipToday}}">Skip it today</button>
     </sc-if>
     <sc-if value="{{sw.taken}}" hint-placeholder-val="{{ false }}"><button class="link" style="display: flex; margin: 14px auto 0; color: #A1A1AA" onClick="{{sw.simpler}}">Nothing’s free? Make it simpler</button></sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{cx.on}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 70; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{cx.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.6); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="Add your own exercise" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 24px; display: flex; flex-direction: column; max-height: 92%; box-sizing: border-box">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><span><h2 class="d" style="font-size: 26px">Add your own exercise</h2><span class="mut" style="display: block; font-size: 14px; margin-top: 4px">Anything Spark doesn’t list. It’s saved for next time.</span></span><button class="mnav sheet-x" aria-label="Close" onClick="{{cx.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div style="overflow-y: auto; margin: 6px -4px 0; padding: 0 4px">
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">What’s it called?</span><input id="sp-cx-name" class="field" maxlength="40" autocomplete="off" placeholder="For example: Sled push" aria-label="Exercise name" value="{{cx.name}}" onChange="{{cx.onName}}">
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">Which muscles does it work?</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.muscles}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">How will you track it?</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.measures}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+      <sc-if value="{{cx.isTime}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.timeUs}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></div></sc-if>
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">What do you use?</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.kits}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
+      <sc-if value="{{cx.hasMeasure}}" hint-placeholder-val="{{ false }}">
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">Your starting point</span>
+      <div style="display: grid; grid-template-columns: repeat({{cx.cols}}, minmax(0, 1fr)); gap: 8px">
+        <label class="cx-num"><span>{{cx.setsLabel}}</span><input class="field" inputmode="numeric" value="{{cx.sets}}" onChange="{{cx.onSets}}" aria-label="{{cx.setsLabel}}"></label>
+        <label class="cx-num"><span>{{cx.repsLabel}}</span><input class="field" inputmode="decimal" value="{{cx.reps}}" onChange="{{cx.onReps}}" aria-label="{{cx.repsLabel}}"></label>
+        <sc-if value="{{cx.weighted}}" hint-placeholder-val="{{ false }}"><label class="cx-num"><span>{{cx.kgLabel}}</span><input class="field" inputmode="decimal" value="{{cx.kg}}" onChange="{{cx.onKg}}" aria-label="{{cx.kgLabel}}"></label></sc-if>
+      </div>
+      <span class="mut" style="display: block; font-size: 13px; margin-top: 8px">Just a rough start. You can change it in the workout.</span>
+      </sc-if>
+    </div>
+    <sc-if value="{{cx.hasErr}}" hint-placeholder-val="{{ false }}"><p style="margin: 12px 0 0; font-size: 14px; color: #F4A29A">{{cx.err}}</p></sc-if>
+    <button class="btn b-lime full" style="margin-top: 14px" onClick="{{cx.save}}">{{cx.saveLabel}}</button>
   </div>
 </div>
 </sc-if>
@@ -2312,7 +2349,7 @@ function homeOK(id, kit, small){
   return nd.every(function(n){ return n.split('|').some(function(x){ return have.indexOf(x) >= 0; }); });
 }
 function kitText(kit){ const names = HOME_KIT.filter(function(k){ return (kit || []).indexOf(k[0]) >= 0 && k[0] !== 'mat'; }).map(function(k){ return k[1].toLowerCase(); }); return names.length ? names.join(', ') : 'bodyweight only'; }
-const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight', band:'Bands'};
+const KIT_LABEL = {machine:'Machine', cable:'Cables', free:'Free weights', body:'Bodyweight', band:'Bands', other:'Other kit'};
 // ---- "A bit more about you" (optional, set up or Settings). Only what the person chooses to share. ----
 const ABOUT_ND = [['adhd','ADHD'],['autistic','Autistic'],['audhd','AuDHD'],['ndother','Other neurodivergence']];
 const ABOUT_BODY = [['joints','Joint or back problems'],['mobility','Limited mobility'],['wheelchair','Wheelchair user'],['fatigue','Chronic pain or fatigue'],['bodyother','Another condition']];
@@ -2336,8 +2373,17 @@ Object.keys(EQUIP).forEach(function(id){ if (EX[id]) EX[id].kit = EQUIP[id]; });
 ['assistpull','assistdip'].forEach(function(id){ if (EX[id]) EX[id].assist = true; });
 const GEAR_ORDER = {machine:['machine','cable','free','body'], cable:['cable','machine','free','body'], free:['free','cable','machine','body'], mix:null};
 // Picks the exercise for one movement slot, using the kit they chose, their saved preferences and where they are.
+// Your own exercises live alongside the built-in ones. They're only planned when you choose them.
+const CX_PAT = {chest:'chest', back:'row', shoulders:'shoulder', arms:'biceps', legs:'squat', core:'core', cardio:'cardio'};
+const CX_MEASURE = [['wr','Weight and reps'],['reps','Reps only'],['time','Time'],['wd','Weight and distance']];
+function syncCustom(cx){
+  Object.keys(cx || {}).forEach(function(id){ const c = cx[id]; if (!c || !c.name) return; const pat = CX_PAT[c.muscle] || 'cardio'; const weighted = c.measure === 'wr' || c.measure === 'wd';
+    EX[id] = {name:c.name, area:((MUSCLES.find(function(m){ return m[0] === c.muscle; }) || [0, 'Your own'])[1]) + ' · your own', reps:c.reps || (c.measure === 'time' ? (c.timeU === 'sec' ? 30 : 3) : c.measure === 'wd' ? 20 : 10), kg: weighted ? (c.kg || 0) : 0, best:null, step: c.kit === 'free' ? 2 : 2.5, unit:'kg', bw: !weighted, repUnit: c.measure === 'time' ? (c.timeU === 'sec' ? 'seconds' : 'minutes') : c.measure === 'wd' ? 'metres' : 'reps', cues:['Your own exercise, so do it your way.','Spark tracks it like any other.'], custom:true, pat:pat, kit:c.kit || 'other', sets:c.sets || 3};
+    EQUIP[id] = c.kit || 'other'; HOME_NEEDS[id] = [];
+    PAT[pat] = (PAT[pat] || []).filter(function(x){ return x !== id; }); if (!c.deleted) PAT[pat].push(id); });
+}
 function pickFor(pat, o, used){
-  o = o || {}; let list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0; });
+  o = o || {}; let list = (PAT[pat] || []).filter(function(id){ return EX[id] && used.indexOf(id) < 0 && (!EX[id].custom || (o.prefs || {})[pat] === id); });
   if (!list.length) return null;
   const where = o.where || 'gym';
   const homeish = where === 'home';
@@ -2394,7 +2440,7 @@ const SWAPQ = {
   dbrow:{ask:'Got a clear bit of floor?',opts:[['Yes','backext']]},
   ohext:{ask:'Is there a bench or sturdy ledge?',opts:[['Yes','benchdip']]}
 };
-const MUSCLES = [['chest','Chest',['chest']],['back','Back',['vpull','row']],['shoulders','Shoulders',['shoulder','lateral']],['arms','Arms',['biceps','triceps']],['legs','Legs',['squat','hinge','calves']],['core','Core',['core']]];
+const MUSCLES = [['chest','Chest',['chest']],['back','Back',['vpull','row']],['shoulders','Shoulders',['shoulder','lateral']],['arms','Arms',['biceps','triceps']],['legs','Legs',['squat','hinge','calves']],['core','Core',['core']],['cardio','Cardio',['cardio']]];
 function muscleOf(pat){ const m = MUSCLES.find(function(x){ return x[2].indexOf(pat) >= 0; }); return m ? m[0] : null; }
 const ONE_SPOT = {chest:'dbbench',shoulder:'standpress',pulldown:'dbrow',triceps:'ohext',cablerow:'dbrow'};
 const ISSUES = [
@@ -2753,7 +2799,7 @@ function mkSession(plan, foci, o){
 // Timed cardio (minutes) is one continuous block, not sets. Share the session's time between the cardio blocks
 // so a 20-minute cardio workout really is about 20 minutes.
 function fitCardio(sess, mins){
-  const timed = []; sess.ids.forEach(function(id, i){ if (EX[id] && EX[id].repUnit === 'minutes') timed.push(i); });
+  const timed = []; sess.ids.forEach(function(id, i){ if (EX[id] && EX[id].repUnit === 'minutes' && !EX[id].custom) timed.push(i); /* your own timed exercises keep the rounds you set */ });
   if (!timed.length) return sess;
   timed.forEach(function(i){ sess.sets[i] = 1; });
   const others = sess.ids.length - timed.length;
@@ -2824,6 +2870,7 @@ const AI_SYSTEM = [
   + '{"do":"rename","name":"..."} · {"do":"units","to":"kg|lb"} · {"do":"session_length","minutes":10|20|35|45} · {"do":"rest_time","seconds":30-300} · {"do":"setting","name":"fidget|coach_line","on":true|false} · '
   + '{"do":"home_kit","add":[...],"remove":[...]} with db, kb, band, bench, bar, bb, mat · {"do":"about","add":[...],"remove":[...],"note":"..."} with adhd, autistic, audhd, ndother, joints, mobility, wheelchair, fatigue, bodyother · '
   + '{"do":"journal","text":"..."} write a journal entry for them in their own words · {"do":"open","screen":"journal|settings|routine|rewards|plan|checkin|memories|progress"} adds a button that opens it · '
+  + '{"do":"add_exercise","name":"...","muscle":"chest|back|shoulders|arms|legs|core|cardio","measure":"weight|reps|time|distance","unit":"seconds|minutes","sets":n,"amount":n,"kit":"machine|cable|free|body|other","today":true|false} save their own exercise that Spark doesn’t list (e.g. sled push, boxing bag), optionally adding it to today · '
   + 'during a workout only: {"do":"set_weight","weight":n} (in their units) · {"do":"set_reps","reps":n} · {"do":"add_set"} · {"do":"skip_exercise"} · {"do":"switch","to":"<exercise name>"}. '
   + 'Rules: include an action only when the user asked for that change or clearly agreed to it. For changes you are suggesting yourself, use REPLY BUTTONS instead. The app applies actions straight away and shows what changed with an Undo button, so write "text" in the past tense ("Done, today is now…"). If a request is unclear, ask one short question and include no action. If they ask for something the app cannot do (prices, credits, rewards, deleting history, logging workouts they did not do, anything outside Spark), say so kindly and plainly.',
   'OUTPUT: only JSON, no other text: {"text":"your message","replies":[{"kind":"<kind>","label":"<label>"}],"actions":[...]} (leave "actions" out when there is nothing to change) and, only when needed, "concern":"self|others|abuse" or "reason":"<why, when offering an adj_ change>".'
@@ -2885,6 +2932,7 @@ class Component extends DCLogic {
     const e = this.planEditsToday(st); if (!e || !sess || !Array.isArray(sess.ids) || sess.plan === 'min' && sess.ids.length === 1) return sess;
     if (e.where && e.where !== gearOpts(st).where) return sess; // changes made for the gym don't get forced onto a home workout
     Object.keys(e.swaps || {}).forEach(function(from){ const to = e.swaps[from]; const i = sess.ids.indexOf(from); if (i >= 0 && EX[to] && sess.ids.indexOf(to) < 0) { sess.ids[i] = to; if (sess.pats) sess.pats[i] = EX[to].pat || sess.pats[i]; } });
+    (e.added || []).forEach(function(id){ if (EX[id] && sess.ids.indexOf(id) < 0) { sess.ids.push(id); if (sess.pats) sess.pats.push(EX[id].pat || null); if (sess.sets) sess.sets.push(EX[id].sets || (sess.sets[0] || 3)); if (sess.done) sess.done.push(0); if (sess.kg) sess.kg.push(snapU(EX[id].kg || 0)); if (sess.reps) sess.reps.push(EX[id].reps); } });
     const keep = sess.ids.map(function(id){ return !(e.removed || {})[id]; });
     if (keep.some(Boolean) && keep.some(function(k){ return !k; })) ['ids','pats','sets','done','kg','reps'].forEach(function(f){ if (Array.isArray(sess[f])) sess[f] = sess[f].filter(function(_, i){ return keep[i]; }); });
     return sess;
@@ -2904,6 +2952,25 @@ class Component extends DCLogic {
     return w === 'home' || w === 'outside' ? w : 'gym';
   }
   previewCtx(st){ return Object.assign({}, st, {env:{where:this.pvWhereOf(st)}}); }
+  pvAddPick(id){
+    const cur = this.S(); const e = this.editsFor(cur); if (e.added.indexOf(id) < 0) e.added.push(id); if (e.removed[id]) delete e.removed[id];
+    this.set({planEdits:e, pvAdd:false, swOpen:false, swTab:null, swMode:null, swMuscle:null, pvOpen:true, toast:'Added ' + EX[id].name.toLowerCase() + ' to today.'});
+  }
+  saveCustom(){
+    const cur = this.S(); const f = cur.cx || {}; const name = String(f.name || '').trim();
+    if (!name || !f.muscle || !f.measure) return this.set({cx:Object.assign({}, f, {err: !name ? 'Give it a name first.' : !f.muscle ? 'Pick which muscles it works.' : 'Pick how you’ll track it.'})});
+    const id = 'cx_' + Date.now().toString(36);
+    const num = function(v, d){ const n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) && n > 0 ? n : d; };
+    const weighted = f.measure === 'wr' || f.measure === 'wd';
+    const c = {name:name.slice(0, 40), muscle:f.muscle, measure:f.measure, timeU: f.measure === 'time' ? (f.timeU || 'min') : null, kit:f.kit || (weighted ? 'other' : 'body'), sets:Math.round(num(f.sets, f.measure === 'time' && f.muscle === 'cardio' ? 3 : 3)), reps:Math.round(num(f.reps, f.measure === 'time' ? (f.timeU === 'sec' ? 30 : 2) : f.measure === 'wd' ? 20 : 10)), kg: weighted ? fromU(num(f.kg, 0)) : 0, at:Date.now()};
+    const cx = Object.assign({}, cur.customEx || {}); cx[id] = c; syncCustom(cx);
+    this.set({customEx:cx, cx:null});
+    const ctx = f.ctx; const after = this.S();
+    if (ctx === 'swap' && after.pvSw) return this.pvPick(after.pvSw, id);
+    if (ctx === 'swap' && after.sess && after.swOpen) return this.doSwitch(id, after.swReason);
+    if (ctx === 'add') return this.pvAddPick(id);
+    this.set({toast:'Added ' + c.name + ' to your exercises. Find it when you switch or add an exercise.'});
+  }
   previewSess(st){
     const ctx = this.previewCtx(st);
     const A = adjOn(st) ? st.adj : null; const key = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
@@ -2912,7 +2979,7 @@ class Component extends DCLogic {
   editsFor(st){
     // Today's changes, for the place you're planning. Planning somewhere else starts a fresh set.
     const w = this.pvWhereOf(st); const e0 = this.planEditsToday(st); const A = adjOn(st) ? st.adj : null; const pk = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
-    return e0 && (!e0.where || e0.where === w) ? {day:e0.day, where:w, plan:pk, swaps:Object.assign({}, e0.swaps || {}), removed:Object.assign({}, e0.removed || {})} : {day:dkey(new Date()), where:w, plan:pk, swaps:{}, removed:{}};
+    return e0 && (!e0.where || e0.where === w) ? {day:e0.day, where:w, plan:pk, swaps:Object.assign({}, e0.swaps || {}), removed:Object.assign({}, e0.removed || {}), added:(e0.added || []).slice()} : {day:dkey(new Date()), where:w, plan:pk, swaps:{}, removed:{}, added:[]};
   }
   withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); if (!sess.at) sess.at = Date.now(); sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
   coachInfo(st){
@@ -3200,6 +3267,18 @@ class Component extends DCLogic {
       case 'missed_today': { const m = this.missedRecent(st); if (!m) return {no:'I couldn’t find a missed session from the last few days.'}; return setToday(m.focus, lenKey(a.length) || null, (doneNow ? 'Added ' : 'Today is now ') + (m.name === 'yesterday' ? 'yesterday’s' : m.dayName + '’s') + ' ' + fl(m.focus)); }
       case 'rest_today': this.applyAdj('adj_rest', 'you asked', {manual:true}); return {ok:'Today is now a rest day.'};
       case 'move_tomorrow': this.applyAdj('adj_slide', 'you asked', {manual:true}); return {ok:'Today’s session has moved to tomorrow. Today is a rest day.'};
+      case 'add_exercise': {
+        const name = String(a.name || '').trim().slice(0, 40); const mus = FK(a.muscle || (a.focus || [])[0]); const muscle = mus === 'full' ? 'cardio' : mus;
+        const meas = {weight:'wr', reps:'reps', time:'time', distance:'wd'}[String(a.measure || '').toLowerCase()] || null;
+        if (!name || !muscle || !meas) return {no:'I need a name, the muscles it works and how you’ll track it.'};
+        if (mode === 'check') return {ok:'ok'};
+        const existing = Object.keys(st.customEx || {}).find(function(id){ const c = st.customEx[id]; return c && !c.deleted && c.name.toLowerCase() === name.toLowerCase(); });
+        let id = existing; if (!id) { id = 'cx_' + Date.now().toString(36); const cx = Object.assign({}, st.customEx || {}); const tu = /sec/i.test(a.unit || '') ? 'sec' : 'min';
+          cx[id] = {name:name, muscle:muscle, measure:meas, timeU: meas === 'time' ? tu : null, kit: ['machine','cable','free','body','other'].indexOf(a.kit) >= 0 ? a.kit : (meas === 'wr' || meas === 'wd' ? 'other' : 'body'), sets: Math.max(1, Math.min(10, parseInt(a.sets, 10) || 3)), reps: Math.max(1, parseInt(a.amount || a.reps, 10) || (meas === 'time' ? (tu === 'sec' ? 30 : 2) : meas === 'wd' ? 20 : 10)), kg:0, at:Date.now()};
+          syncCustom(cx); this.set({customEx:cx}); }
+        if (a.today) { const v1 = this.renderVals(); if (v1.pv && v1.pv.has) { this.pvAddPick(id); return {ok:'Added ' + name + ' to your exercises and to the end of today’s workout.'}; } }
+        return {ok:'Added ' + name + ' to your exercises. You’ll find it when you switch or add an exercise.'};
+      }
       case 'home_today': this.applyAdj('adj_home', 'you asked', {manual:true}); return {ok:'Today is now a home workout.'};
       case 'lighter_today': this.applyAdj('adj_light', 'you asked', {manual:true}); return {ok:'Today’s weights are about 10% lighter.'};
       case 'set_day': { const d = DK(a.day); if (!d) return {no:'I wasn’t sure which day you meant.'}; const R = Object.assign({}, this.routineOf(st)); const was = R[d] || {t:'rest'};
@@ -3246,7 +3325,7 @@ class Component extends DCLogic {
   }
   runActions(list, mode){
     const self = this; const st0 = this.S();
-    const KEYS = ['userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
+    const KEYS = ['customEx','planEdits','userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
     const snap = {}; KEYS.forEach(function(k){ snap[k] = st0[k] === undefined ? null : JSON.parse(JSON.stringify(st0[k])); });
     const done = [], fail = [], open = [];
     (Array.isArray(list) ? list : []).slice(0, 5).forEach(function(a){ let r = null; try { r = self.doAction(a, mode); } catch (e) { r = {no:'Something went wrong making that change.'}; }
@@ -4140,7 +4219,7 @@ class Component extends DCLogic {
     else if (o.where === 'outside') list = list.filter(function(id){ return EQUIP[id] === 'body'; });
     else list = list.filter(function(id){ return EQUIP[id] !== 'band'; });
     list = list.filter(function(id){ return bodyOK(id, o.lim); });
-    const curKit = EQUIP[cur]; return ['machine','cable','free','band','body'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
+    const curKit = EQUIP[cur]; return ['machine','cable','free','band','body','other'].map(function(k){ return {key:k, ids:list.filter(function(id){ return EQUIP[id] === k; })}; }).filter(function(g){ return g.ids.length || g.key === curKit; });
   }
   // Exercises from another muscle group that suit where they are and what they've got.
   muscleOpts(st, mkey){
@@ -4468,6 +4547,7 @@ class Component extends DCLogic {
   }
   componentDidMount(){
     const self = this;
+    if (this.S().cx || this.S().pvAdd) this.set({cx:null, pvAdd:false});
     this.dayCheck();
     { const st1 = this.S(); if (st1.fresh && st1.sessLen >= 45 && st1.routine && !st1.lenFix45) { const rf = {}; Object.keys(st1.routine).forEach(function(k){ const r = st1.routine[k]; rf[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); const p1 = {routine:rf, lenFix45:true, basePlan:'plus'}; p1.week = buildRealWeek(Object.assign({}, st1, {routine:rf})); if (st1.plan === 'full' && !adjOn(st1)) p1.plan = 'plus'; this.set(p1); } }
     { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:'Welcome back. Carry on from where you left off.'}); }
@@ -4568,6 +4648,7 @@ class Component extends DCLogic {
     return walk(v, '');
   }
   renderVals(){
+    try { syncCustom((this.state || {}).customEx); } catch (x) {}
     let v;
     try { v = this.renderVals0(); }
     catch (e) {
@@ -4625,23 +4706,24 @@ class Component extends DCLogic {
     // Today's workout preview: see it, switch or skip exercises before you start.
     const pv = (function(){
       const empty = {has:false, open:false, rows:[], sheet:false, alts:[], noAlts:false, edited:false, label:'', ic:'', swTitle:'', neverLabel:'', never:false, neverCls:'', toggle:function(){}, reset:function(){}, close:function(){}, toggleNever:function(){}, skip:function(){}};
-      if (st.screen !== 'today' || !st.week || !st.week.some(function(d){ return d.today && d.t !== 'rest'; })) return empty;
+      // Any workout that's on for today: a planned day, or one added on a rest day (by you or the coach).
+      if (st.screen !== 'today' || !st.week || st.dayOff || st.doneToday || !st.week.some(function(d){ return d.today && (d.t !== 'rest' || !!st.extraToday); })) return empty;
       let P; try { P = self.previewSess(st); } catch (e) { return empty; }
       if (!P || !P.ids || !P.ids.length) return empty;
       const unitW = WU === 'lb' ? 'lbs' : 'kg'; const E0 = self.planEditsToday(st);
-      const ru = function(ex){ const u = ex.repUnit || 'reps'; return /minute/.test(u) ? 'min' : /second/.test(u) ? 'sec' : /each/.test(u) ? 'each side' : 'reps'; };
+      const ru = function(ex){ const u = ex.repUnit || 'reps'; return /minute/.test(u) ? 'min' : /second/.test(u) ? 'sec' : /metre/.test(u) ? 'm' : /each/.test(u) ? 'each side' : 'reps'; };
       const rows = P.ids.map(function(id, i){ const ex = EX[id]; const det = P.sets[i] + ' × ' + P.reps[i] + ' ' + ru(ex) + (!ex.bw && P.kg[i] ? ' · ' + wt(P.kg[i]) + ' ' + unitW : '');
         return {n:i + 1, name:ex.name, detail:det, aria:'Switch ' + ex.name, sw:function(){ self.set({pvSw:id, pvNever:false, swTab:null, swMode:null, swMuscle:null}); }}; });
       const swId = st.pvSw && P.ids.indexOf(st.pvSw) >= 0 ? st.pvSw : null;
       const editsBase = function(){ return self.editsFor(self.S()); };
-      const pw = self.pvWhereOf(st); const hasEd = function(e){ return !!(e && (Object.keys(e.swaps || {}).length || Object.keys(e.removed || {}).length)); };
+      const pw = self.pvWhereOf(st); const hasEd = function(e){ return !!(e && (Object.keys(e.swaps || {}).length || Object.keys(e.removed || {}).length || (e.added || []).length)); };
       const edited = hasEd(E0) && (!E0.where || E0.where === pw);
       const otherEd = hasEd(E0) && E0.where && E0.where !== pw;
       const WN = {gym:'the gym', home:'home', outside:'outside'};
       const whereOpts = [['gym','Gym'],['home','Home'],['outside','Outside']].map(function(w){ const on = pw === w[0]; return {label:w[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({pvWhere:w[0]}); }}; });
       const swName = swId ? EX[swId].name : '';
       return {has:true, open: !!st.pvOpen, rows:rows, whereOpts:whereOpts, otherEd:otherEd, otherTxt: otherEd ? 'Your changes for ' + WN[E0.where] + ' are kept for ' + WN[E0.where] + '.' : '', label: st.pvOpen ? 'Hide exercises' : 'See exercises (' + rows.length + ')', ic: st.pvOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
-        toggle:function(){ self.set({pvOpen:!self.S().pvOpen}); }, edited:edited, reset:function(){ self.set({planEdits:null, pvWhere:null, toast:'Back to the original plan.'}); },
+        toggle:function(){ self.set({pvOpen:!self.S().pvOpen}); }, add:function(){ self.set({pvAdd:true, pvSw:null, swMode:'other', swMuscle:null}); }, edited:edited, reset:function(){ self.set({planEdits:null, pvWhere:null, toast:'Back to the original plan.'}); },
         skip:function(){ if (rows.length <= 1) return self.set({pvSw:null, toast:'That’s the only exercise today, so I’ll keep it.'}); const e = editsBase(); e.removed[swId] = true; self.set({planEdits:e, pvSw:null, pvNever:false, swTab:null, swMode:null, swMuscle:null, toast:'Skipping the ' + swName.toLowerCase() + ' today.'}); }};
     })();
     const navOn = {today:'',routine:'',journal:'',settings:'',companion:''};
@@ -5002,8 +5084,9 @@ class Component extends DCLogic {
     }; };
 
     // Switch exercise sheet (in a workout, or on Today's preview before you start)
-    const pvS = (st.screen === 'today' && st.pvSw) ? (function(){ try { const P = self.previewSess(st); const k = P.ids.indexOf(st.pvSw); return k >= 0 ? Object.assign({}, P, {cur:k}) : null; } catch (e) { return null; } })() : null;
-    const stSw = pvS ? Object.assign({}, self.previewCtx(st), {sess:pvS}) : st; const pvFrom = pvS ? st.pvSw : null;
+    const pvAddMode = st.screen === 'today' && !!st.pvAdd;
+    const pvS = (st.screen === 'today' && (st.pvSw || st.pvAdd)) ? (function(){ try { const P = self.previewSess(st); const k = st.pvAdd ? 0 : P.ids.indexOf(st.pvSw); return k >= 0 ? Object.assign({}, P, {cur:k}) : null; } catch (e) { return null; } })() : null;
+    const stSw = pvS ? Object.assign({}, self.previewCtx(st), {sess:pvS}) : st; const pvFrom = pvS && !pvAddMode ? st.pvSw : null;
     const swGroups = stSw.sess ? self.switchGroups(stSw) : [];
     const swCurKit = stSw.sess ? EQUIP[stSw.sess.ids[stSw.sess.cur]] : null;
     const swTabKey = swGroups.some(function(g){ return g.key === st.swTab; }) ? st.swTab : ((swGroups.find(function(g){ return g.key === swCurKit; }) || swGroups[0] || {}).key);
@@ -5012,16 +5095,18 @@ class Component extends DCLogic {
     const swCur = stSw.sess ? EX[stSw.sess.ids[stSw.sess.cur]] : null;
     const sw = {tabs: swGroups.map(function(g){ const on = g.key === swTabKey; return {label:TAB_LABEL[g.key], count:g.ids.length, on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swTab:g.key}); }}; }),
       tabCols: 'repeat(' + Math.max(1, swGroups.length) + ', minmax(0, 1fr))', hasTabs: swGroups.length > 1,
-      on: (!!st.swOpen && !!st.sess) || !!pvS, pv: !!pvS, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: swCur ? swCur.name : '',
-      title: st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
-      sub: pvS ? (st.swMode === 'other' ? 'Train something else in this slot today.' : 'Same muscles, different kit. Not easier, just different.') : st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
+      on: (!!st.swOpen && !!st.sess) || !!pvS, pv: !!pvS && !pvAddMode, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: pvAddMode ? 'today’s plan' : swCur ? swCur.name : '',
+      title: pvAddMode ? 'Add an exercise' : st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
+      sub: pvAddMode ? 'Pick a muscle group, or add your own. It goes at the end of today.' : pvS ? (st.swMode === 'other' ? 'Train something else in this slot today.' : 'Same muscles, different kit. Not easier, just different.') : st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
       opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + wt(L.kg) + ' ' + uu(x.unit)), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason); }}; }),
-      close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null, pvSw:null, pvNever:false}); },
-      same: st.swMode !== 'other', other: st.swMode === 'other',
+      close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null, pvSw:null, pvAdd:false, pvNever:false}); },
+      addMode: pvAddMode, notAdd: !pvAddMode,
+      addOwn:function(){ const cur = self.S(); const curId = stSw.sess ? stSw.sess.ids[stSw.sess.cur] : null; const m0 = pvAddMode ? (cur.swMuscle || null) : (cur.swMode === 'other' ? cur.swMuscle : (curId ? muscleOf(EX[curId].pat) : null)); self.set({cx:{ctx: pvAddMode ? 'add' : 'swap', muscle:m0 || null}}); },
+      same: !pvAddMode && (st.swMode !== 'other'), other: pvAddMode || (st.swMode === 'other'),
       modes: [['same','Same muscles'],['other','Different muscle']].map(function(m){ const on = (st.swMode || 'same') === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swMode:m[0]}); }}; }),
-      muscles: (function(){ if (!stSw.sess) return []; const cm = muscleOf((stSw.sess.pats && stSw.sess.pats[stSw.sess.cur]) || (EX[stSw.sess.ids[stSw.sess.cur]] || {}).pat); return MUSCLES.filter(function(m){ return m[0] !== cm; }).map(function(m){ const on = st.swMuscle === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({swMuscle:m[0]}); }}; }); })(),
+      muscles: (function(){ if (!stSw.sess) return []; const cm = muscleOf((stSw.sess.pats && stSw.sess.pats[stSw.sess.cur]) || (EX[stSw.sess.ids[stSw.sess.cur]] || {}).pat); return MUSCLES.filter(function(m){ return pvAddMode || m[0] !== cm; }).map(function(m){ const on = st.swMuscle === m[0]; return {label:m[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({swMuscle:m[0]}); }}; }); })(),
       noMuscle: !st.swMuscle,
-      mOpts: (st.swMuscle && stSw.sess ? self.muscleOpts(stSw, st.swMuscle) : []).map(function(id){ const x = EX[id]; return {name:x.name, area:areaText(x.area), kit:KIT_LABEL[EQUIP[id]] || '', pick:function(){ if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason === 'adapt' ? 'adapt' : 'muscle'); }}; }),
+      mOpts: (st.swMuscle && stSw.sess ? self.muscleOpts(stSw, st.swMuscle) : []).map(function(id){ const x = EX[id]; return {name:x.name, area:areaText(x.area), kit:KIT_LABEL[EQUIP[id]] || '', pick:function(){ if (pvAddMode) self.pvAddPick(id); else if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason === 'adapt' ? 'adapt' : 'muscle'); }}; }),
       mEmpty: !!st.swMuscle && !(stSw.sess && self.muscleOpts(stSw, st.swMuscle).length),
       neverLabel: pvFrom ? 'Don’t suggest ' + EX[pvFrom].name.toLowerCase() + ' again' : '', never: !!st.pvNever, neverCls: st.pvNever ? 'on' : '', toggleNever:function(){ self.set({pvNever:!self.S().pvNever}); },
       skipToday:function(){ const v1 = self.renderVals(); if (v1.pv && v1.pv.skip) v1.pv.skip(); },
@@ -5419,7 +5504,23 @@ class Component extends DCLogic {
     const userTimeLbl = timeObj ? timeObj[4] : '';
 
     return {
-      is:is, nav:nav, navOn:navOn, navT:navT, pv:pv, goLabel: self.inProgress(st) ? 'Carry on' : 'Start workout', showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
+      is:is, nav:nav, navOn:navOn, navT:navT, pv:pv, cx:(function(){
+        const f = st.cx; if (!f) return {on:false};
+        const up = function(k){ return function(e){ const o = Object.assign({}, self.S().cx || {}); o[k] = e && e.target ? e.target.value : e; o.err = null; self.set({cx:o}); }; };
+        const chips = function(list, key){ return list.map(function(x){ const on = f[key] === x[0]; return {label:x[1], on:on, cls: on ? 'on' : '', pick:function(){ const o = Object.assign({}, self.S().cx || {}); o[key] = on ? null : x[0]; o.err = null; self.set({cx:o}); }}; }); };
+        const weighted = f.measure === 'wr' || f.measure === 'wd'; const uW = WU === 'lb' ? 'lbs' : 'kg';
+        return {on:true, name:f.name || '', onName:up('name'), onSets:up('sets'), onReps:up('reps'), onKg:up('kg'),
+          muscles:chips(MUSCLES.map(function(m){ return [m[0], m[1]]; }), 'muscle'), measures:chips(CX_MEASURE, 'measure'), timeUs:chips([['sec','Seconds'],['min','Minutes']], 'timeU'),
+          kits:chips([['machine','Machine'],['cable','Cables'],['free','Free weights'],['body','Bodyweight'],['other','Other kit']], 'kit'),
+          isTime: f.measure === 'time', hasMeasure: !!f.measure, weighted:weighted, cols: weighted ? 3 : 2,
+          setsLabel: f.muscle === 'cardio' && f.measure === 'time' ? 'Rounds' : 'Sets', repsLabel: f.measure === 'time' ? (f.timeU === 'sec' ? 'Seconds' : 'Minutes') : f.measure === 'wd' ? 'Metres' : 'Reps', kgLabel:'Weight (' + uW + ')',
+          sets: f.sets != null ? f.sets : '3', reps: f.reps != null ? f.reps : (f.measure === 'time' ? (f.timeU === 'sec' ? '30' : '2') : f.measure === 'wd' ? '20' : '10'), kg: f.kg != null ? f.kg : '',
+          err:f.err || '', hasErr: !!f.err, saveLabel: f.ctx === 'swap' ? 'Save and switch to it' : f.ctx === 'add' ? 'Save and add to today' : 'Save exercise',
+          close:function(){ self.set({cx:null}); }, save:function(){ self.saveCustom(); }};
+      })(),
+      myEx:(function(){ const cx = st.customEx || {}; const L = Object.keys(cx).filter(function(id){ return cx[id] && !cx[id].deleted; }).map(function(id){ const c = cx[id]; const mm = (MUSCLES.find(function(m){ return m[0] === c.muscle; }) || [0, ''])[1]; const ms = (CX_MEASURE.find(function(m){ return m[0] === c.measure; }) || [0, ''])[1];
+          return {name:c.name, sub: mm + ' · ' + ms.toLowerCase() + (c.kit ? ' · ' + (KIT_LABEL[c.kit] || '').toLowerCase() : ''), aria:'Remove ' + c.name, remove:function(){ const o = Object.assign({}, self.S().customEx || {}); o[id] = Object.assign({}, o[id], {deleted:true}); syncCustom(o); self.set({customEx:o, toast:'Removed ' + c.name + '. Your past sets with it are kept.'}); }}; });
+        return {list:L, has: L.length > 0, none: !L.length, add:function(){ self.set({cx:{ctx:'settings'}}); }}; })(), goLabel: self.inProgress(st) ? 'Carry on' : 'Start workout', showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
       tourClose:function(){ self.set({tour:null}); },
