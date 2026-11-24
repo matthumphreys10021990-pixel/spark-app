@@ -432,6 +432,41 @@ button.dc.d-tap{cursor:pointer}
 .go-btn{animation:goGlow 2.8s ease-in-out infinite}
 .rm .go-btn{animation:none}
 @media (prefers-reduced-motion: reduce){.go-btn{animation:none}}
+
+/* ===== Depth and atmosphere (v102) ===== */
+@property --a1{syntax:'<color>';inherits:true;initial-value:#B7A6F6}
+@property --a2{syntax:'<color>';inherits:true;initial-value:#DDF58B}
+@property --a3{syntax:'<color>';inherits:true;initial-value:#7FB8D9}
+@property --ao{syntax:'<number>';inherits:true;initial-value:1}
+@property --gA{syntax:'<angle>';inherits:false;initial-value:0deg}
+.sp{transition:--a1 2.6s ease,--a2 2.6s ease,--a3 2.6s ease,--ao 2.6s ease}
+/* Soft colour fields far behind everything: pre-softened gradients, only transform animates. */
+.amb{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.amb-px{position:absolute;left:0;right:0;top:-80px;bottom:-160px}
+.ab{position:absolute;border-radius:50%;will-change:transform;opacity:calc(var(--ao) * .26);transition:opacity 1.2s ease}
+.ab.a1{width:600px;height:540px;left:-250px;top:-170px;background:radial-gradient(closest-side,var(--a1),transparent);animation:ab1 34s ease-in-out infinite alternate}
+.ab.a2{width:520px;height:600px;right:-260px;top:260px;background:radial-gradient(closest-side,var(--a2),transparent);opacity:calc(var(--ao) * .17);animation:ab2 41s ease-in-out infinite alternate}
+.ab.a3{width:560px;height:480px;left:-160px;bottom:-140px;background:radial-gradient(closest-side,var(--a3),transparent);opacity:calc(var(--ao) * .2);animation:ab3 37s ease-in-out infinite alternate}
+@keyframes ab1{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}33%{transform:translate(150px,90px) rotate(40deg) scale(1.3,.75)}66%{transform:translate(60px,220px) rotate(-20deg) scale(.85,1.25)}100%{transform:translate(190px,170px) rotate(30deg) scale(1.15,.9)}}
+@keyframes ab2{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}33%{transform:translate(-170px,-90px) rotate(-45deg) scale(.8,1.3)}66%{transform:translate(-60px,160px) rotate(25deg) scale(1.25,.85)}100%{transform:translate(-200px,60px) rotate(-15deg) scale(.95,1.15)}}
+@keyframes ab3{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}33%{transform:translate(170px,-140px) rotate(35deg) scale(1.3,.8)}66%{transform:translate(260px,-30px) rotate(-25deg) scale(.85,1.2)}100%{transform:translate(90px,-200px) rotate(20deg) scale(1.1,.95)}}
+/* Fine grain stops the soft gradients banding on phone screens. */
+.amb::after{content:'';position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px 160px}
+/* Mid-workout the weight and reps own the screen. */
+.amb-quiet .ab{opacity:calc(var(--ao) * .1)}
+/* The colour fields drift a little as you scroll, much slower than the page. */
+@supports (animation-timeline: scroll()){
+  .sp{timeline-scope:--ambs}
+  .sp .scroll{scroll-timeline:--ambs y}
+  .amb-px{animation:ambPx linear both;animation-timeline:--ambs}
+}
+@keyframes ambPx{from{translate:0 0}to{translate:0 -110px}}
+/* Surfaces: a faint lit top edge and a soft drop, so cards sit above the page. */
+.card,.tile,.sp section[style*="background: #1C1D21"],.sp [style*="background: #1C1D21; border-radius"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 16px 36px -24px rgba(0,0,0,.85)}
+.sp [role="dialog"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 -24px 60px -12px rgba(0,0,0,.65)}
+.sp button[aria-label="Close"][style*="inset: 0"]{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.rm .ab,.rm .amb-px{animation:none}
+@media (prefers-reduced-motion: reduce){.ab,.amb-px{animation:none}}
 </style>
 
 <style>
@@ -443,7 +478,8 @@ body.kb [data-chat-wrap]{bottom:0!important}
 </style>
 </head>
 <body>
-<template id="tpl"><div class="sp {{rmClass}}" style="width: 412px; height: 100%; position: relative; overflow: hidden; background: #111214">
+<template id="tpl"><div class="sp {{rmClass}} {{ambCls}}" style="width: 412px; height: 100%; position: relative; overflow: hidden; background: #111214; {{ambVars}}">
+<div class="amb" aria-hidden="true"><div class="amb-px"><i class="ab a1"></i><i class="ab a2"></i><i class="ab a3"></i></div></div>
 
 <!-- ================= WELCOME + ONBOARDING ================= -->
 <sc-if value="{{is.welcome}}" hint-placeholder-val="{{ true }}">
@@ -1671,7 +1707,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 101</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 104</p>
 </div>
 </sc-if>
 
@@ -2469,6 +2505,29 @@ const MONTHS_LONG = ['January','February','March','April','May','June','July','A
 const pad2 = function(n){ return (n < 10 ? '0' : '') + n; };
 const dkey = function(dt){ return dt.getFullYear() + '-' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate()); };
 const todayKeyNow = function(){ return dkey(new Date()); };
+// Today's feeling, as colour: the check-in first, then any journal feelings from today.
+const AMB = {
+  neutral:{a1:'#B7A6F6', a2:'#DDF58B', a3:'#7FB8D9', o:.85},
+  bright:{a1:'#DDF58B', a2:'#F5C26B', a3:'#F59E8B', o:1},
+  steady:{a1:'#B7A6F6', a2:'#8FD9C4', a3:'#DDF58B', o:.9},
+  low:{a1:'#7C8BE0', a2:'#9A88E8', a3:'#4F86A8', o:.75},
+  calm:{a1:'#7FD1C7', a2:'#8FA8F0', a3:'#B7A6F6', o:.75}
+};
+const AMB_TAGS = {bright:['Proud','Happy','Energised','Motivated','Focused','Grateful'], calm:['Stressed','Overwhelmed','Anxious','Restless','Frustrated'], low:['Tired','Low','Sore','Unwell'], steady:['Calm']};
+const ambMood = function(st){
+  try {
+    const v = st.vals || {};
+    if (st.checked && v.energy) {
+      if ((v.stress || 0) >= 4) return 'calm';
+      const xs = [v.energy, v.mood, v.motiv].filter(function(x){ return x; }); const a = xs.reduce(function(p, x){ return p + x; }, 0) / xs.length;
+      return a >= 3.8 ? 'bright' : a <= 2.2 ? 'low' : 'steady';
+    }
+    const tk = dkey(new Date()); const n = {bright:0, calm:0, low:0, steady:0};
+    (st.journal || []).forEach(function(j){ if (j && j.at && dkey(new Date(j.at)) === tk) (j.tags || []).forEach(function(t){ Object.keys(AMB_TAGS).forEach(function(k){ if (AMB_TAGS[k].indexOf(t) >= 0) n[k]++; }); }); });
+    const best = Object.keys(n).sort(function(a, b){ return n[b] - n[a]; })[0];
+    return n[best] ? best : 'neutral';
+  } catch (e) { return 'neutral'; }
+};
 const keyDate = function(k){ const a = String(k).split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); };
 const addDays = function(dt, n){ const x = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()); x.setDate(x.getDate() + n); return x; };
 const mondayOf = function(dt){ const x = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()); const wd = (x.getDay() + 6) % 7; x.setDate(x.getDate() - wd); return x; };
@@ -5528,7 +5587,7 @@ class Component extends DCLogic {
       tourUp:function(e){ const x0 = self._tourX; self._tourX = null; if (x0 == null || !e || typeof e.clientX !== 'number') return; const dx = e.clientX - x0; const c = self.S(); if (typeof c.tour !== 'number') return;
         if (dx < -45) { if (c.tour < TOUR_N - 1) self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); }
         else if (dx > 45 && c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
-      replayTour:function(){ self.set({screen:'today', tour:0, tourDir:1, tourN:0}); }, rmClass: st.reducedMotion ? 'rm' : '',
+      replayTour:function(){ self.set({screen:'today', tour:0, tourDir:1, tourN:0}); }, rmClass: st.reducedMotion ? 'rm' : '', ambCls: 'amb-' + ambMood(st) + (st.screen === 'active' ? ' amb-quiet' : ''), ambVars: (function(){ const m = AMB[ambMood(st)]; return '--a1:' + m.a1 + ';--a2:' + m.a2 + ';--a3:' + m.a3 + ';--ao:' + m.o; })(),
       rest:rest, popGrid:popGrid, wsBg: rest.on ? '#0C1822' : '#111214', wsBgFade: rest.on ? 'rgba(12,24,34,0)' : 'rgba(17,18,20,0)', wsInk: '#F5F5F2', wsCls: rest.on ? 'resting' : '', notResting: !rest.on, barsCls: rest.on ? 'on-rest' : '', sheetBg: rest.on ? '#A6D8FA' : '#F4F4EF',
       skipRest:function(){ self.set({resting:false}); },
       addRest:function(){ const cur = self.S(); self.set({restLen: cur.restLen + 15, restBuzzed:false}); },
