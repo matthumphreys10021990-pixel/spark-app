@@ -1003,7 +1003,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="scroll" style="padding: 24px 22px 36px; display: flex; flex-direction: column">
   <div class="row" style="justify-content: space-between">
     <button class="ib" aria-label="{{checkBackLabel}}" onClick="{{checkBack}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-    <div class="row" style="gap: 6px; width: 150px" aria-label="Question {{checkPos}} of 4"><sc-for list="{{checkDots}}" as="b" hint-placeholder-count="4"><span class="seg" style="{{b.st}}"></span></sc-for></div>
+    <div class="row" style="gap: 6px; width: 150px" aria-label="Question {{checkPos}} of {{checkN}}"><sc-for list="{{checkDots}}" as="b" hint-placeholder-count="4"><span class="seg" style="{{b.st}}"></span></sc-for></div>
     <button class="link" onClick="{{checkSkip}}">Skip</button>
   </div>
   <p class="mut" style="margin: 40px 0 0; font-size: 15px">{{checkQ.aside}}</p>
@@ -1707,7 +1707,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 114</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 116</p>
 </div>
 </sc-if>
 
@@ -2526,7 +2526,7 @@ const CHECK = [
   {key:'energy',best:'high',q:'How is your energy?',aside:'Question 1 of 4',opts:['Empty','Low','Okay','Good','Full']},
   {key:'mood',best:'high',q:'How is your mood?',aside:'Question 2 of 4',opts:['Low','Meh','Okay','Good','Great']},
   {key:'stress',best:'low',q:'How stressed are you?',aside:'Question 3 of 4',opts:['Calm','A bit','Some','High','Very']},
-  {key:'motiv',best:'high',q:'How up for it are you?',aside:'Question 4 of 4',opts:['Not at all','A bit','Maybe','Keen','Very']}
+  {key:'motiv',best:'high',q:'Looking forward to your workout?',aside:'Question 4 of 4',opts:['Not at all','A bit','Maybe','Keen','Very']}
 ];
 // Positives at the top: list each question's options from its best answer down.
 const bestFirst = function(c, arr){ return c.best === 'high' ? arr.slice().reverse() : arr; };
@@ -5013,7 +5013,7 @@ class Component extends DCLogic {
     const ciBits = [lvl('energy', 0) && 'Energy ' + lvl('energy', 0), lvl('mood', 1) && 'mood ' + lvl('mood', 1), lvl('stress', 2) && 'stress ' + lvl('stress', 2)].filter(Boolean);
     const checkRow = st.checked && ciBits.length
       ? {title:'Check-in done', sub: ciBits.join(' · '), cta:'Redo', ic:IC.check, icSt:'background: #DDF58B; color: #111214', aria:'Check-in done: ' + ciBits.join(', ') + '. Tap to redo.'}
-      : {title:'How are you today?', sub:'Four quick taps.', cta:'Start', ic:'M3 12h4l2-6 4 12 2-6h6', icSt:'background: #26272C; color: #B7A6F6', aria:'How are you today? Tap to start your check-in.'};
+      : {title:'How are you today?', sub: todayTrain ? 'Four quick taps.' : 'Three quick taps.', cta:'Start', ic:'M3 12h4l2-6 4 12 2-6h6', icSt:'background: #26272C; color: #B7A6F6', aria:'How are you today? Tap to start your check-in.'};
     const ckSec = st.checked && ciBits.length
       ? {showSub:false, sub:'', cta:'Redo check-in', aria:'Check-in done: ' + ciBits.join(', ') + '. Tap to redo.'}
       : {showSub:true, sub:'Four quick taps, and Spark fits today around how you feel.', cta:'Start check-in', aria:'Start your check-in. Four quick taps.'};
@@ -5112,20 +5112,22 @@ class Component extends DCLogic {
       showCalm: E.noise === 2 || EP.tier === 'minimal', calm:function(){ self.set({screen:'calm', back:'env', calmFrom:'env'}); }};
 
     // Check-in
-    const step = Math.min(st.checkStep || 0, 3);
+    // Workout days ask 4 questions; rest days skip 'Looking forward to your workout?' and stop at 3.
+    const ciN = todayTrain ? 4 : 3; const ciLast = ciN - 1;
+    const step = Math.min(st.checkStep || 0, ciLast);
     const cq = CHECK[step];
-    const checkQ = {q:cq.q, aside:cq.aside,
+    const checkQ = {q:cq.q, aside:'Question ' + (step + 1) + ' of ' + ciN,
       opts: bestFirst(cq, cq.opts.map(function(label, idx){
         const lv = idx + 1; const on = st.vals[cq.key] === lv;
         const segs = []; for (let k = 0; k < 5; k++) segs.push({c: k < lv ? 'f' : ''});
         return {label:label, val:lv, on:on, cls: on ? 'on' : '', segs:segs,
           pick:function(){
-            const cur = self.S(); const v = Object.assign({}, cur.vals); v[cq.key] = lv;
-            if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v), self.ciLogPatch(v, false))); if (go) self.renderVals().startWorkout(); return; }
+            const cur = self.S(); const v = Object.assign({}, cur.vals); v[cq.key] = lv; if (ciN < 4) delete v.motiv;
+            if (step >= ciLast) { const go = !!cur.ciThenStart; self.set(Object.assign({vals:v, checked:true, screen:'today', checkStep:0, ciThenStart:false, ciAssumed:false}, self.ciPatch(v), self.ciLogPatch(v, false))); if (go) self.renderVals().startWorkout(); return; }
             self.set({vals:v, checkStep: step + 1});
           }};
       }))};
-    const checkDots = CHECK.map(function(_, k){ return {st: k <= step ? 'background: #DDF58B' : 'background: #34353B'}; });
+    const checkDots = CHECK.slice(0, ciN).map(function(_, k){ return {st: k <= step ? 'background: #DDF58B' : 'background: #34353B'}; });
 
     // Prep
     const prepList = plan.ids.map(function(id, i){
@@ -5809,10 +5811,10 @@ class Component extends DCLogic {
       weekDots:weekDots, movedCount:movedCount, weekRing:weekRing, quickStarts:quickStarts,
       weekLine: movedCount + ' of ' + weekPlanned + (weekPlanned === 1 ? ' session' : ' sessions') + ' this week',
       plannedToast: (function(){ const ti = st.week.findIndex(function(x){ return x.today; }); const nd = DAYS[(ti + 1) % 7][2]; const tmo = prefTimeObj(st, DAYS[(ti + 1) % 7][0]); return (st.fresh ? (ti >= 0 ? (ti === 6 ? 'Monday' : nd) : 'Tomorrow') : 'Monday') + (tmo ? ', ' + tmo[4] : '') + ': 15-minute session added'; })(),
-      checkQ:checkQ, checkDots:checkDots, checkPos: step + 1,
+      checkQ:checkQ, checkDots:checkDots, checkPos: step + 1, checkN: ciN,
       checkBackLabel: step === 0 ? 'Close check-in' : 'Previous question',
       checkBack:function(){ const cur = self.S(); if ((cur.checkStep || 0) === 0) return self.go('today'); self.set({checkStep: cur.checkStep - 1}); },
-      checkSkip:function(){ const cur = self.S(); if (step >= 3) { const go = !!cur.ciThenStart; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false}, self.ciPatch(cur.vals), self.ciLogPatch(cur.vals, false))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
+      checkSkip:function(){ const cur = self.S(); if (step >= ciLast) { const go = !!cur.ciThenStart; const v0 = Object.assign({}, cur.vals); if (ciN < 4) delete v0.motiv; self.set(Object.assign({checked:true, screen:'today', checkStep:0, ciThenStart:false, vals:v0}, self.ciPatch(v0), self.ciLogPatch(v0, false))); if (go) self.renderVals().startWorkout(); return; } self.set({checkStep: step + 1}); },
       routineRows:routineRows, tomorrowPlanned:st.tomorrowPlanned,
       weekTimesSummary: (function(){ const dks = st.week.filter(function(d){ return d.t !== 'rest'; }).map(function(d){ return d.d; }); if (!dks.length) return 'No training days set'; return timeGroups(st, dks).map(function(g){ const T = TIMES.find(function(t){ return t[0] === g.k; }); return g.days.join(', ') + ': ' + (T ? T[1].toLowerCase() : 'flexible'); }).join(' · '); })(),
       reminders:st.reminders, remCls: st.reminders ? 'on' : '', toggleRem:function(){ self.set({reminders:!self.S().reminders}); },
