@@ -1707,7 +1707,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 113</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 114</p>
 </div>
 </sc-if>
 
@@ -5017,10 +5017,13 @@ class Component extends DCLogic {
     const ckSec = st.checked && ciBits.length
       ? {showSub:false, sub:'', cta:'Redo check-in', aria:'Check-in done: ' + ciBits.join(', ') + '. Tap to redo.'}
       : {showSub:true, sub:'Four quick taps, and Spark fits today around how you feel.', cta:'Start check-in', aria:'Start your check-in. Four quick taps.'};
-    // Daily check-in popup: once a day (a new day starts at 4am), only on Today, never over the tour or a workout. Skipping is final for the day.
+    // Daily check-in screen: workout days only (its job is to shape the session), once a day from 4am, only on Today, never over the tour or a workout.
+    // Not on the day you finish setup: that first time, the check-in comes when you tap Start workout. Skipping is final for the day.
     const ciDay = dkey(new Date(Date.now() - 4 * 3600000));
     const ciPop = (function(){
-      const on = st.screen === 'today' && !st.checked && st.ciPopSeen !== ciDay && typeof st.tour !== 'number' && !st.ciAsk && !st.swOpen && !st.cx;
+      const setupDay = !!st.joinKey && (st.joinKey === ciDay || st.joinKey === dkey(new Date()));
+      const lateNight = new Date().getHours() < 4; /* between midnight and 4am it's still last night: don't ask */
+      const on = st.screen === 'today' && todayTrain && !setupDay && !lateNight && !st.checked && st.ciPopSeen !== ciDay && typeof st.tour !== 'number' && !st.ciAsk && !st.swOpen && !st.cx;
       return {on:on, sub: todayTrain ? 'Four quick taps, and Spark fits today around how you feel.' : 'Four quick taps. It helps Spark learn what affects your energy.',
         skip:function(){ self.set({ciPopSeen:ciDay}); },
         go:function(){ self.set({ciPopSeen:ciDay, screen:'checkin', back:'today', checkStep:0, ciThenStart:false}); },
