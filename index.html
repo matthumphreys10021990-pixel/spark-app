@@ -463,6 +463,26 @@ button.dc.d-tap{cursor:pointer}
 @keyframes ambPx{from{translate:0 0}to{translate:0 -110px}}
 /* Surfaces: a faint lit top edge and a soft drop, so cards sit above the page. */
 .card,.tile,.sp section[style*="background: #1C1D21"],.sp [style*="background: #1C1D21; border-radius"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 16px 36px -24px rgba(0,0,0,.85)}
+/* The lit edge: a faint highlight along the top of each block plus a soft drop, so blocks sit above the page. */
+.edge,.ropt,.numtile{position:relative}
+.edge::after,.ropt::after,.numtile::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.065)}
+.edge:not([style*="box-shadow"]),.ropt,.numtile{box-shadow:0 16px 36px -24px rgba(0,0,0,.85)}
+.ropt.on::after{box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+/* Rest ring fills like a loading bar: each update glides into the next instead of stepping. */
+.rest-arc{transition:stroke-dasharray .5s linear}
+.rm .rest-arc{transition:none}
+/* Session complete ring: one sweep from lime into lavender, filling as the screen opens. */
+@property --rf{syntax:'<number>';inherits:true;initial-value:1}
+.dring{position:relative;width:240px;height:240px;--T:calc((var(--A) + var(--B)) * var(--rf));animation:drFill 1.4s cubic-bezier(.2,.8,.2,1) .15s both}
+@keyframes drFill{from{--rf:0}to{--rf:1}}
+.dr-track,.dr-fill{position:absolute;inset:0;border-radius:50%;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 22.5px),#000 calc(100% - 21.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 22.5px),#000 calc(100% - 21.5px))}
+.dr-track{background:#1C1D21}
+.dr-fill{background:conic-gradient(#DDF58B 0deg,#DDF58B calc((var(--A) - var(--bl)) * var(--rf) * 1deg),#C2EBC4 calc((var(--A) - var(--bl) / 3) * var(--rf) * 1deg),#B0CDF2 calc((var(--A) + var(--bl) / 3) * var(--rf) * 1deg),#B7A6F6 calc((var(--A) + var(--bl)) * var(--rf) * 1deg),#B7A6F6 calc((var(--T) - var(--bl2)) * 1deg),#B0CDF2 calc((var(--T) - var(--bl2) * 2 / 3) * 1deg),#C2EBC4 calc((var(--T) - var(--bl2) / 3) * 1deg),var(--cZ) calc(var(--T) * 1deg),transparent calc(var(--T) * 1deg))}
+.dr-cap{position:absolute;left:50%;top:0;width:22px;height:22px;margin-left:-11px;border-radius:50%}
+.dr-end{position:absolute;inset:0;transform:rotate(calc(var(--T) * 1deg))}
+.dr-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rm .dring{animation:none}
+@media (prefers-reduced-motion: reduce){.dring{animation:none}}
 .sp [role="dialog"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 -24px 60px -12px rgba(0,0,0,.65)}
 .sp button[aria-label="Close"][style*="inset: 0"]{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .rm .ab,.rm .amb-px{animation:none}
@@ -729,7 +749,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </div>
     </sc-if>
 
-    <section aria-label="Today's workout" style="position: relative; overflow: hidden; isolation: isolate; background: #1C1D21; border-radius: 34px; padding: 24px 18px 18px; display: flex; flex-direction: column">
+    <section class="edge" aria-label="Today's workout" style="position: relative; overflow: hidden; isolation: isolate; background: #1C1D21; border-radius: 34px; padding: 24px 18px 18px; display: flex; flex-direction: column">
       <svg class="rings" viewBox="0 0 200 200" width="300" height="300" aria-hidden="true" style="right: -110px; top: -120px; z-index: -1"><g fill="none" stroke="#DDF58B" stroke-opacity=".08" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6; padding: 0 4px">Today's workout</span>
       <h2 class="d" style="font-size: 36px; margin-top: 8px; padding: 0 4px">{{plan.title}}</h2>
@@ -761,7 +781,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
-    <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+    <button class="edge" onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
       <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
       <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
@@ -773,7 +793,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <!-- ---------- Rest day ---------- -->
   <sc-if value="{{todayRest}}" hint-placeholder-val="{{ false }}">
   <div style="padding: 0 20px; margin-top: 30px; display: flex; flex-direction: column; gap: 14px">
-    <section style="position: relative; overflow: hidden; isolation: isolate; background: #A6D8FA; color: #111214; border-radius: 30px; padding: 22px">
+    <section class="edge" style="position: relative; overflow: hidden; isolation: isolate; background: #A6D8FA; color: #111214; border-radius: 30px; padding: 22px">
       <svg class="rings" viewBox="0 0 200 200" width="240" height="240" aria-hidden="true" style="right: -80px; top: -70px; z-index: -1"><g fill="none" stroke="#111214" stroke-opacity=".07" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <span style="font-size: 14px; font-weight: 600">Rest day</span>
       <h2 class="d" style="font-size: 30px; margin-top: 6px">Recovery is part of the plan.</h2>
@@ -784,7 +804,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
-    <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+    <button class="edge" onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
       <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
       <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
@@ -820,7 +840,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
-    <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+    <button class="edge" onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
       <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
       <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
@@ -839,7 +859,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </sc-if>
     <sc-if value="{{progHas}}" hint-placeholder-val="{{ true }}">
   <div style="display: grid; grid-template-columns: repeat({{pg.tileN}}, minmax(0, 1fr)); gap: 8px; margin-top: 16px">
-    <sc-for list="{{pg.tiles}}" as="t" hint-placeholder-count="3"><div style="border-radius: 20px; padding: 14px; {{t.st}}"><span class="n9" style="font-size: 26px; display: block; color: {{t.nc}}">{{t.val}}</span><span style="display: block; font-size: 12px; font-weight: 500; line-height: 1.35; margin-top: 6px; color: #C4C4CC">{{t.label}}</span><sc-if value="{{t.hasSub}}" hint-placeholder-val="{{ true }}"><span style="display: block; font-size: 12px; font-weight: 700; line-height: 1.35; margin-top: 4px; color: #DDF58B">{{t.sub}}</span></sc-if></div></sc-for>
+    <sc-for list="{{pg.tiles}}" as="t" hint-placeholder-count="3"><div class="edge" style="border-radius: 20px; padding: 14px; {{t.st}}"><span class="n9" style="font-size: 26px; display: block; color: {{t.nc}}">{{t.val}}</span><span style="display: block; font-size: 12px; font-weight: 500; line-height: 1.35; margin-top: 6px; color: #C4C4CC">{{t.label}}</span><sc-if value="{{t.hasSub}}" hint-placeholder-val="{{ true }}"><span style="display: block; font-size: 12px; font-weight: 700; line-height: 1.35; margin-top: 4px; color: #DDF58B">{{t.sub}}</span></sc-if></div></sc-for>
   </div>
   <sc-if value="{{pg.hasLifts}}" hint-placeholder-val="{{ true }}">
   <h3 class="d" style="font-size: 20px; margin-top: 26px">Your strength</h3>
@@ -914,7 +934,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{env.isWhere}}" hint-placeholder-val="{{ true }}">
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 28px">
       <sc-for list="{{env.where}}" as="o" hint-placeholder-count="4">
-        <button aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="appearance: none; cursor: pointer; font: inherit; border: 0; border-radius: 26px; padding: 18px 16px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: left; position: relative; {{o.st}}">
+        <button class="edge" aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="appearance: none; cursor: pointer; font: inherit; border: 0; border-radius: 26px; padding: 18px 16px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: left; position: relative; {{o.st}}">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{o.ic}}"></path></svg>
           <sc-if value="{{o.usual}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; top: 16px; right: 14px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #26272C; color: #D4D4D8">Usual</span></sc-if>
           <span style="font-weight: 600; font-size: 18px">{{o.label}}</span>
@@ -1027,7 +1047,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <p class="mut" style="margin: 8px 0 20px; font-size: 15px; line-height: 1.5">A loose shape, not a contract. Tap a day to change its focus or time.</p>
   <div style="display: flex; flex-direction: column; gap: 10px">
     <sc-for list="{{routineRows}}" as="r" hint-placeholder-count="7">
-      <button onClick="{{r.cycle}}" aria-label="{{r.aria}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; border: 0; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left; min-height: 72px; {{r.st}}">
+      <button class="edge" onClick="{{r.cycle}}" aria-label="{{r.aria}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; border: 0; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left; min-height: 72px; {{r.st}}">
         <span style="width: 46px; text-align: center; flex: none"><span style="display: block; font-size: 12px; opacity: .7">{{r.d}}</span><span class="d" style="display: block; font-size: 22px">{{r.n}}</span></span>
         <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 16px">{{r.title}}</span><span style="font-size: 14px; opacity: .7">{{r.sub}}</span></span>
         <sc-if value="{{r.moved}}" hint-placeholder-val="{{ false }}"><span style="width: 30px; height: 30px; border-radius: 50%; background: #111214; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-label="Done" role="img"><path d="M5 12l5 5 9-10"></path></svg></span></sc-if>
@@ -1103,7 +1123,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 
     <!-- ===== SET STAGE ===== -->
     <sc-if value="{{notResting}}" hint-placeholder-val="{{ true }}">
-    <section class="rise" style="position: relative; overflow: hidden; isolation: isolate; margin-top: 16px; border-radius: 32px; padding: 22px 20px 20px; background: radial-gradient(120% 90% at 85% 0%, rgba(183,166,246,.42), rgba(183,166,246,0) 55%), radial-gradient(90% 80% at 0% 100%, rgba(221,245,139,.20), rgba(221,245,139,0) 60%), #1C1D21">
+    <section class="rise edge" style="position: relative; overflow: hidden; isolation: isolate; margin-top: 16px; border-radius: 32px; padding: 22px 20px 20px; background: radial-gradient(120% 90% at 85% 0%, rgba(183,166,246,.42), rgba(183,166,246,0) 55%), radial-gradient(90% 80% at 0% 100%, rgba(221,245,139,.20), rgba(221,245,139,0) 60%), #1C1D21">
       <svg class="rings" viewBox="0 0 200 200" width="280" height="280" aria-hidden="true" style="right: -110px; top: -110px; z-index: -1"><g fill="none" stroke="#F5F5F2" stroke-opacity=".06" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
         <span class="tag" style="background: rgba(17,18,20,.55); color: #DDF58B">{{act.kitLabel}}</span>
@@ -1183,7 +1203,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <div style="position: relative; width: 210px; height: 210px; margin-top: 18px">
         <svg width="210" height="210" viewBox="0 0 76 76" role="img" aria-label="Rest time left {{rest.left}}" style="position: absolute; inset: 0">
           <circle cx="38" cy="38" r="34" fill="#A6D8FA" fill-opacity=".06" stroke="rgba(166,216,250,.16)" stroke-width="4"></circle>
-          <circle cx="38" cy="38" r="34" fill="none" stroke="#A6D8FA" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{rest.ring}}" transform="rotate(-90 38 38)"></circle>
+          <circle class="rest-arc" cx="38" cy="38" r="34" fill="none" stroke="#A6D8FA" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{rest.ring}}" transform="rotate(-90 38 38)"></circle>
         </svg>
         <span style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
           <span style="font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #A6D8FA">{{rest.title}}</span>
@@ -1194,7 +1214,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <button class="restpill" onClick="{{addRest}}">+15 sec</button>
         <button class="restpill" onClick="{{skipRest}}">Skip rest</button>
       </div>
-      <div style="align-self: stretch; margin-top: 16px; background: rgba(166,216,250,.07); box-shadow: inset 0 0 0 1.5px rgba(166,216,250,.18); color: #F5F5F2; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left">
+      <div class="edge" style="align-self: stretch; margin-top: 16px; background: rgba(166,216,250,.07); box-shadow: inset 0 0 0 1.5px rgba(166,216,250,.18); color: #F5F5F2; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left">
         <span style="width: 42px; height: 42px; flex: none; border-radius: 50%; background: #A6D8FA; color: #111214; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
         <span style="flex: 1; min-width: 0"><span style="display: block; font-size: 12px; font-weight: 600; color: #A6D8FA">{{rest.nextLabel}}</span><span style="display: block; font-size: 16px; font-weight: 600; margin-top: 2px">{{act.nextTitle}}</span><span style="display: block; font-size: 13px; margin-top: 2px; color: #9FB7C9">{{act.nextSub}}</span></span>
       </div>
@@ -1203,7 +1223,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
 
       <sc-if value="{{rest.showStim}}" hint-placeholder-val="{{ true }}">
-      <div style="background: rgba(166,216,250,.06); border-radius: 28px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
+      <div class="edge" style="background: rgba(166,216,250,.06); border-radius: 28px; padding: 14px; display: flex; flex-direction: column; gap: 12px">
       <span style="font-size: 13px; font-weight: 600; text-align: center; color: #9FB7C9">Something for your hands while you wait</span>
       <div style="display: flex; background: rgba(255,255,255,.06); border-radius: 999px; padding: 4px; gap: 4px" role="group" aria-label="Rest tools">
         <sc-for list="{{rest.tabs}}" as="t" hint-placeholder-count="3"><button aria-pressed="{{t.on}}" onClick="{{t.pick}}" style="appearance: none; cursor: pointer; font: inherit; flex: 1; border: 0; border-radius: 999px; min-height: 40px; font-weight: 600; font-size: 14px; {{t.st}}">{{t.label}}</button></sc-for>
@@ -1439,13 +1459,15 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="scroll" style="padding: 28px 20px 36px">
   <div class="row" style="justify-content: space-between"><span class="d" style="font-size: 20px">Session complete</span><img src="img/logo.png" alt="" style="width: 34px; height: auto"></div>
   <div style="display: flex; justify-content: center; margin-top: 24px">
-    <svg viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="{{done.sets}} sets logged">
-      <circle cx="120" cy="120" r="100" fill="none" stroke="#1C1D21" stroke-width="22"></circle>
-      <circle cx="120" cy="120" r="100" fill="none" stroke="#DDF58B" stroke-width="22" stroke-linecap="round" stroke-dasharray="{{done.ringA}}" transform="rotate(-90 120 120)"></circle>
-      <circle cx="120" cy="120" r="100" fill="none" stroke="#B7A6F6" stroke-width="22" stroke-linecap="round" stroke-dasharray="{{done.ringB}}" stroke-dashoffset="{{done.ringBOff}}" transform="rotate(-90 120 120)"></circle>
-      <text x="120" y="118" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="46" fill="#F5F5F2">{{done.mins}}</text>
-      <text x="120" y="146" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-size="15" fill="#A1A1AA">minutes moving</text>
-    </svg>
+    <div class="dring" role="img" aria-label="{{done.ringAria}}" style="{{done.ringSt}}">
+      <div class="dr-track"></div><div class="dr-fill"></div>
+      <sc-if value="{{done.capOn}}" hint-placeholder-val="{{ true }}"><span class="dr-cap" style="background: var(--cS)"></span><div class="dr-end"><span class="dr-cap" style="background: var(--cE)"></span></div></sc-if>
+      <span class="dr-mid"><span class="n9" style="font-size: 46px; line-height: 1">{{done.mins}}</span><span style="font-size: 15px; color: #A1A1AA; margin-top: 6px">minutes moving</span></span>
+    </div>
+  </div>
+  <div class="row" style="justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 14px; font-size: 13px; color: #C4C4CC">
+    <sc-if value="{{done.hasMet}}" hint-placeholder-val="{{ true }}"><span class="row" style="gap: 6px"><i style="width: 10px; height: 10px; border-radius: 50%; background: #DDF58B"></i>{{done.met}} matched or beat last time</span></sc-if>
+    <sc-if value="{{done.hasOther}}" hint-placeholder-val="{{ true }}"><span class="row" style="gap: 6px"><i style="width: 10px; height: 10px; border-radius: 50%; background: #B7A6F6"></i>{{done.other}} other sets</span></sc-if>
   </div>
   <h1 class="d" style="font-size: 34px; margin-top: 20px">{{done.title}}</h1>
   <p class="mut" style="margin: 8px 0 0; font-size: 16px; line-height: 1.5">{{done.msg}}</p>
@@ -1707,7 +1729,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 118</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 121</p>
 </div>
 </sc-if>
 
@@ -4404,7 +4426,7 @@ class Component extends DCLogic {
     const selfF = this; setTimeout(function(){ selfF.burst(true); }, 60);
     const sessToday = (st.sessToday || 0) + (logged ? 1 : 0);
     if (st.sess) st.sess.ended = true;
-    this.set({sess: st.sess ? Object.assign({}, st.sess, {ended:true}) : st.sess, sessToday:sessToday, sessLog: sLog.slice(-600), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
+    this.set({sess: st.sess ? Object.assign({}, st.sess, {ended:true, tEnd:Date.now()}) : st.sess, sessToday:sessToday, sessLog: sLog.slice(-600), doneDates: dd, trainedAt: Date.now(), screen:'complete', paused:false, toast:'', pbNow:null, resting:false, hist:h, bests:bests, pbLog:pbLog, sessCount:(st.sessCount || 0) + (logged ? 1 : 0), trainedToday:true, stepUpNext:null});
     if (logged) this.awardLater('workout');
   }
 
@@ -4592,6 +4614,9 @@ class Component extends DCLogic {
       const upReps = (ex.bw || Math.abs(s.kg[i] - ref.kg) < 0.01) && ref.reps != null && s.reps[i] > ref.reps;
       if (upKg || upReps) { beat = true; toast = refName + ': ' + (upKg ? wt(ref.kg) + ' → ' + wt(s.kg[i]) + ' ' + uu(ex.unit).replace(/ each.*$/, '') : ref.reps + ' → ' + s.reps[i] + ' ' + (ex.repUnit || 'reps')); }
     }
+    // For the Session complete ring: did this set match or beat last time (or the planned start, first time round)?
+    const metSet = !base || base.kg == null || !!pbNow || beat || ((ex.bw || s.kg[i] >= base.kg - 0.01) && (base.reps == null || s.reps[i] >= base.reps));
+    s.metN = (s.metN || 0) + (metSet ? 1 : 0);
     if (!pbNow && !beat) toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work.' : 'Set logged. Rest for a minute, then go again.';
     const lastOfAll = s.cur >= s.ids.length - 1 && s.done[i] >= s.sets[i];
     const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
@@ -5276,15 +5301,19 @@ class Component extends DCLogic {
       const s = st.sess;
       const total = s.sets.reduce(function(a, b){ return a + b; }, 0);
       const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
-      const mins = Math.max(3, Math.round(PLANS[s.plan].mins * Math.max(logged, 1) / total));
+      // Real time: from your first logged set to when you finished, plus a couple of minutes of warm-up (same as your history).
+      const mins = s.t0 && s.tEnd ? Math.max(1, Math.round((s.tEnd - s.t0) / 60000) + 2) : Math.max(3, Math.round(PLANS[s.plan].mins * Math.max(logged, 1) / total));
       let title = 'Every set, done.'; let msg = 'You did the whole session. Your future self says thanks.';
       if (s.adapted > 0) { title = 'You adapted and kept going.'; msg = 'You adapted your plan and still got some movement in. That’s progress.'; }
       else if (logged < total) { title = 'You showed up.'; msg = 'You moved, and you stopped when you needed to. That’s a skill, not a failure.'; }
-      const C = 2 * Math.PI * 100;
-      const frac = total ? logged / total : 0;
-      const a = C * frac * 0.62; const bb = C * frac * 0.38;
+      // The ring: how much of the plan you did. Lime = sets that matched or beat last time, lavender = the rest, blending into each other.
+      const frac = total ? Math.min(1, logged / total) : 0; const met = Math.min(logged, s.metN || 0); const other = logged - met;
+      const T = 360 * frac; const degA = logged ? T * met / logged : 0; const degB = T - degA;
+      const full = T >= 359.5; const blend = Math.min(28, degA, full ? degB / 3 : degB); const seam = full && degA > 0 && degB > 0 ? Math.min(20, degB / 3) : 0;
       done = {title:title, msg:msg, mins:mins, sets:logged, adapted:s.adapted, pbs:s.pbs.map(function(p){ return p.kgN != null ? Object.assign({}, p, {kg:wt(p.kgN), unit:uu(p.unit), prev:wt(p.prevN) + ' ' + uu(p.unit)}) : p; }), pbCount:s.pbs.length,
-        ringA: Math.max(a - 14, 0.1).toFixed(1) + ' ' + C.toFixed(1), ringB: Math.max(bb - 14, 0.1).toFixed(1) + ' ' + C.toFixed(1), ringBOff: (-a).toFixed(1)};
+        ringSt:'--A:' + degA.toFixed(1) + ';--B:' + degB.toFixed(1) + ';--bl:' + blend.toFixed(1) + ';--bl2:' + seam.toFixed(1) + ';--cZ:' + (full && degA > 0 ? '#DDF58B' : (degB > 0 ? '#B7A6F6' : '#DDF58B')) + ';--cS:' + (degA > 0 ? '#DDF58B' : '#B7A6F6') + ';--cE:' + (degB > 0 ? '#B7A6F6' : '#DDF58B'),
+        capOn: logged > 0 && !full, met:met, other:other, hasMet: met > 0, hasOther: other > 0,
+        ringAria: logged + ' sets logged: ' + met + ' matched or beat last time, ' + other + ' other sets. ' + mins + ' minutes moving.'};
     }
     const FEELS = [['better','Better than before'],['same','About the same'],['tired','Tired but okay'],['rough','Rough, honestly']];
     const feelOpts = FEELS.map(function(f){ const on = st.feel === f[0]; return {label:f[1], on:on, cls: on ? 'on' : '', pick:function(){ self.set({feel: self.S().feel === f[0] ? null : f[0]}); }}; });
