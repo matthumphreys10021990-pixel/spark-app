@@ -545,7 +545,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px"><sc-for list="{{about.body}}" as="o" hint-placeholder-count="5"><button class="chip {{o.cls}}" style="min-height: 48px; font-size: 15px" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
         <label for="sp-about-note" class="mut" style="display: block; font-size: 14px; margin-top: 14px">Anything Spark should know? (optional)</label>
         <textarea id="sp-about-note" class="field" rows="2" maxlength="300" style="margin-top: 6px; font-size: 16px; padding: 12px 14px; resize: none; width: 100%; box-sizing: border-box" placeholder="For example: no kneeling, or go easy on my left shoulder" value="{{about.note}}" onChange="{{about.onNote}}"></textarea></div>
-      <p class="mut" style="margin: 4px 0 0; font-size: 14px; line-height: 1.5">Spark gets to know you over time. Chatting with your coach, checking in and writing in your journal all help it get things right for you.</p>
+      <p class="mut" style="margin: 4px 0 0; font-size: 14px; line-height: 1.5">Spark gets to know you over time. Chatting with your coach, doing your check-in and writing in your journal all help it get things right for you.</p>
       <p class="mut" style="margin: 0; font-size: 13px; line-height: 1.5">This stays on your phone. It’s only shared with the AI coach when you use it, and you can change or remove it any time in Settings.</p>
     </sc-if>
 
@@ -761,12 +761,12 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
-
     <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
       <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
       <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
     </button>
+
   </div>
   </sc-if>
 
@@ -784,16 +784,11 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
-    <div class="card" style="display: flex; gap: 14px; align-items: flex-start; padding: 18px">
-      <span style="width: 40px; height: 40px; flex: none; border-radius: 50%; background: #26272C; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"></path></svg></span>
-      <span style="flex: 1"><span style="display: block; font-size: 13px; font-weight: 600; color: #B7A6F6">{{tip.kind}}</span><span style="display: block; font-size: 15px; line-height: 1.45; margin-top: 4px"><sc-for list="{{tip.textW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><button class="link" style="padding: 0; min-height: 36px; color: #DDF58B" onClick="{{nextTip}}">Another tip</button></span>
-    </div>
-    <sc-if value="{{notChecked}}" hint-placeholder-val="{{ true }}">
-    <button onClick="{{nav.checkin}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
-      <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 15px">How are you today?</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">Four taps. Helps Spark learn what affects your energy.</span></span>
-      <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">Check in</span>
+    <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+      <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
+      <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
+      <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
     </button>
-    </sc-if>
   </div>
   </sc-if>
 
@@ -825,6 +820,11 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span class="av" style="width: 38px; height: 38px"><img src="img/logo.png" alt="" style="width: 23px; height: auto"></span>
       <span style="flex: 1; min-width: 0; padding-top: 2px"><span style="display: block; font-size: 16px; line-height: 1.45"><sc-for list="{{todayBubbleW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span><sc-if value="{{hasBubbleSrc}}" hint-placeholder-val="{{ false }}"><span class="mut" style="display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B7A6F6" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg>{{todayBubbleSrc}}</span></sc-if></span>
     </div>
+    <button onClick="{{nav.checkin}}" aria-label="{{checkRow.aria}}" style="appearance: none; cursor: pointer; font: inherit; text-align: left; border: 0; border-radius: 24px; background: transparent; color: #F5F5F2; box-shadow: inset 0 0 0 1.5px #2A2B30; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+      <span style="width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{checkRow.icSt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{checkRow.ic}}"></path></svg></span>
+      <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 15px">{{checkRow.title}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{checkRow.sub}}</span></span>
+      <span style="font-size: 14px; font-weight: 600; color: #B7A6F6">{{checkRow.cta}}</span>
+    </button>
   </div>
   </sc-if>
 
@@ -1707,7 +1707,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 104</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 113</p>
 </div>
 </sc-if>
 
@@ -1749,6 +1749,40 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="cf-wrap" aria-hidden="true">
   <sc-for list="{{cfPieces}}" as="p" hint-placeholder-count="0"><i class="cf {{p.cls}}" style="{{p.st}}"></i></sc-for>
   <sc-if value="{{cfBig}}" hint-placeholder-val="{{ false }}"><div class="cf-dim"></div><div class="cf-hero"><b style="font-size: {{cfSize}}">{{cfName}}</b><span>{{cfSub}}</span></div></sc-if>
+</div>
+</sc-if>
+
+<!-- ================= DAILY CHECK-IN (once a day, on Today) ================= -->
+<sc-if value="{{ciPop.on}}" hint-placeholder-val="{{ false }}">
+<div class="ci-screen" role="dialog" aria-label="Daily check-in" style="position: absolute; inset: 0; z-index: 22; background: #111214; overflow-y: auto; overflow-x: hidden">
+  <div class="amb" aria-hidden="true"><div class="amb-px"><i class="ab a1"></i><i class="ab a2"></i><i class="ab a3"></i></div></div>
+  <div style="position: relative; min-height: 100%; padding: 24px 22px 36px; display: flex; flex-direction: column">
+    <div class="row" style="justify-content: space-between">
+      <span style="width: 44px"></span>
+      <span style="font-size: 15px; font-weight: 600">Daily check-in</span>
+      <button class="ib sheet-x" aria-label="Close" onClick="{{ciPop.skip}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <h1 class="d rise" style="font-size: 36px; margin-top: 36px">How are you today?</h1>
+    <p class="rise" style="margin: 12px 0 0; font-size: 17px; font-weight: 600; line-height: 1.4">{{ciPop.sub}}</p>
+    <section class="rise" aria-label="Spark AI Coach" style="margin-top: 26px; background: #1C1D21; border-radius: 26px; padding: 18px; box-shadow: inset 0 0 0 1.5px #B7A6F6; display: flex; flex-direction: column; gap: 12px">
+      <div class="row" style="gap: 12px">
+        <span class="av"><img src="img/logo.png" alt="" style="width: 26px; height: auto"></span>
+        <span style="flex: 1"><span style="display: block; font-size: 14px; font-weight: 600; color: #B7A6F6">Spark AI Coach</span><span class="mut" style="display: block; font-size: 13px">Why it’s worth 30 seconds</span></span>
+      </div>
+      <p style="margin: 0; font-size: 18px; line-height: 1.45"><sc-for list="{{ciPop.coachW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></p>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 4px; border-top: 1px solid #2A2B30">
+        <sc-for list="{{ciPop.tips}}" as="t" hint-placeholder-count="3">
+          <div class="row" style="gap: 10px; align-items: flex-start; padding-top: 6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DDF58B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5 9-10"></path></svg><span class="mut" style="font-size: 15px; line-height: 1.4; color: #D4D4D8"><sc-for list="{{t.w}}" as="gw" hint-placeholder-count="6"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></span></div>
+        </sc-for>
+      </div>
+    </section>
+    <div style="flex: 1; min-height: 40px"></div>
+    <button class="btn b-lime full go-btn" style="min-height: 92px; border-radius: 999px; padding: 0 12px; justify-content: flex-start; gap: 18px" onClick="{{ciPop.go}}">
+      <span style="width: 68px; height: 68px; flex: none; border-radius: 50%; background: #111214; color: #DDF58B; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-6 4 12 2-6h6"></path></svg></span>
+      <span class="d" style="font-size: 26px">Start check-in</span>
+    </button>
+    <button class="link" style="align-self: center; min-height: 48px; margin-top: 8px; font-size: 16px" onClick="{{ciPop.skip}}">Not today</button>
+  </div>
 </div>
 </sc-if>
 
@@ -1984,7 +2018,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <sc-if value="{{tour.mWelcome}}" hint-placeholder-val="{{ false }}"><div class="tm-welcome"><span class="tm-disc"><img src="img/logo.png" alt="" style="width: 54px; height: auto"></span></div></sc-if>
         <sc-if value="{{tour.mToday}}" hint-placeholder-val="{{ false }}"><div class="tm-col">
           <div class="tm-hero"><span style="font-size: 12px; font-weight: 600; color: #6B5BC4">Today’s workout</span><span class="d" style="font-size: 24px; color: #111214">{{tour.focus}}</span><span style="font-size: 13px; color: #3F3F46">{{tour.mins}} mins · 3 exercises</span><span class="tm-pill">Start workout</span></div>
-          <div class="tm-row"><span class="tm-dot"></span><span style="font-size: 14px">Check in: four quick taps</span></div>
+          <div class="tm-row"><span class="tm-dot"></span><span style="font-size: 14px">Check-in: four quick taps</span></div>
         </div></sc-if>
         <sc-if value="{{tour.mRest}}" hint-placeholder-val="{{ false }}"><div class="tm-grid">
           <span class="tm-tile" style="background: #B7A6F6; color: #111214">Stretch</span><span class="tm-tile" style="background: #DDF58B; color: #111214">Short walk</span><span class="tm-tile">Breathe</span><span class="tm-tile">Journal</span>
@@ -2543,7 +2577,7 @@ function buildRealWeek(st, now){
 
 const TIMES = [['early','Early morning','6–8am','early mornings','07:00'],['morning','Morning','8–11am','mornings','09:00'],['lunch','Lunchtime','12–2pm','lunchtimes','12:30'],['afternoon','Afternoon','2–5pm','afternoons','15:00'],['evening','Evening','5–8pm','evenings','18:00'],['late','Late','8–10pm','late evenings','20:30']];
 const LENS = [[10,'10 min','min'],[20,'20 min','short'],[35,'35 min','full'],[45,'45+ min','plus']];
-const REMIND = [['30m','30 minutes before','A quick heads-up and check-in'],['1h','1 hour before','Time to check in and get ready'],['night','The night before','Helps you plan ahead'],['none','No reminders','You can turn them on later']];
+const REMIND = [['30m','30 minutes before','A quick heads-up and check-in'],['1h','1 hour before','Time for your check-in'],['night','The night before','Helps you plan ahead'],['none','No reminders','You can turn them on later']];
 const BARRIERS = ['Getting started','Finding time','Busy gyms','Noise and crowds','Knowing what to do','Low motivation','Low energy','Forgetting','Plans changing','Feeling watched','Feeling overwhelmed','Making mistakes','Unavailable equipment','Boredom','Staying consistent','Slow progress','Gym anxiety','Distractions'];
 const STYLES = [
   {key:'gentle',label:'Warm and gentle',short:'Gentle',sample:'No rush. Let’s see what today can look like.',bg:'#B7A6F6'},
@@ -3367,7 +3401,7 @@ class Component extends DCLogic {
         if (typeof a.note === 'string') ab.note = a.note.slice(0, 300); this.set({about:ab}); return {ok:'Updated what Spark knows about you.'}; }
       case 'journal': { const t = String(a.text || '').trim().slice(0, 1000); if (!t) return {no:'I didn’t have anything to write.'}; if (detectSG(t)) return {no:''};
         const nowAt = Date.now(); const learned = !!st.memoryOn; this.set({journal:[{id:'j' + nowAt, at:nowAt, when:'Today', text:t, tags:[], learned:learned}].concat(st.journal || [])}); this.awardLater('journal'); return {ok:'Added to your journal.'}; }
-      case 'open': { const OPEN = {journal:'Open my journal', settings:'Open Settings', routine:'Open my week', rewards:'Show my rewards', plan:'Show my plan', checkin:'Check in now', memories:'What Spark remembers', progress:'Show my progress'}; const sc = String(a.screen || '').toLowerCase(); if (!OPEN[sc]) return null; return {open:[OPEN[sc], 'open_' + sc]}; }
+      case 'open': { const OPEN = {journal:'Open my journal', settings:'Open Settings', routine:'Open my week', rewards:'Show my rewards', plan:'Show my plan', checkin:'Start my check-in', memories:'What Spark remembers', progress:'Show my progress'}; const sc = String(a.screen || '').toLowerCase(); if (!OPEN[sc]) return null; return {open:[OPEN[sc], 'open_' + sc]}; }
     }
     // Mid-workout changes (only while a workout is running)
     if (['set_weight','set_reps','add_set','skip_exercise','switch'].indexOf(kind) < 0) return null;
@@ -3384,7 +3418,7 @@ class Component extends DCLogic {
   }
   runActions(list, mode){
     const self = this; const st0 = this.S();
-    const KEYS = ['customEx','planEdits','userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
+    const KEYS = ['ciPopSeen','customEx','planEdits','userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
     const snap = {}; KEYS.forEach(function(k){ snap[k] = st0[k] === undefined ? null : JSON.parse(JSON.stringify(st0[k])); });
     const done = [], fail = [], open = [];
     (Array.isArray(list) ? list : []).slice(0, 5).forEach(function(a){ let r = null; try { r = self.doAction(a, mode); } catch (e) { r = {no:'Something went wrong making that change.'}; }
@@ -3884,8 +3918,8 @@ class Component extends DCLogic {
         if (I.trained) return M('You’ve already trained today' + (I.summary ? ': ' + I.summary.exN + ' exercises, ' + I.summary.sets + ' sets' : '') + '. Nothing else on the plan. Enjoy the rest of your day.', [['How did it go?', 'howwent'], ['Thanks, Spark', 'bye']], 'Today’s workout');
         if (I.dayOff) return M('You’ve taken today off, so there’s nothing else on the plan.' + (I.nextDay ? ' Next up is ' + I.nextDay.focus + ', ' + I.nextDay.name + '.' : ''), [['Good to know', 'bye'], ['Actually, help me move a bit', 'cant']], 'Your week');
         if (!I.gym) { const ms = this.missedRecent(this.S()); return M('Rest day today, so nothing to do.' + (I.nextDay ? ' Your next workout is ' + I.nextDay.focus + ', ' + I.nextDay.name + '.' : '') + (ms ? ' If you’d like, you can do ' + (ms.name === 'yesterday' ? 'yesterday’s' : ms.dayName + '’s') + ' ' + focusLabel(ms.focus).toLowerCase() + ' session today instead.' : ''), ms ? [['Do ' + (ms.name === 'yesterday' ? 'yesterday’s' : ms.dayName + '’s') + ' session today', 'missed_today'], ['Keep it as a rest day', 'bye']] : [['Good to know', 'bye'], ['Why do rest days matter?', 'restwhy']], 'Your week'); }
-        return M('Today is ' + I.focusL + ', about ' + I.mins + ' minutes. ' + (I.checked ? (I.lowE || I.highS ? 'You said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + ' at check-in, so I’ve kept it to the shorter version.' : 'Your check-in looked good, so it’s the full session.') : 'You haven’t checked in yet. Four taps and I can fine-tune it.'),
-          I.checked ? [['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']] : [['Check in now', 'checkin'], ['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']], I.checked ? 'Today’s plan · your check-in' : 'Today’s plan');
+        return M('Today is ' + I.focusL + ', about ' + I.mins + ' minutes. ' + (I.checked ? (I.lowE || I.highS ? 'You said your ' + (I.lowE ? 'energy’s ' + I.energy : 'stress is ' + I.stress) + ' at check-in, so I’ve kept it to the shorter version.' : 'Your check-in looked good, so it’s the full session.') : 'You haven’t done your check-in yet. Four taps and I can fine-tune it.'),
+          I.checked ? [['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']] : [['Start my check-in', 'checkin'], ['Sounds good', 'todayok'], ['I’d rather rest today', 'restok']], I.checked ? 'Today’s plan · your check-in' : 'Today’s plan');
       case 'todayok': return M('Great. Press Start workout on Today when you’re ready, and I’ll check what the space is like with you.', [['Thanks, Spark', 'bye'], ['Hype me up', 'hype']]);
       case 'howwent': {
         if (I.trained && I.summary && (I.jAck || {})['workout' + (I.trainedAt || 0)] && !ctx.fromOpener) return M('We covered it earlier: ' + I.summary.exN + ' exercises and ' + I.summary.sets + ' sets. Honestly, proud of you for that. Anything else on your mind?', [['Thanks, Spark', 'bye'], ['Rough day, actually', 'rough']], 'Today’s workout');
@@ -4749,6 +4783,9 @@ class Component extends DCLogic {
     // Tips follow once the coach has finished its sentence.
     if (v.ep && Array.isArray(v.ep.tips)) { const n0 = String(v.ep.coach || '').split(/\s+/).length; const after0 = n0 * Math.max(14, Math.min(40, 1700 / Math.max(1, n0))) + 250;
       v.ep.tips.forEach(function(t, i){ t.w = (on.env && v.env && v.env.isPlan) ? self.gen('ep', t.text, false, after0 + i * 500) : flat(t.text); }); }
+    // Daily check-in screen: the coach explains why, then the reasons follow once it has finished.
+    if (v.ciPop) { v.ciPop.coachW = G('cipop', v.ciPop.coach, v.ciPop.on); const n1 = String(v.ciPop.coach || '').split(/\s+/).length; const after1 = n1 * Math.max(14, Math.min(40, 1700 / Math.max(1, n1))) + 250;
+      (v.ciPop.tips || []).forEach(function(t, i){ t.w = v.ciPop.on ? self.gen('cipop', t.text, false, after1 + i * 500) : flat(t.text); }); }
     if (v.act && v.act.prog) v.act.prog.textW = G('prog', v.act.prog.text, on.active);
     if (v.rv) v.rv.coachW = G('rv', v.rv.coachText, on.review);
     if (Array.isArray(v.chatView)) v.chatView.forEach(function(m, i){ m.w = m.spark ? self.gen('chat', m.text, quietChat) : []; });
@@ -4975,8 +5012,21 @@ class Component extends DCLogic {
     const lvl = function(k, i){ const val = v[k]; return val ? CHECK[i].opts[val - 1].toLowerCase() : ''; };
     const ciBits = [lvl('energy', 0) && 'Energy ' + lvl('energy', 0), lvl('mood', 1) && 'mood ' + lvl('mood', 1), lvl('stress', 2) && 'stress ' + lvl('stress', 2)].filter(Boolean);
     const checkRow = st.checked && ciBits.length
-      ? {title:'Checked in', sub: ciBits.join(' · '), cta:'Redo', ic:IC.check, icSt:'background: #DDF58B; color: #111214', aria:'Checked in: ' + ciBits.join(', ') + '. Tap to redo.'}
-      : {title:'Pre-workout check-in', sub:'Four taps. Today’s plan fits how you feel.', cta:'Check in', ic:'M3 12h4l2-6 4 12 2-6h6', icSt:'background: #26272C; color: #B7A6F6', aria:'Pre-workout check-in. Tap to check in.'};
+      ? {title:'Check-in done', sub: ciBits.join(' · '), cta:'Redo', ic:IC.check, icSt:'background: #DDF58B; color: #111214', aria:'Check-in done: ' + ciBits.join(', ') + '. Tap to redo.'}
+      : {title:'How are you today?', sub:'Four quick taps.', cta:'Start', ic:'M3 12h4l2-6 4 12 2-6h6', icSt:'background: #26272C; color: #B7A6F6', aria:'How are you today? Tap to start your check-in.'};
+    const ckSec = st.checked && ciBits.length
+      ? {showSub:false, sub:'', cta:'Redo check-in', aria:'Check-in done: ' + ciBits.join(', ') + '. Tap to redo.'}
+      : {showSub:true, sub:'Four quick taps, and Spark fits today around how you feel.', cta:'Start check-in', aria:'Start your check-in. Four quick taps.'};
+    // Daily check-in popup: once a day (a new day starts at 4am), only on Today, never over the tour or a workout. Skipping is final for the day.
+    const ciDay = dkey(new Date(Date.now() - 4 * 3600000));
+    const ciPop = (function(){
+      const on = st.screen === 'today' && !st.checked && st.ciPopSeen !== ciDay && typeof st.tour !== 'number' && !st.ciAsk && !st.swOpen && !st.cx;
+      return {on:on, sub: todayTrain ? 'Four quick taps, and Spark fits today around how you feel.' : 'Four quick taps. It helps Spark learn what affects your energy.',
+        skip:function(){ self.set({ciPopSeen:ciDay}); },
+        go:function(){ self.set({ciPopSeen:ciDay, screen:'checkin', back:'today', checkStep:0, ciThenStart:false}); },
+        coach:'Your energy, mood and focus change from day to day, so your training should too. Tell me how today really is and I’ll shape the session to fit, from a full workout to just the basics.',
+        tips:[{text:'Today’s plan matches how you actually feel'},{text:'Spark learns what lifts your energy over time'},{text:'Skip it any day. Nothing to catch up on'}]};
+    })();
     const beginEnv = function(extra){ const cur = self.S(); const env0 = (extra && extra.env) || {}; const ns = Object.assign({}, cur, extra || {}, {env:env0, envEnergy: !cur.checked}); const first = self.envSteps(ns)[0]; self.set(Object.assign({}, extra || {}, {env:env0, envEnergy: !cur.checked, envLadder:false, envAt:first, screen:'env', back:'today', toast:''})); };
     const restTiles = [
       {title:'Gentle stretch', sub:'8 minutes', ic:IC.stretch, icSt:'background: #B7A6F6', go:function(){ self.set({plan:'stretch', screen:'prep', back:'today'}); }},
@@ -5529,7 +5579,7 @@ class Component extends DCLogic {
       if (dayKeys.length > 4) scheduleNote += ' That’s ambitious. Spark will happily scale it back on busy weeks.';
       else if (anyEvening && busyWorry) scheduleNote += ' Gyms are usually busiest 5–7pm. If crowds are hard, early mornings tend to be quieter.';
     }
-    const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still check in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Check in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
+    const remindPreview = st.remindWhen === 'none' ? 'No reminders. You can still do your check-in any time from Today, and switch reminders on in Settings.' : (st.remindWhen === 'night' ? '“Tomorrow: your ' + lenObj[0] + '-minute session' + (timeObj ? ' at ' + timeObj[4] : '') + '. Do your check-in when you’re ready. It takes 30 seconds.”' : '“' + (st.remindWhen === '1h' ? 'Session in an hour' : 'Session in 30 minutes') + '. Got 30 seconds for a quick check-in first?”');
     const ONB_ORDER = [2, 3, 8, 4, 5, 6, 7, 9];
     const aboutAny = !!(st.about && (((st.about.nd || []).length) || ((st.about.body || []).length) || (st.about.note || '').trim()));
     const ONB_CTA = {2:'Continue',3:'Continue',4:'Continue',5:'Continue',6:'Continue',7:'Looks good',8: aboutAny ? 'Continue' : 'Skip this page',9:'Finish setup'};
@@ -5708,11 +5758,11 @@ class Component extends DCLogic {
       restPicks:[
         {title:'10-minute walk', sub:'Fresh air, any pace', go:function(){ self.set({plan:'min', checked:true, screen:'prep', back:'today'}); }},
         {title:'Gentle stretch', sub:'8 minutes, at home', go:function(){ self.set({plan:'stretch', checked:true, screen:'prep', back:'today'}); }},
-        {title:'Train anyway', sub:'Check in first, then a session', go:function(){ self.set({extraToday:true, checked:false}); self.go('checkin'); }}
+        {title:'Train anyway', sub:'Check-in first, then a session', go:function(){ self.set({extraToday:true, checked:false}); self.go('checkin'); }}
       ],
       justRest:function(){ self.set({dayOff:true}); },
       noteHowItWent:function(){ self.set({screen:'journal', back:'today', composing:true, draft:'Today’s workout ', toast:''}); },
-      todayTrain:todayTrain, todayRest:todayRest, todayAfter:todayAfter, todayMeta:todayMeta, checkRow:checkRow, restTiles:restTiles,
+      todayTrain:todayTrain, todayRest:todayRest, todayAfter:todayAfter, todayMeta:todayMeta, checkRow:checkRow, ciPop:ciPop, restTiles:restTiles,
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
       ciAskOn: !!st.ciAsk,
       ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
