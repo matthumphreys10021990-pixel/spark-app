@@ -1704,7 +1704,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Your exercises</h3>
   <div class="card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px">
     <sc-if value="{{myEx.none}}" hint-placeholder-val="{{ true }}"><span class="mut" style="font-size: 14px; line-height: 1.5">Add anything Spark doesn’t list, like a sled push or a boxing bag. It’ll show up when you switch or add an exercise.</span></sc-if>
-    <sc-for list="{{myEx.list}}" as="x" hint-placeholder-count="2"><div class="row" style="gap: 12px"><span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600">{{x.name}}</span><span class="mut" style="font-size: 13px">{{x.sub}}</span></span><button class="link" style="color: #F4A29A" aria-label="{{x.aria}}" onClick="{{x.remove}}">Remove</button></div></sc-for>
+    <sc-for list="{{myEx.list}}" as="x" hint-placeholder-count="2"><div class="row" style="gap: 12px"><span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600">{{x.name}}</span><span class="mut" style="font-size: 13px">{{x.sub}}</span></span><button class="ic-btn" aria-label="{{x.editAria}}" onClick="{{x.edit}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button><button class="link" style="color: #F4A29A" aria-label="{{x.aria}}" onClick="{{x.remove}}">Remove</button></div></sc-for>
     <button class="btn b-surf full" onClick="{{myEx.add}}">Add your own exercise</button>
   </div>
   <h3 class="d" style="font-size: 18px; margin-top: 28px">Your plan</h3>
@@ -1749,7 +1749,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 143</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 146</p>
 </div>
 </sc-if>
 
@@ -3029,7 +3029,8 @@ const AI_GENERAL = ['today','hype','cant','reason','rough','over','missed','busy
 const AI_LABELS = {today:'What’s my plan today?', hype:'Hype me up!', cant:'I can’t get started', reason:'Give me a reason to go', rough:'Rough week. Can’t face it', over:'I feel overwhelmed', missed:'I’ve missed a few days', busy:'The gym’s too busy', short:'I’ve only got 20 minutes', last:'What did I lift last time?', restwhy:'Why do rest days matter?', bye:'Thanks, Spark', sghelp:'Show me support numbers'};
 const AI_SYSTEM = [
   'You are Spark, the coach inside Spark!, a fitness app for adults with ADHD. Your job is encouragement, emotional check-ins and gentle coaching, not detailed programming.',
-  'VOICE: warm, calm, plain and human. British English spelling and phrasing. For everyday chat, keep it short: 2 to 4 sentences. When the user asks a real question, especially about their own data (a summary of their week, their workouts, journal, mood, progress or personal bests), answer it fully and accurately, up to about 250 words. For summaries you may use short bullet lines, each starting with "• " on its own line (use \n for new lines). No emojis, no markdown symbols, no exclamation marks except in a hype reply. Speak to the user as "you", and use their name at most once.',
+  'VOICE: warm, calm, plain and human. British English spelling and phrasing. For everyday chat, keep it short: 2 to 4 sentences. When the user asks a real question, especially about their own data (a summary of their week, their workouts, journal, mood, progress or personal bests), answer it fully and accurately, up to about 250 words. For summaries you may use short bullet lines, each starting with "• " on its own line (use \n for new lines). No emojis, no markdown symbols, no exclamation marks except in a hype reply. Speak to the user as "you". Do not use their name in replies: real coaches rarely do, and it reads as trying too hard. The only exception is a big moment, like a personal best, and even then not every time.',
+  'STAY ON WHAT THEY SAID: answer what the user actually said, then stop. Do not end with a reminder of today’s plan, tonight’s session, a rest day or what is coming up, and no sign-off like “anything else?”. Only bring up today’s plan when they ask about it, when what they said affects it (tired, sore, unwell, short on time, can’t face it, feeling great), or when you are offering a change to it. The reply buttons already give them a next step.',
   'ADHD-AWARE: reduce decisions. Offer one small, concrete next step. Never shame, guilt or nag. Missed days are fine: nothing to catch up on. Celebrate showing up, not just numbers.',
   'ANSWERING FROM DATA: the data block includes THIS WEEK and LAST WEEK laid out day by day (check-in, every workout with exercises, journal entries), plus older history. When they ask what they did, how their week went, what they wrote, how their mood has been or how they are progressing, build the answer from those sections: be concrete (days, exercises, weights, reps, words they used) and complete. If something was not recorded, say so plainly. Never guess or fill gaps.',
   'YOU KNOW THEM: you are given everything Spark has stored about this user: their setup answers, weekly routine and times, every logged workout with weights, reps and personal bests, their whole recent journal, check-ins and memories. Treat it as your own memory of them. When they ask about their own data (what they lifted, what they wrote, how many sessions, how their week went), answer precisely and specifically from it. If something is genuinely not in the data, say so honestly.',
@@ -3144,7 +3145,7 @@ class Component extends DCLogic {
     this.set({planEdits:e, pvAdd:false, swOpen:false, swTab:null, swMode:null, swMuscle:null, pvOpen:true, toast:'Added ' + EX[id].name.toLowerCase() + ' to today.'});
   }
   // ---- Rename an exercise: really "I've been logging the wrong one". History moves; the original stays in the list. ----
-  mvOpen(from, ctx){ if (!EX[from]) return; this.set({mv:{from:from, ctx:ctx || 'active', q:'', pick:null, kit:null, plans:false, step:'pick', err:''}}); }
+  mvOpen(from, ctx){ if (!EX[from]) return; const own = !!EX[from].custom; this.set({mv:{from:from, ctx:ctx || 'active', q: own ? EX[from].name : '', pick: own ? 'new' : null, kit:null, plans:false, step:'pick', err:''}}); }
   mvCounts(st, from){ let sess = 0, sets = 0; (st.sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.id === from) { sess++; sets += it.sets || 0; } }); });
     let today = 0; if (st.sess && !st.sess.ended) st.sess.ids.forEach(function(id, i){ if (id === from) today += st.sess.done[i] || 0; }); return {sess:sess, sets:sets, today:today}; }
   mvMatches(q, from){ const Q = String(q || '').trim().toLowerCase(); const fp = EX[from] && EX[from].pat;
@@ -3804,6 +3805,16 @@ class Component extends DCLogic {
       text = text.replace(/\*\*?|__|^#+ /gm, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/^\s*[-*]\s+/gm, '• ').replace(/[ \t]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim().replace(/\b(Claude|Anthropic)\b/g, 'Spark');
       if (!text) { const why = res.j.stop_reason === 'max_tokens' ? 'The reply was cut off before it finished.' : 'The reply came back empty.'; self.set({aiUse:use, aiErr:why, aiDebug:'stop_reason ' + res.j.stop_reason + ' · raw: ' + raw.slice(0, 300)}); return {fail:why}; }
       if (text.length > 3200) text = text.slice(0, 3200).replace(/\s+\S*$/, '') + '…';
+      // No name-dropping in chat: it reads as trying too hard.
+      const nm = String(cur.userName || '').trim();
+      if (nm && !o.mode) { const e = nm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        text = text.replace(new RegExp(',\\s*' + e + '(?=[.!?,;:]|$)', 'g'), '').replace(new RegExp('(^|[.!?]\\s+)(?:(Hey|Hi|Hello|Morning|Evening)\\s+)?' + e + '[,!.]\\s*', 'g'), function(m, pre, hi){ return pre + (hi ? hi + '. ' : ''); })
+          .replace(/(^|[.!?]\s+)([a-z])/g, function(m, pre, c){ return pre + c.toUpperCase(); }).trim(); }
+      // Don't tack today's plan on the end unless the chat is about training today.
+      if (!o.mode && !o.opener) { const lastMe = ((o.hist || cur.chat || []).filter(function(m){ return m.me; }).slice(-1)[0] || {}).text || '';
+        const aboutToday = /\b(gym|workouts?|train(ing)?|sessions?|plan(s|ned)?|today|tonight|tomorrow|rest|tired|sore|aches?|aching|pain|sleep|slept|energy|time|busy|exercises?|lift(ed|ing)?|run(ning)?|walk(ing)?|motivat\w*|start|go|can.?t face|legs|chest|back|arms)\b/i.test(lastMe);
+        if (!aboutToday) { const parts = text.split(/(?<=[.!?])\s+/); const lastS = parts[parts.length - 1] || '';
+          if (parts.length >= 2 && /tonight|today.?s (session|workout|plan)|rest day|your (session|workout|plan)|tomorrow|this evening|later today|at \d|\bgym\b/i.test(lastS)) text = parts.slice(0, -1).join(' '); } }
       const seen = {}; const reps = ((p && p.replies) || []).filter(function(r){ return r && allowed[r.kind] && !seen[r.kind] && (seen[r.kind] = true); }).slice(0, 3).map(function(r){ let lb = typeof r.label === 'string' ? r.label.replace(/\s+/g, ' ').trim() : ''; if (lb.length < 2 || lb.length > 42) lb = allowed[r.kind]; return [lb, r.kind]; });
       const finalReps = reps.length ? reps : (o.replies && o.replies.length ? o.replies : []);
       self.set({aiUse:use, aiErr:'', aiDebug:''});
@@ -3925,6 +3936,8 @@ class Component extends DCLogic {
   S(){ const st = (this.state && this.state.screen) ? this.state : this.preset((this.props && this.props.start) || 'welcome'); WU = (st && st.units === 'lb') ? 'lb' : 'kg'; return st; }
   set(patch){
     const was = this.S();
+    // Today's exercise list always starts collapsed when you come back to Today.
+    if (patch && patch.screen && patch.screen !== was.screen && (was.pvOpen || was.pvOrder)) patch = Object.assign({}, patch, {pvOpen:false, pvOrder:false});
     this.setState(Object.assign({}, was, patch));
     // Switching between a set and its rest always starts at the top of the page.
     if (patch && 'resting' in patch && !!patch.resting !== !!was.resting) {
@@ -4797,7 +4810,10 @@ class Component extends DCLogic {
   }
   componentDidMount(){
     const self = this;
-    if (this.S().cx || this.S().pvAdd) this.set({cx:null, pvAdd:false});
+    if (this.S().cx || this.S().pvAdd || this.S().pvOpen || this.S().pvOrder) this.set({cx:null, pvAdd:false, pvOpen:false, pvOrder:false});
+    // Leaving the app (switching apps or locking the phone) also folds the list away.
+    this.onHide = function(){ if (document.visibilityState === 'hidden') { const st = self.S(); if (st.pvOpen || st.pvOrder) self.set({pvOpen:false, pvOrder:false}); } };
+    try { document.addEventListener('visibilitychange', this.onHide); } catch (e) {}
     this.dayCheck();
     { const st1 = this.S(); if (st1.fresh && st1.sessLen >= 45 && st1.routine && !st1.lenFix45) { const rf = {}; Object.keys(st1.routine).forEach(function(k){ const r = st1.routine[k]; rf[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); const p1 = {routine:rf, lenFix45:true, basePlan:'plus'}; p1.week = buildRealWeek(Object.assign({}, st1, {routine:rf})); if (st1.plan === 'full' && !adjOn(st1)) p1.plan = 'plus'; this.set(p1); } }
     { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:''}); }
@@ -5863,7 +5879,7 @@ class Component extends DCLogic {
           close:function(){ self.set({cx:null}); }, save:function(){ self.saveCustom(); }};
       })(),
       myEx:(function(){ const cx = st.customEx || {}; const L = Object.keys(cx).filter(function(id){ return cx[id] && !cx[id].deleted; }).map(function(id){ const c = cx[id]; const mm = (MUSCLES.find(function(m){ return m[0] === c.muscle; }) || [0, ''])[1]; const ms = (CX_MEASURE.find(function(m){ return m[0] === c.measure; }) || [0, ''])[1];
-          return {name:c.name, sub: mm + ' · ' + ms.toLowerCase() + (c.kit ? ' · ' + (KIT_LABEL[c.kit] || '').toLowerCase() : ''), aria:'Remove ' + c.name, remove:function(){ const o = Object.assign({}, self.S().customEx || {}); o[id] = Object.assign({}, o[id], {deleted:true}); syncCustom(o); self.set({customEx:o, toast:'Removed ' + c.name + '. Your past sets with it are kept.'}); }}; });
+          return {name:c.name, sub: mm + ' · ' + ms.toLowerCase() + (c.kit ? ' · ' + (KIT_LABEL[c.kit] || '').toLowerCase() : ''), aria:'Remove ' + c.name, editAria:'Edit the name of ' + c.name, edit:function(){ self.mvOpen(id, 'settings'); }, remove:function(){ const o = Object.assign({}, self.S().customEx || {}); o[id] = Object.assign({}, o[id], {deleted:true}); syncCustom(o); self.set({customEx:o, toast:'Removed ' + c.name + '. Your past sets with it are kept.'}); }}; });
         return {list:L, has: L.length > 0, none: !L.length, add:function(){ self.set({cx:{ctx:'settings'}}); }}; })(), goLabel: self.inProgress(st) ? 'Carry on' : 'Start workout', showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
@@ -6004,20 +6020,20 @@ class Component extends DCLogic {
         const T = m.pick && m.pick !== 'new' ? EX[m.pick] : null; const toName = m.pick === 'new' ? Q : (T ? T.name : '');
         const what = c.sess ? c.sess + (c.sess === 1 ? ' session' : ' sessions') + ' (' + (c.sets + c.today) + ' sets)' : c.today ? 'today’s ' + c.today + (c.today === 1 ? ' set' : ' sets') : '';
         const own = !!F.custom;
-        return {on:true, pickStep: m.step === 'pick', doneStep: m.step === 'done', confirmStep: m.step === 'pick' && !!m.pick,
-          title: m.step === 'done' ? 'Done' : 'Rename ' + F.name, q:q, err:m.err || '', hasErr: !!m.err,
-          sub: own ? 'This one’s yours, so you can simply rename it. Or pick an exercise below to move its history there.' : 'Logged the wrong exercise? Type what you were actually doing. Your history moves with it, and ' + F.name + ' stays in the list.',
-          listLabel: Q ? 'Already in Spark' : 'Similar exercises', hasList: ids.length > 0,
+        return {on:true, pickStep: m.step === 'pick', doneStep: m.step === 'done', confirmStep: m.step === 'pick' && !!m.pick && !(own && m.pick === 'new' && !Q),
+          title: m.step === 'done' ? 'Done' : (F.custom ? 'Edit name' : 'Rename ' + F.name), q:q, err:m.err || '', hasErr: !!m.err,
+          sub: own ? 'Fix a typo or change the name. Your history stays with it.' : 'Logged the wrong exercise? Type what you were actually doing. Your history moves with it, and ' + F.name + ' stays in the list.',
+          listLabel: Q ? 'Already in Spark' : 'Similar exercises', hasList: ids.length > 0 && !own,
           list: ids.map(function(id){ const on = m.pick === id; return {name:EX[id].name, sub:(KIT_LABEL[EQUIP[id]] || 'Your own') + ' · ' + (EX[id].area || ''), on:on, cls: on ? 'on' : '', pick:function(){ self.set({mv:Object.assign({}, self.S().mv, {pick:id, err:''})}); }}; }),
-          canNew: !!Q && !exact, newLabel: own ? 'Rename it to “' + Q + '”' : 'Create “' + Q + '”', newOn: m.pick === 'new', newCls: m.pick === 'new' ? 'on' : '', newSt: m.pick === 'new' ? 'box-shadow: 0 0 0 3px rgba(221,245,139,.35)' : '',
+          canNew: !!Q && !exact && !own, /* your own exercise: the box below saves the new name */ newLabel: own ? 'Rename it to “' + Q + '”' : 'Create “' + Q + '”', newOn: m.pick === 'new', newCls: m.pick === 'new' ? 'on' : '', newSt: m.pick === 'new' ? 'box-shadow: 0 0 0 3px rgba(221,245,139,.35)' : '',
           pickNew:function(){ self.set({mv:Object.assign({}, self.S().mv, {pick:'new', err:''})}); },
           needKit: m.pick === 'new' && !own, kits: Object.keys(KIT_LABEL).map(function(k){ const on = m.kit === k; return {label:KIT_LABEL[k], on:on, cls: on ? 'on' : '', pick:function(){ self.set({mv:Object.assign({}, self.S().mv, {kit:k, err:''})}); }}; }),
           showPlans: !!m.pick && !(own && m.pick === 'new'), plansOn: !!m.plans, plansCls: m.plans ? 'on' : '', togglePlans:function(){ const x = self.S().mv; self.set({mv:Object.assign({}, x, {plans:!x.plans})}); },
           plansLabel: 'Use ' + (toName || 'it') + ' in my plans from now on',
-          confirmText: own && m.pick === 'new' ? 'Rename ' + F.name + ' to ' + toName + '? Its history comes too.' : what ? 'Move ' + what + ' from ' + F.name + ' to ' + toName + '?' : 'Nothing logged on ' + F.name + ' yet. Switch to ' + toName + '?',
-          goLabel: own && m.pick === 'new' ? 'Rename it' : what ? 'Move my history' : 'Switch to it',
+          confirmText: own && m.pick === 'new' ? (Q === F.name ? 'Change the name above, then save.' : 'Change the name to ' + toName + '? Your history stays with it.') : what ? 'Move ' + what + ' from ' + F.name + ' to ' + toName + '?' : 'Nothing logged on ' + F.name + ' yet. Switch to ' + toName + '?',
+          goLabel: own && m.pick === 'new' ? 'Save the new name' : what ? 'Move my history' : 'Switch to it',
           msg: m.msg || '', canUndo: !!m.undo,
-          onQ:function(e){ self.set({mv:Object.assign({}, self.S().mv, {q:e.target.value, pick:null, err:''})}); },
+          onQ:function(e){ const cur = self.S().mv; self.set({mv:Object.assign({}, cur, {q:e.target.value, pick: own ? 'new' : null, err:''})}); },
           go:function(){ self.mvConfirm(); }, undo:function(){ self.mvUndo(); }, close:function(){ self.set({mv:null}); }};
       })(),
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
