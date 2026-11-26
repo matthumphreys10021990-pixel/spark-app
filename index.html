@@ -477,6 +477,14 @@ button.dc.d-tap{cursor:pointer}
 .dr-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .rm .dring{animation:none}
 @media (prefers-reduced-motion: reduce){.dring{animation:none}}
+.ic-btn{appearance:none;cursor:pointer;font:inherit;border:0;flex:none;width:40px;height:40px;border-radius:50%;background:rgba(245,245,242,.1);color:#F5F5F2;display:flex;align-items:center;justify-content:center;transition:transform .12s ease,background .15s ease}
+.ic-btn:active{transform:scale(.92)}
+.ic-btn[aria-expanded="true"]{background:#DDF58B;color:#111214}
+.ws-gated .numtile,.ws-gated .ws-dock .btn,.ws-gated .ws-adapt{opacity:.35;pointer-events:none;filter:saturate(.5);transition:opacity .25s ease}
+.numtile,.ws-dock .btn,.ws-adapt{transition:opacity .25s ease}
+/* Long names and words always wrap rather than run off the screen. */
+.sp{overflow-wrap:break-word}
+.sp h1,.sp h2{overflow-wrap:anywhere;hyphens:auto}
 .sp [role="dialog"]{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 -24px 60px -12px rgba(0,0,0,.65)}
 .sp button[aria-label="Close"][style*="inset: 0"]{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .rm .ab{animation:none}
@@ -880,6 +888,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <text x="{{pg.c.lx}}" y="{{pg.c.lty}}" fill="#F5F5F2" font-size="14" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="end">{{pg.c.lastTxt}}</text>
       </svg>
     </sc-if>
+    <button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px" onClick="{{pg.rename}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Rename this exercise</button>
     <sc-if value="{{pg.c.single}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 12px 0 4px; font-size: 14px; line-height: 1.5">{{pg.c.hint}}</p></sc-if>
   </div>
   </sc-if>
@@ -1094,7 +1103,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
 
 <!-- ================= ACTIVE WORKOUT ================= -->
 <sc-if value="{{is.active}}" hint-placeholder-val="{{ false }}">
-<div class="scroll ws {{wsCls}}" style="background: {{wsBg}}; transition: background .5s ease">
+<div class="scroll ws {{wsCls}} {{act.gateCls}}" style="background: {{wsBg}}; transition: background .5s ease">
   <div style="position: relative; padding: 20px 18px 28px; min-height: 100%; display: flex; flex-direction: column; color: {{wsInk}}">
 
     <!-- top bar -->
@@ -1107,7 +1116,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <button class="ws-end" onClick="{{finish}}">End</button>
     </div>
 
-    <sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}"><div class="toast rise" style="margin-top: 14px; background: #DDF58B; color: #111214"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{toast}}</div></sc-if>
+    <sc-if value="{{act.toastOn}}" hint-placeholder-val="{{ false }}"><div class="toast rise" style="margin-top: 14px; background: #DDF58B; color: #111214"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{toast}}</div></sc-if>
     <sc-if value="{{hasPbNow}}" hint-placeholder-val="{{ false }}">
     <div class="pb-pop" style="margin-top: 14px; background: #DDF58B; color: #111214; border-radius: 22px; padding: 14px 16px; display: flex; gap: 14px; align-items: center">
       <span style="width: 44px; height: 44px; border-radius: 50%; background: #111214; color: #DDF58B; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"></path></svg></span>
@@ -1121,38 +1130,33 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <svg class="rings" viewBox="0 0 200 200" width="280" height="280" aria-hidden="true" style="right: -110px; top: -110px; z-index: -1"><g fill="none" stroke="#F5F5F2" stroke-opacity=".06" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
         <span class="tag" style="background: rgba(17,18,20,.55); color: #DDF58B">{{act.kitLabel}}</span>
-        <button onClick="{{toggleCues}}" aria-expanded="{{showCues}}" style="appearance: none; cursor: pointer; font: inherit; border: 0; height: 32px; padding: 0 12px; border-radius: 999px; background: rgba(245,245,242,.1); color: #F5F5F2; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; flex: none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V15M12 18.5v.5"></path></svg>{{cuesLabel}}</button>
+        <span class="row" style="gap: 8px; flex: none"><button class="ic-btn" onClick="{{act.rename}}" aria-label="Rename this exercise: logged the wrong one?"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button><button class="ic-btn" onClick="{{openSwitch}}" aria-label="Switch to a similar exercise"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg></button><button class="ic-btn" onClick="{{toggleCues}}" aria-expanded="{{showCues}}" aria-label="{{cuesLabel}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V15M12 18.5v.5"></path></svg></button></span>
       </div>
       <h1 class="d" style="font-size: 34px; margin-top: 16px">{{act.ex.name}}</h1>
-      <div class="row" style="gap: 8px; margin-top: 12px; justify-content: flex-start"><button class="sw-btn" onClick="{{openSwitch}}" aria-label="Switch to a similar exercise"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg>Switch exercise</button></div>
+      <sc-if value="{{act.warmOn}}" hint-placeholder-val="{{ true }}"><p style="margin: 6px 0 0; font-size: 15px; line-height: 1.4; color: #C9C9CF">{{act.warmLine}}</p></sc-if>
+      
+      <sc-if value="{{act.tools.dropActive}}" hint-placeholder-val="{{ false }}"><div class="sw-ask rise" style="border-color: rgba(221,245,139,.5)"><span style="display: block; font-size: 15px; line-height: 1.45">{{act.tools.dropLine}}</span><div class="row" style="gap: 8px; margin-top: 10px; flex-wrap: wrap"><button class="btn b-ghost sm" onClick="{{act.tools.dropCancel}}">Cancel drop set</button></div></div></sc-if>
       <sc-if value="{{swAsk.on}}" hint-placeholder-val="{{ false }}"><div class="sw-ask rise"><span style="font-size: 15px; line-height: 1.45">{{swAsk.text}}</span><div class="row" style="gap: 8px; margin-top: 10px"><button class="btn sm" style="background: #DDF58B; color: #111214" onClick="{{swAsk.yes}}">Yes, from now on</button><button class="btn b-ghost sm" onClick="{{swAsk.no}}">Just today</button></div></div></sc-if>
       <sc-if value="{{showCues}}" hint-placeholder-val="{{ false }}">
       <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 10px">
         <sc-for list="{{act.cues}}" as="c" hint-placeholder-count="3"><div class="row" style="gap: 12px; align-items: flex-start"><span style="width: 26px; height: 26px; flex: none; border-radius: 50%; background: #DDF58B; color: #111214; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{c.n}}</span><span style="font-size: 15px; line-height: 1.4; padding-top: 3px">{{c.t}}</span></div></sc-for>
       </div>
       </sc-if>
-      <sc-if value="{{act.showPills}}" hint-placeholder-val="{{ false }}">
-      <div style="display: flex; gap: 8px; margin-top: 20px" role="list" aria-label="{{act.setLine}}">
-        <sc-for list="{{act.setPills}}" as="p" hint-placeholder-count="3">
-          <span role="listitem" style="flex: 1; height: 46px; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 700; {{p.st}}"><sc-if value="{{p.done}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>{{p.label}}</span>
-        </sc-for>
-      </div>
+      <sc-if value="{{act.prog.on}}" hint-placeholder-val="{{ true }}">
+      <section class="rise" aria-label="Spark AI Coach" style="margin-top: 14px; background: rgba(17,18,20,.6); border-radius: 26px; padding: 16px; box-shadow: inset 0 0 0 1.5px #B7A6F6; display: flex; flex-direction: column; gap: 12px">
+        <div class="row" style="gap: 10px">
+          <span class="av" style="width: 34px; height: 34px"><img src="img/logo.png" alt="" style="width: 20px; height: auto"></span>
+          <span style="flex: 1"><span style="display: block; font-size: 13px; font-weight: 600; color: #B7A6F6">Spark AI Coach</span><span class="mut" style="display: block; font-size: 12px">{{act.prog.when}}</span></span>
+        </div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.45"><sc-for list="{{act.prog.textW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></p>
+        <sc-if value="{{act.prog.hasBtns}}" hint-placeholder-val="{{ true }}"><div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button class="btn sm" style="{{act.prog.aSt}}" onClick="{{act.prog.a}}">{{act.prog.aLabel}}</button>
+          <button class="btn sm" style="{{act.prog.bSt}}" onClick="{{act.prog.b}}">{{act.prog.bLabel}}</button>
+        </div></sc-if>
+      </section>
       </sc-if>
     </section>
 
-    <sc-if value="{{act.prog.on}}" hint-placeholder-val="{{ true }}">
-    <section class="rise" aria-label="Spark AI Coach" style="margin-top: 12px; background: #1C1D21; border-radius: 26px; padding: 16px; box-shadow: inset 0 0 0 1.5px #B7A6F6; display: flex; flex-direction: column; gap: 12px">
-      <div class="row" style="gap: 10px">
-        <span class="av" style="width: 34px; height: 34px"><img src="img/logo.png" alt="" style="width: 20px; height: auto"></span>
-        <span style="flex: 1"><span style="display: block; font-size: 13px; font-weight: 600; color: #B7A6F6">Spark AI Coach</span><span class="mut" style="display: block; font-size: 12px">{{act.prog.when}}</span></span>
-      </div>
-      <p style="margin: 0; font-size: 16px; line-height: 1.45"><sc-for list="{{act.prog.textW}}" as="gw" hint-placeholder-count="8"><span class="{{gw.c}}" style="{{gw.st}}">{{gw.t}}</span></sc-for></p>
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
-        <button class="btn sm" style="{{act.prog.aSt}}" onClick="{{act.prog.a}}">{{act.prog.aLabel}}</button>
-        <button class="btn sm" style="{{act.prog.bSt}}" onClick="{{act.prog.b}}">{{act.prog.bLabel}}</button>
-      </div>
-    </section>
-    </sc-if>
 
     <div style="flex: 1; min-height: 12px; display: flex; align-items: center; justify-content: center">
       <sc-if value="{{act.showRing}}" hint-placeholder-val="{{ false }}">
@@ -1193,7 +1197,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <sc-if value="{{rest.on}}" hint-placeholder-val="{{ false }}">
     <div class="rise" style="position: relative; isolation: isolate; margin-top: 22px; display: flex; flex-direction: column; align-items: center; text-align: center">
       <div aria-hidden="true" style="position: absolute; top: -200px; bottom: 0; left: -18px; right: -18px; overflow: hidden; z-index: -1; pointer-events: none"><svg viewBox="0 0 200 200" width="520" height="520" aria-hidden="true" style="position: absolute; left: 50%; top: 355px; transform: translate(-50%, -50%); pointer-events: none"><g fill="none" stroke="#A6D8FA" stroke-width="7"><circle class="rest-wave" cx="100" cy="100" r="50" stroke-opacity=".16"></circle><circle cx="100" cy="100" r="70" stroke-opacity=".09"></circle><circle cx="100" cy="100" r="90" stroke-opacity=".05"></circle></g></svg></div>
-      <span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; background: #A6D8FA; color: #0C1822; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Set logged</span>
+      <span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; background: #A6D8FA; color: #0C1822; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{rest.badge}}</span>
       <div style="position: relative; width: 210px; height: 210px; margin-top: 18px">
         <svg width="210" height="210" viewBox="0 0 76 76" role="img" aria-label="Rest time left {{rest.left}}" style="position: absolute; inset: 0">
           <circle cx="38" cy="38" r="34" fill="#A6D8FA" fill-opacity=".06" stroke="rgba(166,216,250,.16)" stroke-width="4"></circle>
@@ -1207,7 +1211,9 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <div class="row" style="gap: 8px; margin-top: 16px">
         <button class="restpill" onClick="{{addRest}}">+15 sec</button>
         <button class="restpill" onClick="{{skipRest}}">Skip rest</button>
+        <sc-if value="{{rest.skipSetOn}}" hint-placeholder-val="{{ true }}"><button class="restpill" style="background: #A6D8FA; color: #0C1822" onClick="{{rest.skipSet}}">{{rest.skipSetLabel}}</button></sc-if>
       </div>
+      <sc-if value="{{rest.skipExOn}}" hint-placeholder-val="{{ true }}"><div class="row" style="justify-content: center; margin-top: 6px"><button class="link" style="min-height: 44px; color: #A6D8FA" onClick="{{rest.skipEx}}">Skip this exercise</button></div></sc-if>
       <div class="edge" style="align-self: stretch; margin-top: 16px; background: rgba(166,216,250,.07); box-shadow: inset 0 0 0 1.5px rgba(166,216,250,.18); color: #F5F5F2; border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left">
         <span style="width: 42px; height: 42px; flex: none; border-radius: 50%; background: #A6D8FA; color: #111214; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
         <span style="flex: 1; min-width: 0"><span style="display: block; font-size: 12px; font-weight: 600; color: #A6D8FA">{{rest.nextLabel}}</span><span style="display: block; font-size: 16px; font-weight: 600; margin-top: 2px">{{act.nextTitle}}</span><span style="display: block; font-size: 13px; margin-top: 2px; color: #9FB7C9">{{act.nextSub}}</span></span>
@@ -1314,10 +1320,15 @@ body.kb [data-chat-wrap]{bottom:0!important}
 
     <div style="height: 14px; flex: none"></div>
     <div class="ws-dock" style="background: linear-gradient(180deg, {{wsBgFade}} 0%, {{wsBg}} 26%)">
-    <button class="btn full {{act.primaryCls}}" style="min-height: 76px; justify-content: flex-start; padding: 0 10px; gap: 16px" onClick="{{act.primary}}">
+    <sc-if value="{{act.dockPrimary}}" hint-placeholder-val="{{ true }}">
+    <div class="row" style="gap: 10px; align-items: stretch">
+    <button class="btn full {{act.primaryCls}}" style="flex: 1; min-width: 0; min-height: 76px; justify-content: flex-start; padding: 0 10px; gap: 14px" onClick="{{act.primary}}">
       <span style="width: 56px; height: 56px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; {{act.primaryIcSt}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{act.primaryIc}}"></path></svg></span>
       <span class="d" style="font-size: 21px; text-align: left">{{act.primaryLabel}}</span>
     </button>
+    <sc-if value="{{act.tools.dropBtn}}" hint-placeholder-val="{{ true }}"><button class="btn" style="flex: none; width: 118px; min-height: 76px; padding: 0 8px; background: {{wsBg}}; color: #DDF58B; box-shadow: inset 0 0 0 2px rgba(221,245,139,.55); border-radius: 999px" aria-label="{{act.tools.dropAria}}" onClick="{{act.tools.dropGo}}"><span style="font-size: 16px; font-weight: 700">{{act.tools.dropBtnLabel}}</span></button></sc-if>
+    </div>
+    </sc-if>
     <button class="ws-adapt" onClick="{{nav.adapt}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3"></path></svg>Something's not right? Adapt</button>
     </div>
   </div>
@@ -1357,6 +1368,16 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <button onClick="{{goCalm}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: #1C1D21; color: #F5F5F2; border: 0; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
       <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#B7A6F6" stroke-width="3"></circle><circle cx="20" cy="20" r="8" fill="#B7A6F6"></circle></svg>
       <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 17px">I'm overwhelmed</span><span class="mut" style="font-size: 14px">Take me somewhere quiet first</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+    <button onClick="{{skipSetNow}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: transparent; color: #F5F5F2; border: 1.5px solid #34353B; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: #26272C; display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F5F2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h10M13 7l5 5-5 5M20 5v14"></path></svg></span>
+      <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 17px">Skip this set</span><span class="mut" style="font-size: 14px">You’ve done enough on this one</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+    </button>
+    <button onClick="{{skipExNow}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: transparent; color: #F5F5F2; border: 1.5px solid #34353B; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
+      <span style="width: 40px; height: 40px; border-radius: 50%; background: #26272C; display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F5F2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5l8 7-8 7zM13 5l8 7-8 7z"></path></svg></span>
+      <span style="flex: 1"><span style="display: block; font-weight: 600; font-size: 17px">Skip this exercise</span><span class="mut" style="font-size: 14px">Move straight on to the next one</span></span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
     </button>
     <button onClick="{{endHere}}" style="appearance: none; cursor: pointer; font: inherit; width: 100%; margin-top: 10px; background: transparent; color: #F5F5F2; border: 1.5px solid #34353B; border-radius: 24px; padding: 18px; display: flex; align-items: center; gap: 14px; text-align: left">
@@ -1723,7 +1744,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 123</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 142</p>
 </div>
 </sc-if>
 
@@ -1765,6 +1786,50 @@ body.kb [data-chat-wrap]{bottom:0!important}
 <div class="cf-wrap" aria-hidden="true">
   <sc-for list="{{cfPieces}}" as="p" hint-placeholder-count="0"><i class="cf {{p.cls}}" style="{{p.st}}"></i></sc-for>
   <sc-if value="{{cfBig}}" hint-placeholder-val="{{ false }}"><div class="cf-dim"></div><div class="cf-hero"><b style="font-size: {{cfSize}}">{{cfName}}</b><span>{{cfSub}}</span></div></sc-if>
+</div>
+</sc-if>
+
+<!-- ================= DROP SET: how many reps did you do? ================= -->
+<sc-if value="{{act.tools.sheetOn}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 72; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{act.tools.sheetClose}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.6); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="Drop set" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><h2 class="d" style="font-size: 26px">Drop set</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{act.tools.sheetClose}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <p style="margin: 8px 0 0; font-size: 17px; font-weight: 600; line-height: 1.4">{{act.tools.sheetQ}}</p>
+    <div class="row" style="gap: 12px; margin-top: 18px; align-items: center">
+      <button class="btn b-ghost" style="width: 72px; height: 64px; font-size: 28px; flex: none" aria-label="One fewer rep" onClick="{{act.tools.sheetDec}}">−</button>
+      <span class="n9" style="flex: 1; text-align: center; font-size: 56px; line-height: 1" aria-live="polite">{{act.tools.sheetN}}</span>
+      <button class="btn b-ghost" style="width: 72px; height: 64px; font-size: 28px; flex: none" aria-label="One more rep" onClick="{{act.tools.sheetInc}}">+</button>
+    </div>
+    <p class="mut" style="margin: 14px 0 0; font-size: 15px; text-align: center">{{act.tools.sheetLeft}}</p>
+    <button class="btn b-lime full" style="margin-top: 16px; min-height: 64px" onClick="{{act.tools.sheetConfirm}}">{{act.tools.sheetGo}}</button>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= RENAME AN EXERCISE (move its history) ================= -->
+<sc-if value="{{mv.on}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 72; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{mv.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.6); cursor: pointer"></button>
+  <div class="rise" role="dialog" aria-label="{{mv.title}}" style="position: relative; max-height: 88%; overflow-y: auto; overflow-x: hidden; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><h2 class="d" style="font-size: 26px">{{mv.title}}</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{mv.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <sc-if value="{{mv.pickStep}}" hint-placeholder-val="{{ true }}">
+      <p class="mut" style="margin: 8px 0 0; font-size: 15px; line-height: 1.45">{{mv.sub}}</p>
+      <input id="sp-mv-name" class="field" style="margin-top: 14px" maxlength="60" autocomplete="off" placeholder="What were you actually doing?" aria-label="New name" value="{{mv.q}}" onChange="{{mv.onQ}}">
+      <sc-if value="{{mv.canNew}}" hint-placeholder-val="{{ true }}"><button class="ex-row" aria-pressed="{{mv.newOn}}" style="margin-top: 10px; background: #DDF58B; color: #111214; border-color: #DDF58B; {{mv.newSt}}" onClick="{{mv.pickNew}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 700">{{mv.newLabel}}</span><span style="display: block; font-size: 13px; color: rgba(17,18,20,.7)">A new exercise, with your history moved to it</span></span></button></sc-if>
+      <sc-if value="{{mv.needKit}}" hint-placeholder-val="{{ false }}"><span style="display: block; font-weight: 600; font-size: 15px; margin: 14px 0 8px">What kit does it use?</span><div class="row" style="gap: 8px; flex-wrap: wrap"><sc-for list="{{mv.kits}}" as="k" hint-placeholder-count="6"><button class="chip {{k.cls}}" aria-pressed="{{k.on}}" onClick="{{k.pick}}">{{k.label}}</button></sc-for></div></sc-if>
+      <sc-if value="{{mv.confirmStep}}" hint-placeholder-val="{{ false }}"><div class="sw-ask rise" style="margin-top: 14px"><span style="display: block; font-size: 15px; line-height: 1.45">{{mv.confirmText}}</span>
+        <sc-if value="{{mv.showPlans}}" hint-placeholder-val="{{ true }}"><button class="chip {{mv.plansCls}}" aria-pressed="{{mv.plansOn}}" style="margin-top: 10px; max-width: 100%; height: auto; min-height: 44px; padding: 10px 16px; white-space: normal; text-align: left; line-height: 1.3" onClick="{{mv.togglePlans}}">{{mv.plansLabel}}</button></sc-if>
+        <sc-if value="{{mv.hasErr}}" hint-placeholder-val="{{ false }}"><span style="display: block; color: #F59E8B; font-size: 14px; margin-top: 8px">{{mv.err}}</span></sc-if>
+        <button class="btn b-lime full" style="margin-top: 12px" onClick="{{mv.go}}">{{mv.goLabel}}</button></div></sc-if>
+      <sc-if value="{{mv.hasList}}" hint-placeholder-val="{{ true }}"><span class="mut" style="display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px">{{mv.listLabel}}</span>
+      <div style="display: flex; flex-direction: column; gap: 6px"><sc-for list="{{mv.list}}" as="o" hint-placeholder-count="5"><button class="ex-row {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px">{{o.sub}}</span></span></button></sc-for></div></sc-if>
+    </sc-if>
+    <sc-if value="{{mv.doneStep}}" hint-placeholder-val="{{ false }}">
+      <p style="margin: 10px 0 0; font-size: 17px; font-weight: 600; line-height: 1.45">{{mv.msg}}</p>
+      <div class="row" style="gap: 8px; margin-top: 16px"><button class="btn b-lime" style="flex: 1" onClick="{{mv.close}}">Done</button><sc-if value="{{mv.canUndo}}" hint-placeholder-val="{{ true }}"><button class="btn b-ghost" style="flex: 1" onClick="{{mv.undo}}">Undo</button></sc-if></div>
+    </sc-if>
+  </div>
 </div>
 </sc-if>
 
@@ -2000,7 +2065,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
   <div class="rise" role="dialog" aria-label="Add your own exercise" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 24px; display: flex; flex-direction: column; max-height: 92%; box-sizing: border-box">
     <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><span><h2 class="d" style="font-size: 26px">Add your own exercise</h2><span class="mut" style="display: block; font-size: 14px; margin-top: 4px">Anything Spark doesn’t list. It’s saved for next time.</span></span><button class="mnav sheet-x" aria-label="Close" onClick="{{cx.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     <div style="overflow-y: auto; margin: 6px -4px 0; padding: 0 4px">
-      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">What’s it called?</span><input id="sp-cx-name" class="field" maxlength="40" autocomplete="off" placeholder="For example: Sled push" aria-label="Exercise name" value="{{cx.name}}" onChange="{{cx.onName}}">
+      <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">What’s it called?</span><input id="sp-cx-name" class="field" maxlength="60" autocomplete="off" placeholder="For example: Sled push" aria-label="Exercise name" value="{{cx.name}}" onChange="{{cx.onName}}">
       <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">Which muscles does it work?</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.muscles}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
       <span style="display: block; font-weight: 600; font-size: 15px; margin: 18px 0 8px">How will you track it?</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.measures}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div>
       <sc-if value="{{cx.isTime}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 10px"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{cx.timeUs}}" as="o" hint-placeholder-count="4"><button class="chip {{o.cls}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></div></sc-if>
@@ -2463,7 +2528,7 @@ const GEAR_ORDER = {machine:['machine','cable','free','body'], cable:['cable','m
 const CX_PAT = {chest:'chest', back:'row', shoulders:'shoulder', arms:'biceps', legs:'squat', core:'core', cardio:'cardio'};
 const CX_MEASURE = [['wr','Weight and reps'],['reps','Reps only'],['time','Time'],['wd','Weight and distance']];
 function syncCustom(cx){
-  Object.keys(cx || {}).forEach(function(id){ const c = cx[id]; if (!c || !c.name) return; const pat = CX_PAT[c.muscle] || 'cardio'; const weighted = c.measure === 'wr' || c.measure === 'wd';
+  Object.keys(cx || {}).forEach(function(id){ const c = cx[id]; if (!c || !c.name) return; const pat = c.pat || CX_PAT[c.muscle] || 'cardio'; const weighted = c.measure === 'wr' || c.measure === 'wd';
     EX[id] = {name:c.name, area:((MUSCLES.find(function(m){ return m[0] === c.muscle; }) || [0, 'Your own'])[1]) + ' · your own', reps:c.reps || (c.measure === 'time' ? (c.timeU === 'sec' ? 30 : 3) : c.measure === 'wd' ? 20 : 10), kg: weighted ? (c.kg || 0) : 0, best:null, step: c.kit === 'free' ? 2 : 2.5, unit:'kg', bw: !weighted, repUnit: c.measure === 'time' ? (c.timeU === 'sec' ? 'seconds' : 'minutes') : c.measure === 'wd' ? 'metres' : 'reps', cues:['Your own exercise, so do it your way.','Spark tracks it like any other.'], custom:true, pat:pat, kit:c.kit || 'other', sets:c.sets || 3};
     EQUIP[id] = c.kit || 'other'; HOME_NEEDS[id] = [];
     PAT[pat] = (PAT[pat] || []).filter(function(x){ return x !== id; }); if (!c.deleted) PAT[pat].push(id); });
@@ -3034,6 +3099,10 @@ class Component extends DCLogic {
   }
 
   lastOf(st, id){ const h = st.hist && st.hist[id]; if (h) return h; return st.fresh ? {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:null, first:true} : {kg:snapU(EX[id].kg || 0), reps:EX[id].reps, when:'Last week'}; }
+  // Every set you did last time, in order (older history only knows the last one).
+  lastSets(st, id){ const h = st.hist && st.hist[id]; if (!h) return null; if (Array.isArray(h.sets) && h.sets.length) return h.sets; return [{kg: h.startKg != null ? h.startKg : h.kg, reps: h.startReps != null ? h.startReps : h.reps}]; }
+  // Where you started last time: the sensible place to begin again (your last set may have been a max-out).
+  lastStart(st, id){ const L = this.lastOf(st, id); const ls = this.lastSets(st, id); return ls ? Object.assign({}, L, {kg: ls[0].kg, reps: ls[0].reps, endKg: L.kg, endReps: L.reps}) : L; }
   bestOf(st, id){ if (EX[id] && EX[id].assist) return null; return st.fresh ? ((st.bests || {})[id] != null ? st.bests[id] : null) : EX[id].best; }
   planEditsToday(st){ const e = st.planEdits; return e && e.day === dkey(new Date()) ? e : null; }
   applyPlanEdits(sess, st){
@@ -3065,13 +3134,66 @@ class Component extends DCLogic {
     const cur = this.S(); const e = this.editsFor(cur); if (e.added.indexOf(id) < 0) e.added.push(id); if (e.removed[id]) delete e.removed[id];
     this.set({planEdits:e, pvAdd:false, swOpen:false, swTab:null, swMode:null, swMuscle:null, pvOpen:true, toast:'Added ' + EX[id].name.toLowerCase() + ' to today.'});
   }
+  // ---- Rename an exercise: really "I've been logging the wrong one". History moves; the original stays in the list. ----
+  mvOpen(from, ctx){ if (!EX[from]) return; this.set({mv:{from:from, ctx:ctx || 'active', q:'', pick:null, kit:null, plans:false, step:'pick', err:''}}); }
+  mvCounts(st, from){ let sess = 0, sets = 0; (st.sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.id === from) { sess++; sets += it.sets || 0; } }); });
+    let today = 0; if (st.sess && !st.sess.ended) st.sess.ids.forEach(function(id, i){ if (id === from) today += st.sess.done[i] || 0; }); return {sess:sess, sets:sets, today:today}; }
+  mvMatches(q, from){ const Q = String(q || '').trim().toLowerCase(); const fp = EX[from] && EX[from].pat;
+    const ids = Object.keys(EX).filter(function(id){ return id !== from && EX[id] && EX[id].name && !(EX[id].custom && EX[id].deleted); });
+    if (!Q) return ids.filter(function(id){ return EX[id].pat && EX[id].pat === fp; }).sort(function(a, b){ return (EQUIP[a] === EQUIP[from]) - (EQUIP[b] === EQUIP[from]); }).slice(0, 8);
+    const words = Q.split(/\s+/).filter(Boolean);
+    const sc = function(id){ const n = EX[id].name.toLowerCase(); if (n === Q) return 100; let v = 0; if (n.indexOf(Q) === 0) v += 40; else if (n.indexOf(Q) >= 0) v += 25; words.forEach(function(w){ if (n.indexOf(w) >= 0) v += 10; if ((' ' + n).indexOf(' ' + w) >= 0) v += 4; }); if (EX[id].pat === fp) v += 3; return v; };
+    return ids.map(function(id){ return [id, sc(id)]; }).filter(function(x){ return x[1] >= 10; }).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 8).map(function(x){ return x[0]; }); }
+  mvMove(from, to, usePlans){
+    const st = this.S(); const self = this; if (!EX[from] || !EX[to] || from === to) return;
+    const snap = {sessLog:st.sessLog, hist:st.hist, bests:st.bests, pbLog:st.pbLog, sess:st.sess, exPrefs:st.exPrefs, exAvoid:st.exAvoid, customEx:st.customEx, progEx:st.progEx};
+    const fromName = EX[from].name, T = EX[to];
+    const lastAt = function(id){ let t = 0; (st.sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.id === id && e.at > t) t = e.at; }); }); return t; };
+    const fA = lastAt(from), tA = lastAt(to);
+    const conv = function(it){ return Object.assign({}, it, {id:to, name:T.name, unit:T.unit, bw:!!T.bw, repUnit:T.repUnit || 'reps'}); };
+    const sLog = (st.sessLog || []).map(function(e){ if (!(e.items || []).some(function(it){ return it.id === from; }) && !(e.skipped || []).some(function(it){ return it.id === from; })) return e;
+      const items = []; (e.items || []).forEach(function(it){ const x = it.id === from ? conv(it) : it; const ex = items.find(function(y){ return y.id === x.id; });
+        if (ex && x.id === to) { const heavier = (x.kg || 0) > (ex.kg || 0) || ((x.kg || 0) === (ex.kg || 0) && (x.reps || 0) > (ex.reps || 0)); ex.sets = (ex.sets || 0) + (x.sets || 0); ex.planned = (ex.planned || 0) + (x.planned || 0); if (heavier) { ex.kg = x.kg; ex.reps = x.reps; } }
+        else items.push(Object.assign({}, x)); });
+      return Object.assign({}, e, {items:items, skipped:(e.skipped || []).map(function(it){ return it.id === from ? Object.assign({}, it, {id:to, name:T.name}) : it; })}); });
+    const h = Object.assign({}, st.hist || {}); if (h[from]) { if (!h[to] || fA >= tA) h[to] = h[from]; delete h[from]; }
+    const b = Object.assign({}, st.bests || {}); if (b[from] != null) { b[to] = Math.max(b[to] || 0, b[from]); delete b[from]; }
+    const pbLog = (st.pbLog || []).map(function(p){ return p.name === fromName ? Object.assign({}, p, {name:T.name, unit:T.unit}) : p; });
+    const patch = {sessLog:sLog, hist:h, bests:b, pbLog:pbLog, progEx:T.name};
+    if (st.sess && !st.sess.ended && st.sess.ids.indexOf(from) >= 0) { const s = clone(st.sess);
+      s.ids = s.ids.map(function(id){ return id === from ? to : id; });
+      ['logs','warm','rp'].forEach(function(k){ if (s[k] && s[k][from] != null) { s[k][to] = s[k][from]; delete s[k][from]; } });
+      if (s.drop && s.drop.id === from) s.drop.id = to; patch.sess = s; }
+    if (usePlans) { const pat = EX[from].pat; const pr = Object.assign({}, st.exPrefs || {}); const av = Object.assign({}, st.exAvoid || {});
+      if (pat && T.pat === pat) pr[pat] = to; else if (T.pat) pr[T.pat] = to; delete av[to]; patch.exPrefs = pr; patch.exAvoid = av; } /* the original isn't hidden anywhere: plans just prefer the new one */
+    const c = this.mvCounts(st, from);
+    patch.mv = {from:from, to:to, step:'done', undo:snap, plans:!!usePlans, ctx:(st.mv || {}).ctx, msg:'Moved ' + (c.sess ? c.sess + (c.sess === 1 ? ' session' : ' sessions') : 'today’s sets') + ' to ' + T.name + '. ' + fromName + ' is still in your list.'};
+    this.set(patch);
+  }
+  mvConfirm(){ const st = this.S(); const m = st.mv; if (!m) return; const from = m.from;
+    if (m.pick === 'new') { const name = String(m.q || '').trim(); if (!name) return this.set({mv:Object.assign({}, m, {err:'Type a name first.'})});
+      if (EX[from].custom) { // your own exercise: a true rename
+        const cx = Object.assign({}, st.customEx || {}); const old = EX[from].name; cx[from] = Object.assign({}, cx[from], {name:name.slice(0, 60)}); syncCustom(cx);
+        const sLog = (st.sessLog || []).map(function(e){ return Object.assign({}, e, {items:(e.items || []).map(function(it){ return it.id === from ? Object.assign({}, it, {name:EX[from].name}) : it; })}); });
+        const pbLog = (st.pbLog || []).map(function(p){ return p.name === old ? Object.assign({}, p, {name:EX[from].name}) : p; });
+        return this.set({customEx:cx, sessLog:sLog, pbLog:pbLog, progEx:EX[from].name, mv:{from:from, to:from, step:'done', ctx:m.ctx, undo:{customEx:st.customEx, sessLog:st.sessLog, pbLog:st.pbLog, progEx:st.progEx}, msg:'Renamed to ' + EX[from].name + '.'}}); }
+      if (!m.kit) return this.set({mv:Object.assign({}, m, {err:'Pick the kit it uses, so the tips and gym check fit.'})});
+      const F = EX[from]; const muscle = (Object.keys(CX_PAT).find(function(k){ return CX_PAT[k] === F.pat; })) || ({biceps:'arms', triceps:'arms', vpull:'back', hinge:'legs', calves:'legs', lateral:'shoulders'})[F.pat] || 'core';
+      const measure = F.bw ? (/second|minute/.test(F.repUnit || '') ? 'time' : 'reps') : (F.repUnit === 'metres' ? 'wd' : 'wr');
+      const id = 'cx_' + Date.now().toString(36);
+      const cx = Object.assign({}, st.customEx || {}); cx[id] = {name:name.slice(0, 60), muscle:muscle, pat:F.pat, measure:measure, timeU: measure === 'time' ? (/second/.test(F.repUnit) ? 'sec' : 'min') : null, kit:m.kit, sets:F.sets || 3, reps:F.reps || 10, kg:F.kg || 0};
+      syncCustom(cx); this.set({customEx:cx}); return this.mvMove(from, id, m.plans); }
+    if (m.pick && EX[m.pick]) return this.mvMove(from, m.pick, m.plans);
+  }
+  mvUndo(){ const st = this.S(); const m = st.mv; if (!m || !m.undo) return; const u = m.undo; if (u.customEx) syncCustom(u.customEx);
+    const patch = Object.assign({}, u, {mv:null, toast:'Undone. Everything is back where it was.'}); Object.keys(patch).forEach(function(k){ if (patch[k] === undefined) patch[k] = null; }); this.set(patch); }
   saveCustom(){
     const cur = this.S(); const f = cur.cx || {}; const name = String(f.name || '').trim();
     if (!name || !f.muscle || !f.measure) return this.set({cx:Object.assign({}, f, {err: !name ? 'Give it a name first.' : !f.muscle ? 'Pick which muscles it works.' : 'Pick how you’ll track it.'})});
     const id = 'cx_' + Date.now().toString(36);
     const num = function(v, d){ const n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) && n > 0 ? n : d; };
     const weighted = f.measure === 'wr' || f.measure === 'wd';
-    const c = {name:name.slice(0, 40), muscle:f.muscle, measure:f.measure, timeU: f.measure === 'time' ? (f.timeU || 'min') : null, kit:f.kit || (weighted ? 'other' : 'body'), sets:Math.round(num(f.sets, f.measure === 'time' && f.muscle === 'cardio' ? 3 : 3)), reps:Math.round(num(f.reps, f.measure === 'time' ? (f.timeU === 'sec' ? 30 : 2) : f.measure === 'wd' ? 20 : 10)), kg: weighted ? fromU(num(f.kg, 0)) : 0, at:Date.now()};
+    const c = {name:name.slice(0, 60), muscle:f.muscle, measure:f.measure, timeU: f.measure === 'time' ? (f.timeU || 'min') : null, kit:f.kit || (weighted ? 'other' : 'body'), sets:Math.round(num(f.sets, f.measure === 'time' && f.muscle === 'cardio' ? 3 : 3)), reps:Math.round(num(f.reps, f.measure === 'time' ? (f.timeU === 'sec' ? 30 : 2) : f.measure === 'wd' ? 20 : 10)), kg: weighted ? fromU(num(f.kg, 0)) : 0, at:Date.now()};
     const cx = Object.assign({}, cur.customEx || {}); cx[id] = c; syncCustom(cx);
     this.set({customEx:cx, cx:null});
     const ctx = f.ctx; const after = this.S();
@@ -3090,7 +3212,7 @@ class Component extends DCLogic {
     const w = this.pvWhereOf(st); const e0 = this.planEditsToday(st); const A = adjOn(st) ? st.adj : null; const pk = A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : this.origKey(st);
     return e0 && (!e0.where || e0.where === w) ? {day:e0.day, where:w, plan:pk, swaps:Object.assign({}, e0.swaps || {}), removed:Object.assign({}, e0.removed || {}), added:(e0.added || []).slice()} : {day:dkey(new Date()), where:w, plan:pk, swaps:{}, removed:{}, added:[]};
   }
-  withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); if (!sess.at) sess.at = Date.now(); sess.kg = sess.ids.map(function(id){ return self.lastOf(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastOf(st, id).reps; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
+  withHist(sess, st){ const self = this; sess = this.applyPlanEdits(sess, st); if (!sess.at) sess.at = Date.now(); sess.kg = sess.ids.map(function(id){ return self.lastStart(st, id).kg; }); sess.reps = sess.ids.map(function(id){ return self.lastStart(st, id).reps; }); sess.rp = {}; sess.ids.forEach(function(id, k){ sess.rp[id] = sess.reps[k]; }); sess.prog = sess.ids.map(function(){ return null; }); return fitCardio(sess, (PLANS[sess.plan] || {}).mins); }
   coachInfo(st){
     // Everything the coach can "see": today's plan, check-in, quick check, workout, week, goals and (if allowed) memories.
     const self = this; const v = st.vals || {};
@@ -3434,7 +3556,7 @@ class Component extends DCLogic {
   }
   runActions(list, mode){
     const self = this; const st0 = this.S();
-    const KEYS = ['ciPopSeen','customEx','planEdits','userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
+    const KEYS = ['exAvoid','exPrefs','ciPopSeen','customEx','planEdits','userName','routine','week','adj','adjConflict','plan','dayOff','tomorrowPlanned','extraToday','doneToday','trainedToday','sess','checked','dayTimes','units','sessLen','restLen','stimOn','coachLineOn','homeKit','homeKitSaved','about','journal','screen'];
     const snap = {}; KEYS.forEach(function(k){ snap[k] = st0[k] === undefined ? null : JSON.parse(JSON.stringify(st0[k])); });
     const done = [], fail = [], open = [];
     (Array.isArray(list) ? list : []).slice(0, 5).forEach(function(a){ let r = null; try { r = self.doAction(a, mode); } catch (e) { r = {no:'Something went wrong making that change.'}; }
@@ -3784,7 +3906,7 @@ class Component extends DCLogic {
     if (variant === 'mini') { key = 'min'; sess = this.withHist({plan:'min', ids:['pressup'], sets:[3], done:[0], kg:[0], reps:[0], cur:0, adapted:1, pbs:[]}, st); }
     else { const A = adjOn(st) ? st.adj : null; key = variant === 'short' ? 'short' : (A && A.plan && ['short','full','plus'].indexOf(A.plan) >= 0 ? A.plan : P.orig); sess = this.withHist(mkSession(key, P.foci, gearOpts(st)), st); sess.adapted = variant === 'usual' ? 0 : 1;
       if (A && A.lighter) sess.kg = sess.kg.map(function(k, i){ const ex = EX[sess.ids[i]]; return ex.bw ? k : Math.max(0, WU === 'lb' ? Math.round(k * 0.9 * LB / 2.5) * 2.5 / LB : Math.round(k * 0.9 / (ex.step || 1)) * (ex.step || 1)); }); }
-    const toast = {usual:'Have a great workout.', orig:'Do what you can. Skip anything that’s taken.', short:'Shorter today. That still counts.', mini:'Press-ups it is. That’s a workout.'}[variant];
+    const toast = ''; /* no banner at the start of a workout */
     this.set({sess:sess, plan:key, screen:'active', back:'today', checked:true, envEnergy:false, envLadder:false, quiet: variant !== 'usual' && P.quiet, envHot: P.hot, resting:false, toast:toast, pbNow:null, showCues:false, adaptStep:'pick', issue:null, paused:false});
   }
   routineOf(st){
@@ -4408,7 +4530,7 @@ class Component extends DCLogic {
   finish(){
     const st = this.S(); const h = Object.assign({}, st.hist || {});
     const bests = Object.assign({}, st.bests || {});
-    if (st.sess) st.sess.ids.forEach(function(id, i){ if (st.sess.done[i] > 0) { h[id] = {kg:st.sess.kg[i], reps:st.sess.reps[i], when:'Last time'}; if (!EX[id].bw && (bests[id] == null || st.sess.kg[i] > bests[id])) bests[id] = st.sess.kg[i]; } });
+    if (st.sess) st.sess.ids.forEach(function(id, i){ if (st.sess.done[i] > 0) { const lg = (st.sess.logs || {})[id] || []; h[id] = {kg: lg.length ? lg[lg.length - 1].kg : st.sess.kg[i], reps: lg.length ? lg[lg.length - 1].reps : st.sess.reps[i], when:'Last time', startKg: lg.length ? lg[0].kg : st.sess.kg[i], startReps: lg.length ? lg[0].reps : st.sess.reps[i], sets: lg.map(function(x){ return {kg:x.kg, reps:x.reps}; })}; if (!EX[id].bw && (bests[id] == null || st.sess.kg[i] > bests[id])) bests[id] = st.sess.kg[i]; } });
     const logged = st.sess && st.sess.done.some(function(x){ return x > 0; });
     const pbLog = (st.pbLog || []).concat(st.sess && st.sess.pbs ? st.sess.pbs.map(function(p){ return {name:p.name, kgN:p.kgN, unit:p.unit, val:p.kg + ' ' + uu(p.unit), when:'Today', at:Date.now()}; }) : []);
     const dd = Object.assign({}, st.doneDates || {}); if (st.fresh) dd[todayKeyNow()] = true;
@@ -4588,6 +4710,10 @@ class Component extends DCLogic {
     if (this.S().kgEdit) this.commitKg();
     const st = this.S(); const s = clone(st.sess); const i = s.cur; const id = s.ids[i]; const ex = EX[id];
     if (s.done[i] >= s.sets[i]) return;
+    // A drop set: the parts you did at each weight count as one set. It's saved with every part; comparisons use the heavy part so your progress stays honest.
+    let dropParts = null; let restoreReps = null;
+    if (s.drop && s.drop.id === id) { dropParts = s.drop.parts.concat([{kg:s.kg[i], reps:s.reps[i]}]); restoreReps = s.drop.target; s.kg[i] = dropParts[0].kg; s.reps[i] = dropParts[0].reps; s.drop = null; } /* progress is judged on the heavy part; the lighter reps are kept with the set */
+    if (s.warmFor === id) s.warmFor = null;
     // What the previous set of this exercise was logged at, this workout.
     if (!s.lastSet) s.lastSet = {}; const prevSet = s.done[i] > 0 ? s.lastSet[i] : null;
     s.done[i] += 1; if (!s.t0) s.t0 = Date.now();
@@ -4600,7 +4726,7 @@ class Component extends DCLogic {
       s.pbs.push({id:id, name:ex.name, kgN:s.kg[i], prevN:best, kg:wt(s.kg[i]), prev:wt(best) + ' ' + uu(ex.unit), unit:ex.unit});
     }
     // Beat last time (heavier, or more reps at the same weight): a small celebration, once per exercise.
-    let beat = false; const base = this.lastOf(st, id);
+    let beat = false; const L0 = this.lastOf(st, id); const ls0 = this.lastSets(st, id); const base = ls0 ? Object.assign({}, L0, ls0[Math.min(s.done[i] - 1, ls0.length - 1)]) : L0; /* set 2 compares with last time's set 2 */
     // Any step up gets a celebration: on the previous set this workout, or (first set) on last time / the planned start.
     const ref = prevSet || base; const refName = prevSet ? 'Up on your last set' : base.first ? 'More than planned' : 'Up on last time';
     if (!pbNow && ref && ref.kg != null) {
@@ -4612,13 +4738,16 @@ class Component extends DCLogic {
     const metSet = !base || base.kg == null || !!pbNow || beat || ((ex.bw || s.kg[i] >= base.kg - 0.01) && (base.reps == null || s.reps[i] >= base.reps));
     s.metN = (s.metN || 0) + (metSet ? 1 : 0);
     if (!pbNow && !beat) toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work.' : 'Set logged. Rest for a minute, then go again.';
+    if (!s.logs) s.logs = {}; (s.logs[id] = s.logs[id] || []).push({kg: ex.bw ? 0 : s.kg[i], reps: s.reps[i], drop: dropParts || undefined});
+    if (dropParts && !pbNow && !beat) toast = 'Drop set logged: ' + dropParts.map(function(x){ return x.reps + ' × ' + wt(x.kg) + ' ' + uu(ex.unit).replace(/ each.*$/, ''); }).join(' + ') + '.';
+    if (restoreReps != null) s.reps[i] = restoreReps;
     const lastOfAll = s.cur >= s.ids.length - 1 && s.done[i] >= s.sets[i];
     const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
-    const patch = {sess:s, pbNow:pbNow, toast:toast};
+    const patch = {sess:s, pbNow:pbNow, toast:toast, restWarm:false, warmAsk:false, dropAsk:false};
     if (pbNow || beat) { const self0 = this; setTimeout(function(){ self0.burst(false); }, 30); }
     if (!lastOfAll) {
       patch.resting = true; patch.stimTab = 'spin'; patch.lightOn = true; patch.restStart = Date.now(); patch.restLen = 180 + (st.envHot ? 15 : 0); patch.restBuzzed = false;
-      if (toast && !beat) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
+      if (toast && !beat && !dropParts) patch.toast = s.done[i] >= s.sets[i] ? 'Exercise done. Nice work. Rest, then on to the next one.' : '';
     }
     this.set(patch);
   }
@@ -4662,7 +4791,7 @@ class Component extends DCLogic {
     if (this.S().cx || this.S().pvAdd) this.set({cx:null, pvAdd:false});
     this.dayCheck();
     { const st1 = this.S(); if (st1.fresh && st1.sessLen >= 45 && st1.routine && !st1.lenFix45) { const rf = {}; Object.keys(st1.routine).forEach(function(k){ const r = st1.routine[k]; rf[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); const p1 = {routine:rf, lenFix45:true, basePlan:'plus'}; p1.week = buildRealWeek(Object.assign({}, st1, {routine:rf})); if (st1.plan === 'full' && !adjOn(st1)) p1.plan = 'plus'; this.set(p1); } }
-    { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:'Welcome back. Carry on from where you left off.'}); }
+    { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:''}); }
     this.dayTick = setInterval(function(){ self.dayCheck(); }, 30000);
     this.tick = setInterval(function(){
       const st = self.S();
@@ -4735,19 +4864,49 @@ class Component extends DCLogic {
     this.buzz(10); this.spinLoop();
   }
 
+  // Optional warm-up: not logged, then a short rest before set 1.
+  warmUp(){ const st = this.S(); if (!st.sess) return; const s = clone(st.sess); const id = s.ids[s.cur]; s.warm = s.warm || {}; s.warm[id] = (s.warm[id] || 0) + 1;
+    this.set({sess:s, warmAsk:false, resting:true, restWarm:true, restStart:Date.now(), restLen:60, restBuzzed:false, stimTab:'spin', lightOn:true, toast:''}); }
+  // Drop set: log what you did at this weight, drop the weight, finish the set. It all counts as one set.
+  // Drop set, step 1: ask how many reps you actually did at this weight (starts at half the set).
+  dropOpen(){ const st = this.S(); if (!st.sess) return; const s = st.sess; const i = s.cur; const id = s.ids[i];
+    const tgt = s.drop && s.drop.id === id ? Math.max(1, s.reps[i]) : s.reps[i]; this.set({dropSheet:{n:Math.max(1, Math.floor(tgt / 2)), max:Math.max(1, tgt)}}); }
+  // Step 2: log those reps, drop about 10 kg (or the same in lbs, snapped to real kit steps) and leave the rest of the set to do.
+  dropStart(n){ const st = this.S(); if (!st.sess) return; const s = clone(st.sess); const i = s.cur; const id = s.ids[i]; const ex = EX[id];
+    const prev = s.drop && s.drop.id === id ? s.drop : {id:id, parts:[], target: s.reps[i]};
+    const did = Math.max(1, Math.round(n || s.reps[i]));
+    const parts = prev.parts.concat([{kg:s.kg[i], reps:did}]); const doneReps = parts.reduce(function(a, x){ return a + x.reps; }, 0);
+    const step = ex.step || 2.5; let nk;
+    if (WU === 'lb') { const lb = s.kg[i] * LB; const down = lb > 22 ? 22 : lb / 2; nk = (Math.round((lb - down) / 2.5) * 2.5) / LB; }
+    else { const down = s.kg[i] > 10 ? 10 : s.kg[i] / 2; nk = Math.round((s.kg[i] - down) / step) * step; }
+    if (nk >= s.kg[i]) nk = Math.max(0, s.kg[i] - step);
+    s.drop = {id:id, parts:parts, target:prev.target}; s.kg[i] = snapU(Math.max(0, nk)); s.reps[i] = Math.max(1, prev.target - doneReps);
+    this.set({sess:s, dropAsk:false, dropSheet:null, toast:''}); }
+  dropCancel(){ const st = this.S(); if (!st.sess || !st.sess.drop) return; const s = clone(st.sess); const i = s.cur; const d = s.drop; if (d.id === s.ids[i] && d.parts.length) { s.kg[i] = d.parts[0].kg; s.reps[i] = d.target; } s.drop = null; this.set({sess:s, dropAsk:false}); }
+  // Skip a set: you've done enough on this one. Skipped sets show honestly in your summary.
+  skipSet(){ const st = this.S(); if (!st.sess) return; const s = clone(st.sess); const i = s.cur; if (s.done[i] >= s.sets[i]) return;
+    s.sets[i] -= 1; s.skipN = (s.skipN || 0) + 1; if (s.drop && s.drop.id === s.ids[i]) s.drop = null;
+    const exDone = s.done[i] >= s.sets[i]; const last = i >= s.ids.length - 1;
+    this.set({sess:s, resting:false, restWarm:false, screen:'active', warmAsk:false, dropAsk:false, toast: exDone ? (last ? 'Set skipped. That’s the lot: finish when you’re ready.' : 'Set skipped. On to the next one.') : 'Set skipped. Knowing when you’ve done enough is a skill.'});
+    if (exDone && !last) this.nextEx(); else if (exDone && last && !s.done.some(function(x){ return x > 0; })) this.finish(); }
+  skipExercise(){ const st = this.S(); if (!st.sess) return; const s = clone(st.sess); const i = s.cur; const rem = Math.max(0, s.sets[i] - s.done[i]);
+    s.skipN = (s.skipN || 0) + rem; s.sets[i] = s.done[i]; s.adapted = (s.adapted || 0) + 1; if (s.drop && s.drop.id === s.ids[i]) s.drop = null;
+    const last = i >= s.ids.length - 1; const name = last ? '' : EX[s.ids[i + 1]].name;
+    this.set({sess:s, resting:false, restWarm:false, screen:'active', warmAsk:false, dropAsk:false, adaptTotal:(st.adaptTotal || 0) + 1, toast: last ? 'Exercise skipped. Finish when you’re ready.' : 'Exercise skipped. Up next: ' + name + '.'});
+    if (!last) this.nextEx(); else if (!s.done.some(function(x){ return x > 0; })) this.finish(); }
   nextEx(){
     const st = this.S(); const s = clone(st.sess);
     if (s.cur >= s.ids.length - 1) return this.finish();
-    s.cur += 1; this.set({sess:s, toast:'', pbNow:null, showCues:false});
+    s.cur += 1; this.set({sess:s, toast:'', pbNow:null, showCues:false, warmAsk:false, dropAsk:false});
   }
 
   // Keeps the last three words of any generated copy together, so a wrapped line never ends with one or two stranded words.
   glueVals(v){
     const SKIP = {"dimSt": 1, "aSt": 1, "area": 1, "askLock": 1, "askMaxH": 1, "bSt": 1, "barsCls": 1, "breathScale": 1, "c": 1, "cls": 1, "cursor": 1, "d": 1, "draft": 1, "editDraft": 1, "chatDraftV": 1, "adaptDraftV": 1, "kgIn": 1, "kgW": 1, "cfName": 1, "cfSize": 1, "debug": 1, "aiDraft": 1, "flexCls": 1, "gridCols": 1, "gymSt": 1, "hapCls": 1, "ic": 1, "icSt": 1, "icon": 1, "journal": 1, "learnCls": 1, "lx": 1, "ly": 1, "memCls": 1, "moreIc": 1, "nameDraft": 1, "note": 1, "ph": 1, "popFlipCls": 1, "primaryCls": 1, "primaryIc": 1, "primaryIcSt": 1, "progress": 1, "pts": 1, "quietCls": 1, "remCls": 1, "restSt": 1, "ring": 1, "ringA": 1, "ringB": 1, "ringBOff": 1, "ringDash": 1, "rmClass": 1, "rmCls": 1, "routine": 1, "slideCls": 1, "st": 1, "stimCls": 1, "t": 1, "tagSt": 1, "today": 1, "weekEditCls": 1, "weekNextSt": 1, "weekPrevSt": 1, "wsBg": 1, "wsBgFade": 1, "wsCls": 1, "wsInk": 1}, TITLE = {"adaptTotal": 1, "adapted": 1, "allSetTitle": 1, "breathCount": 1, "doseShort": 1, "kg": 1, "left": 1, "n": 1, "name": 1, "pbCount": 1, "primaryLabel": 1, "q": 1, "reps": 1, "setNow": 1, "sets": 1, "title": 1, "topicHeadText": 1, "userName": 1, "val": 1}, NB = '\u00a0';
     const cache = this._glueCache || (this._glueCache = new WeakMap());
-    const g = function(str){ if (str.indexOf(' ') < 0 || /[;{}<>]/.test(str) || /^[MmLlCcAaZz]\s*-?\d/.test(str)) return str; str = str.replace(/(\d) (?=\S)/g, '$1' + NB); const w = str.split(' '); if (w.length < 4 || w.some(function(x){ return !x; })) return str; return w.slice(0, -3).join(' ') + ' ' + w.slice(-3).join(NB).replace(/-(?=\S)/g, '-\u2060'); };
+    const g = function(str){ if (str.indexOf(' ') < 0 || /[;{}<>]/.test(str) || /^[MmLlCcAaZz]\s*-?\d/.test(str)) return str; str = str.replace(/(\d) (?=\S)/g, '$1' + NB); const w = str.split(' '); if (w.length < 4 || w.some(function(x){ return !x; })) return str; const t3 = w.slice(-3).join(' '); const n = t3.length <= 24 ? 3 : w.slice(-2).join(' ').length <= 18 ? 2 : 0; if (!n) return str; /* never glue so much that it can't fit a line */ return w.slice(0, -n).join(' ') + ' ' + w.slice(-n).join(NB).replace(/-(?=\S)/g, '-\u2060'); };
     // Titles: tie the last two words, so a wrapped title never leaves one word alone on the second line.
-    const gt = function(str){ if (/[;{}<>]/.test(str)) return str; const w = str.split(' '); if (w.length < 3 || w.some(function(x){ return !x; })) return str; return w.slice(0, -2).join(' ') + ' ' + w[w.length - 2] + NB + w[w.length - 1]; };
+    const gt = function(str){ if (/[;{}<>]/.test(str)) return str; const w = str.split(' '); if (w.length < 3 || w.some(function(x){ return !x; })) return str; if ((w[w.length - 2] + ' ' + w[w.length - 1]).length > 13) return str; /* a long pair would run off the screen */ return w.slice(0, -2).join(' ') + ' ' + w[w.length - 2] + NB + w[w.length - 1]; };
     const walk = function(o, key){
       if (typeof o === 'string') return SKIP[key] ? o : TITLE[key] ? gt(o) : g(o);
       if (!o || typeof o !== 'object') return o;
@@ -5169,29 +5328,53 @@ class Component extends DCLogic {
         setBolts:bolts.slice().reverse(), setLine: allDone ? 'All sets done' : 'Set ' + (s.done[i] + 1) + ' of ' + s.sets[i],
         hasKg:!ex.bw, kg:wt(s.kg[i]), unit:uu(ex.unit || ''), reps:s.reps[i], repUnit:ex.repUnit || 'reps',
         gridCols: ex.bw ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))',
+        warmOn: !allDone && s.done[i] === 0 && ex.pat !== 'cardio' && !ex.assist, warmLine: ex.bw ? 'Warm up first: 2 or 3 easy, short sets. They aren’t logged.' : 'Warm up first: 2 or 3 light, short sets. They aren’t logged.',
         prog: (function(){
-          const id = s.ids[i]; const L = self.lastOf(st, id);
+          const id = s.ids[i]; const L = self.lastStart(st, id);
           const asked = s.prog && s.prog[i];
-          if (s.done[i] > 0 || asked || !s.prog || L.first || ex.assist) return {on:false, when:'', text:'', a:null, b:null, aLabel:'', bLabel:'', aSt:'', bSt:''};
+          const off = {on:false, hasBtns:false, when:'', text:'', a:null, b:null, aLabel:'', bLabel:'', aSt:'', bSt:''};
+          if (s.done[i] > 0 || asked || ex.assist) return off; /* once you've chosen, the card gives way to the set ring */
+          // Warm-up first, every exercise (not cardio): light sets that aren't logged.
+          const warm = ex.pat === 'cardio' ? '' : (ex.bw ? 'Don’t forget to warm up: 2 or 3 easy, short sets first. They aren’t logged. ' : 'Don’t forget to warm up: 2 or 3 light, short sets first. They aren’t logged. ');
+          if (!s.prog) return off;
+          if (L.first) return ex.pat === 'cardio' ? off : {on:true, hasBtns:false, when:'Before you start', text:'First time on this one, so start light and see how it feels.', a:null, b:null, aLabel:'', bLabel:'', aSt:'', bSt:''};
           const v = st.vals || {};
           const wantUp = st.stepUpNext === id;
           const easy = !wantUp && ((s.adapted > 0) || st.plan === 'short' || st.plan === 'min' || (v.energy && v.energy <= 2) || v.stress >= 4);
           const ru = ex.repUnit || 'reps';
           const inc = ru.indexOf('second') >= 0 ? 5 : ru.indexOf('minute') >= 0 ? 1 : 2;
-          const lastTxt = ex.bw ? L.reps + ' ' + ru : wt(L.kg) + ' ' + uu(ex.unit) + ' × ' + L.reps;
+          const lastTxt = ex.bw ? L.reps + ' ' + ru : wt(L.kg) + ' ' + uu(ex.unit) + ' × ' + L.reps; const startTxt = ex.bw ? L.reps + ' ' + ru : wt(L.kg) + ' ' + uu(ex.unit);
           const upKg = stepUpKg(L.kg, ex); const upReps = L.reps + inc;
           const upTxt = ex.bw ? upReps + ' ' + ru : wt(upKg) + ' ' + uu(ex.unit);
           const bestNow = self.bestOf(st, id); const pb = !ex.bw && bestNow != null && upKg > bestNow;
-          const text = (wantUp ? 'You told me earlier you wanted to step it up. ' : '') + L.when + ' you did ' + lastTxt + '. ' + (easy ? 'Today’s about showing up, so the same again is perfect. Only step up if it feels right.' : 'Fancy stepping up to ' + upTxt + ', or keeping it the same?' + (pb ? ' That would be a new personal best.' : ''));
-          const up = function(){ const cur = self.S(); const ns = clone(cur.sess); if (ex.bw) ns.reps[i] = upReps; else ns.kg[i] = upKg; ns.prog[i] = 'up'; self.set({sess:ns, toast: pb ? 'Going for it. A new best if you get there.' : 'Stepping it up. Nice.'}); };
-          const same = function(){ const cur = self.S(); const ns = clone(cur.sess); ns.kg[i] = L.kg; ns.reps[i] = L.reps; ns.prog[i] = 'same'; self.set({sess:ns, toast:'Same as last time. Consistency is how you get stronger.'}); };
+          const text = (wantUp ? 'You told me earlier you wanted to step it up. ' : '') + L.when + ' you started at ' + lastTxt + '. ' + (easy ? 'Today’s about showing up, so starting there again is perfect. Only step up if it feels right.' : 'Start at ' + startTxt + ' again, or go up to ' + upTxt + '?' + (pb ? ' That would be a new personal best.' : ''));
+          const up = function(){ const cur = self.S(); const ns = clone(cur.sess); if (ex.bw) ns.reps[i] = upReps; else ns.kg[i] = upKg; ns.prog[i] = 'up'; self.set({sess:ns, toast:''}); };
+          const same = function(){ const cur = self.S(); const ns = clone(cur.sess); ns.kg[i] = L.kg; ns.reps[i] = L.reps; ns.prog[i] = 'same'; self.set({sess:ns, toast:''}); };
           const dark = 'background: #DDF58B; color: #111214'; const light = 'background: transparent; color: #F5F5F2; border: 1.5px solid #4A4B53';
-          const upLbl = 'Step up to ' + upTxt; const sameLbl = 'Keep it the same';
-          return easy ? {on:true, when:'Remembering your last session', text:text, a:same, aLabel:sameLbl, aSt:dark, b:up, bLabel:upLbl, bSt:light}
-                      : {on:true, when:'Remembering your last session', text:text, a:up, aLabel:upLbl, aSt:dark, b:same, bLabel:sameLbl, bSt:light};
+          const upLbl = (asked === 'up' ? '✓ ' : '') + 'Up to ' + upTxt; const sameLbl = (asked === 'same' ? '✓ ' : '') + 'Start at ' + startTxt;
+          const stUp = asked ? (asked === 'up' ? dark : light) : (easy ? light : dark); const stSame = asked ? (asked === 'same' ? dark : light) : (easy ? dark : light);
+          return easy ? {on:true, hasBtns:true, pending:!asked, when:'Remembering your last session', text:text, a:same, aLabel:sameLbl, aSt:stSame, b:up, bLabel:upLbl, bSt:stUp}
+                      : {on:true, hasBtns:true, pending:!asked, when:'Remembering your last session', text:text, a:up, aLabel:upLbl, aSt:stUp, b:same, bLabel:sameLbl, bSt:stSame};
         })(),
         primary: allDone ? function(){ self.nextEx(); } : function(){ self.logSet(); },
-        primaryLabel: allDone ? (last ? 'Finish workout' : 'Next: ' + EX[s.ids[i + 1]].name) : 'Log set ' + (s.done[i] + 1),
+        primaryLabel: allDone ? (last ? 'Finish workout' : 'Next: ' + EX[s.ids[i + 1]].name) : (s.drop && s.drop.id === s.ids[i] ? 'Log drop set' : 'Log set ' + (s.done[i] + 1)),
+        tools: (function(){
+          const id = s.ids[i]; const ru = ex.repUnit || 'reps'; const repsy = ru === 'reps';
+          const dropOn = !!(s.drop && s.drop.id === id); const warmN = (s.warm || {})[id] || 0; const half = ex.bw ? 0 : snapU(Math.max(0, Math.round((s.kg[i] / 2) / (ex.step || 2.5)) * (ex.step || 2.5)));
+          return {
+            warmOn: !allDone && s.done[i] === 0 && !dropOn && ex.pat !== 'cardio', warmLabel: warmN ? 'Another warm-up' : 'Warm-up set',
+            dropOn: !allDone && !ex.bw && repsy && !dropOn, dropBtn: !allDone && !ex.bw && repsy && !st.resting,
+            sheetOn: !!st.dropSheet && !allDone, sheetN: st.dropSheet ? st.dropSheet.n : 0, sheetQ: 'How many reps did you do at ' + wt(s.kg[i]) + ' ' + uu(ex.unit).replace(/ each.*$/, '') + '?', sheetGo: st.dropSheet ? 'Log ' + st.dropSheet.n + ' and drop the weight' : '',
+            sheetLeft: st.dropSheet ? 'Then you’ll finish the other ' + Math.max(1, (dropOn ? s.drop.target - s.drop.parts.reduce(function(a, x){ return a + x.reps; }, 0) : s.reps[i]) - st.dropSheet.n) + ' at a lower weight.' : '',
+            sheetDec:function(){ const d = self.S().dropSheet; if (d) self.set({dropSheet:Object.assign({}, d, {n:Math.max(1, d.n - 1)})}); }, sheetInc:function(){ const d = self.S().dropSheet; if (d) self.set({dropSheet:Object.assign({}, d, {n:Math.min(d.max, d.n + 1)})}); },
+            sheetConfirm:function(){ const d = self.S().dropSheet; self.dropStart(d ? d.n : null); }, sheetClose:function(){ self.set({dropSheet:null}); }, dropBtnLabel: dropOn ? 'Drop again' : 'Drop set', dropAria: (dropOn ? 'Drop again' : 'Drop set') + ': log ' + s.reps[i] + ' reps at this weight, then lower the weight and finish the set',
+            warmAsk: !!st.warmAsk && !allDone, dropAsk: !!st.dropAsk && !allDone && !dropOn,
+            warmText: ex.bw ? 'Do an easy set at about half your usual reps to get moving. It isn’t logged, so there’s no rush.' : 'Try about ' + wt(half) + ' ' + uu(ex.unit).replace(/ each.*$/, '') + ' for 8 to 10 easy reps. It isn’t logged, so there’s no rush to go heavy.',
+            dropText: 'Stopped short and want to drop the weight? Set the reps to what you just did, then I’ll log ' + s.reps[i] + ' at ' + wt(s.kg[i]) + ' ' + uu(ex.unit).replace(/ each.*$/, '') + ', lower the weight and you finish the set. It all counts as one set.',
+            dropActive: dropOn, dropLine: dropOn ? 'Drop set: ' + s.drop.parts.map(function(x){ return x.reps + ' × ' + wt(x.kg); }).join(' + ') + ' ' + uu(ex.unit).replace(/ each.*$/, '') + ' done. Weight lowered to ' + wt(s.kg[i]) + ' ' + uu(ex.unit).replace(/ each.*$/, '') + ': finish the set, then log it.' : '',
+            warm:function(){ self.set({warmAsk:true, dropAsk:false}); }, warmGo:function(){ self.warmUp(); }, warmNo:function(){ self.set({warmAsk:false}); },
+            drop:function(){ self.set({dropAsk:true, warmAsk:false}); }, dropGo:function(){ self.dropOpen(); }, dropNo:function(){ self.set({dropAsk:false}); }, dropAgain:function(){ self.dropOpen(); }, dropCancel:function(){ self.dropCancel(); }
+          }; })(),
         primaryCls:'b-lime', primaryIcSt:'background: #111214; color: #DDF58B', primaryIc: allDone && !last ? 'M5 12h14M13 6l6 6-6 6' : 'M5 12l5 5 9-10',
         setPills: s.sets.slice(i, i + 1).length ? (function(){ const out = []; for (let k = 0; k < s.sets[i]; k++) { const d = k < s.done[i]; const now = k === s.done[i]; out.push({label:'Set ' + (k + 1), done:d, st: d ? 'background: #B7A6F6; color: #111214' : now ? 'background: #DDF58B; color: #111214' : 'background: rgba(245,245,242,.04); color: #A1A1AA; box-shadow: inset 0 0 0 1.5px #3A3B42'}); } return out; })() : [],
         kitLabel: KIT_LABEL[EQUIP[s.ids[i]]] || '',
@@ -5203,7 +5386,8 @@ class Component extends DCLogic {
         showRing: true,
         setNow: Math.min(s.done[i] + 1, s.sets[i]), setOf: s.sets[i],
         ringDash: (2 * Math.PI * 80 * Math.min(1, s.done[i] / s.sets[i])).toFixed(1) + ' ' + (2 * Math.PI * 80).toFixed(1),
-        lastLine: (function(){ const L = self.lastOf(st, s.ids[i]); if (L.first) return 'First time: start light and see how it feels'; return L.when + ': ' + (ex.bw ? L.reps + ' ' + (ex.repUnit || 'reps') : wt(L.kg) + ' ' + uu(ex.unit) + ' × ' + L.reps); })(),
+        rename:function(){ self.mvOpen(s.ids[i], 'active'); },
+        lastLine: (function(){ const L = self.lastOf(st, s.ids[i]); if (L.first) return 'First time: start light and see how it feels'; const ls = self.lastSets(st, s.ids[i]); const k = Math.min(s.done[i], ls ? ls.length - 1 : 0); const x = ls ? ls[k] : L; return L.when + ', set ' + (k + 1) + ': ' + (ex.bw ? x.reps + ' ' + (ex.repUnit || 'reps') : wt(x.kg) + ' ' + uu(ex.unit) + ' × ' + x.reps); })(),
         repTitle: (ex.repUnit || 'reps').charAt(0).toUpperCase() + (ex.repUnit || 'reps').slice(1),
         nextTitle: allDone ? (last ? 'That was the last set' : EX[s.ids[i + 1]].name) : 'Set ' + (s.done[i] + 1) + ' of ' + s.sets[i],
         nextSub: (function(){ const j = allDone ? i + 1 : i; if (j >= s.ids.length) return 'Nice work.'; const nx = EX[s.ids[j]]; return (allDone ? '' : nx.name + ' · ') + (nx.bw ? s.reps[j] + ' ' + (nx.repUnit || 'reps') : wt(s.kg[j]) + ' ' + uu(nx.unit) + ' × ' + s.reps[j]); })(),
@@ -5293,7 +5477,7 @@ class Component extends DCLogic {
     let done = {title:'',msg:'',mins:0,sets:0,adapted:0,pbs:[],pbCount:0,ringA:'0 999',ringB:'0 999',ringBOff:'0'};
     if (st.sess) {
       const s = st.sess;
-      const total = s.sets.reduce(function(a, b){ return a + b; }, 0);
+      const total = s.sets.reduce(function(a, b){ return a + b; }, 0) + (s.skipN || 0); /* sets you skipped still count as planned */
       const logged = s.done.reduce(function(a, b){ return a + b; }, 0);
       // Real time: from your first logged set to when you finished, plus a couple of minutes of warm-up (same as your history).
       const mins = s.t0 && s.tEnd ? Math.max(1, Math.round((s.tEnd - s.t0) / 60000) + 2) : Math.max(3, Math.round(PLANS[s.plan].mins * Math.max(logged, 1) / total));
@@ -5475,9 +5659,10 @@ class Component extends DCLogic {
       const blank = {multi:false, single:false, hint:'', name:'', sub:'', up:false, flat:false, gain:'', color:'#DDF58B', gid:'pgG', pts:'', area:'', dots:[], fx:0, fy:0, lx:0, ly:0, fty:0, lty:0, startTxt:'', lastTxt:'', aria:''};
       const c = !sel ? blank : sel.single ? Object.assign({}, blank, {single:true, name:sel.o.name, sub:'First logged ' + dlong(sel.o.at) + ': ' + sel.o.val, hint:'One session so far. Do it again and your line starts here.'}) : build(sel);
       const go = function(dir){ return function(){ const j = (idx + dir + items.length) % items.length; self.set({progEx:keyOf(items[j])}); }; };
+      const renameSel = function(){ const nm = c.name; let id = null; (st.sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.name === nm && EX[it.id]) id = it.id; }); }); if (!id) id = Object.keys(EX).find(function(k){ return EX[k].name === nm; }); if (id) self.mvOpen(id, 'progress'); };
       const picks = items.map(function(x, k){ const on = k === idx; return {name:keyOf(x), sub: x.single ? 'Logged once so far' : x.up ? x.gain + ' since ' + dshort(x.E.pts[0].at) : 'Holding steady', on:on, cls: on ? 'on' : '', pick:function(){ self.set({progEx:keyOf(x), progPick:false}); }}; });
       const at = st.adaptTotal || 0;
-      return {headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
+      return {rename:renameSel, headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
     })();
     const firstLift = st.fresh && st.hist ? Object.keys(st.hist).filter(function(id){ return !EX[id].bw; })[0] : null;
 
@@ -5551,7 +5736,7 @@ class Component extends DCLogic {
     const rest = {
       on: st.resting && st.screen === 'active', left: Math.floor(restLeft / 60) + ':' + String(restLeft % 60).padStart(2, '0'), done: restLeft <= 0,
       ring: (RC * Math.min(1, restElapsed / st.restLen)).toFixed(1) + ' ' + RC.toFixed(1),
-      title: restLeft <= 0 ? 'Rest done' : 'Rest', nextLabel: 'Up next',
+      title: restLeft <= 0 ? 'Rest done' : 'Rest', nextLabel: 'Up next', skipSetOn:false, skipSetLabel:'', skipSet:null, skipExOn:false, skipEx:function(){ self.skipExercise(); },
       label: (restLeft <= 0 ? 'Go when you’re ready. ' : '') + (act.upNext || ''),
       tabSpin: st.stimTab === 'spin', tabSwitch: st.stimTab === 'switch', lightOn: st.lightOn !== false, lightCls: st.lightOn !== false ? 'on' : 'off', lightLabel: st.lightOn !== false ? 'Lights on' : 'Lights off. Rest easy.', lightAria: st.lightOn !== false ? 'Light switch, on. Tap to switch off.' : 'Light switch, off. Tap to switch on.', lightHint: (st.lightOn !== false ? 'Press the top to switch it off' : 'Press the bottom to switch it on') + ((st.lightFlips || 0) ? '. ' + st.lightFlips + (st.lightFlips === 1 ? ' flip' : ' flips') + ' so far' : ''),
       lightOff: st.lightOn === false,
@@ -5569,11 +5754,22 @@ class Component extends DCLogic {
     };
     const resting = rest.on;
     if (act.prog && act.prog.on) act.showRing = false;
+    // Until you pick a starting point, the controls wait (so you start from a sensible weight).
+    act.toastOn = !!st.toast && !!resting; /* banners only on the rest screen */
+    act.gateCls = act.prog && act.prog.on && act.prog.hasBtns && act.prog.pending && !resting ? 'ws-gated' : '';
     act.showPills = !act.showRing && !!st.sess;
     if (resting && st.sess) { const doneEx = st.sess.done[st.sess.cur] >= st.sess.sets[st.sess.cur];
       act.primaryLabel = doneEx ? act.primaryLabel : (restLeft <= 0 ? 'Go: ' : 'I’m ready: ') + (act.setLine || '').toLowerCase();
       act.primary = doneEx ? function(){ self.set({resting:false}); self.nextEx(); } : function(){ self.set({resting:false}); };
-      act.primaryCls = 'b-sky'; act.primaryIcSt = 'background: #0C1822; color: #A6D8FA'; act.primaryIc = 'M5 12h14M13 6l6 6-6 6'; }
+      act.primaryCls = 'b-sky'; act.primaryIcSt = 'background: #0C1822; color: #A6D8FA'; act.primaryIc = 'M5 12h14M13 6l6 6-6 6';
+      if (st.restWarm && !doneEx) act.primaryLabel = (restLeft <= 0 ? 'Go: ' : 'I’m ready: ') + 'set 1 of ' + st.sess.sets[st.sess.cur];
+      const sI = st.sess.cur; const remS = st.sess.sets[sI] - st.sess.done[sI];
+      rest.skipSetOn = !doneEx && remS > 0; rest.skipSetLabel = st.restWarm ? 'Skip this exercise' : 'Skip set ' + (st.sess.done[sI] + 1);
+      rest.skipSet = st.restWarm ? function(){ self.skipExercise(); } : function(){ self.skipSet(); };
+      rest.skipExOn = !doneEx && !st.restWarm && remS > 1; }
+    if (st.restWarm && rest.on) rest.title = restLeft <= 0 ? 'Warm-up done' : 'Warm-up rest';
+    rest.badge = st.restWarm ? 'Warm-up done, not logged' : 'Set logged';
+    act.dockPrimary = true; /* the ready button lives in its usual place at the bottom */
 
     // ----- Onboarding
     const ON ='background: #DDF58B; color: #111214';
@@ -5667,7 +5863,7 @@ class Component extends DCLogic {
         else if (dx > 45 && c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
       replayTour:function(){ self.set({screen:'today', tour:0, tourDir:1, tourN:0}); }, rmClass: st.reducedMotion ? 'rm' : '', ambCls: 'amb-' + ambMood(st) + (st.screen === 'active' ? ' amb-quiet' : ''), ambVars: (function(){ const m = AMB[ambMood(st)]; return '--a1:' + m.a1 + ';--a2:' + m.a2 + ';--a3:' + m.a3 + ';--ao:' + m.o; })(),
       rest:rest, popGrid:popGrid, wsBg: rest.on ? '#0C1822' : '#111214', wsBgFade: rest.on ? 'rgba(12,24,34,0)' : 'rgba(17,18,20,0)', wsInk: '#F5F5F2', wsCls: rest.on ? 'resting' : '', notResting: !rest.on, barsCls: rest.on ? 'on-rest' : '', sheetBg: rest.on ? '#A6D8FA' : '#F4F4EF',
-      skipRest:function(){ self.set({resting:false}); },
+      skipRest:function(){ self.set({resting:false}); }, skipSetNow:function(){ self.skipSet(); }, skipExNow:function(){ self.skipExercise(); },
       addRest:function(){ const cur = self.S(); self.set({restLen: cur.restLen + 15, restBuzzed:false}); },
       drankWater:function(){ const cur = self.S(); self.buzz(15); self.set({waterDue:false, sips:(cur.sips || 0) + 1, toast:'Nice. Water logged.'}); },
       skipWater:function(){ self.set({waterDue:false}); },
@@ -5791,6 +5987,28 @@ class Component extends DCLogic {
       justRest:function(){ self.set({dayOff:true}); },
       noteHowItWent:function(){ self.set({screen:'journal', back:'today', composing:true, draft:'Today’s workout ', toast:''}); },
       todayTrain:todayTrain, todayRest:todayRest, todayAfter:todayAfter, todayMeta:todayMeta, checkRow:checkRow, ciPop:ciPop, restTiles:restTiles,
+      mv: (function(){ const m = st.mv; if (!m || !EX[m.from]) return {on:false};
+        const F = EX[m.from]; const c = self.mvCounts(st, m.from); const q = String(m.q || ''); const Q = q.trim();
+        const ids = m.step === 'pick' ? self.mvMatches(q, m.from) : []; const exact = ids.some(function(id){ return EX[id].name.toLowerCase() === Q.toLowerCase(); });
+        const T = m.pick && m.pick !== 'new' ? EX[m.pick] : null; const toName = m.pick === 'new' ? Q : (T ? T.name : '');
+        const what = c.sess ? c.sess + (c.sess === 1 ? ' session' : ' sessions') + ' (' + (c.sets + c.today) + ' sets)' : c.today ? 'today’s ' + c.today + (c.today === 1 ? ' set' : ' sets') : '';
+        const own = !!F.custom;
+        return {on:true, pickStep: m.step === 'pick', doneStep: m.step === 'done', confirmStep: m.step === 'pick' && !!m.pick,
+          title: m.step === 'done' ? 'Done' : 'Rename ' + F.name, q:q, err:m.err || '', hasErr: !!m.err,
+          sub: own ? 'This one’s yours, so you can simply rename it. Or pick an exercise below to move its history there.' : 'Logged the wrong exercise? Type what you were actually doing. Your history moves with it, and ' + F.name + ' stays in the list.',
+          listLabel: Q ? 'Already in Spark' : 'Similar exercises', hasList: ids.length > 0,
+          list: ids.map(function(id){ const on = m.pick === id; return {name:EX[id].name, sub:(KIT_LABEL[EQUIP[id]] || 'Your own') + ' · ' + (EX[id].area || ''), on:on, cls: on ? 'on' : '', pick:function(){ self.set({mv:Object.assign({}, self.S().mv, {pick:id, err:''})}); }}; }),
+          canNew: !!Q && !exact, newLabel: own ? 'Rename it to “' + Q + '”' : 'Create “' + Q + '”', newOn: m.pick === 'new', newCls: m.pick === 'new' ? 'on' : '', newSt: m.pick === 'new' ? 'box-shadow: 0 0 0 3px rgba(221,245,139,.35)' : '',
+          pickNew:function(){ self.set({mv:Object.assign({}, self.S().mv, {pick:'new', err:''})}); },
+          needKit: m.pick === 'new' && !own, kits: Object.keys(KIT_LABEL).map(function(k){ const on = m.kit === k; return {label:KIT_LABEL[k], on:on, cls: on ? 'on' : '', pick:function(){ self.set({mv:Object.assign({}, self.S().mv, {kit:k, err:''})}); }}; }),
+          showPlans: !!m.pick && !(own && m.pick === 'new'), plansOn: !!m.plans, plansCls: m.plans ? 'on' : '', togglePlans:function(){ const x = self.S().mv; self.set({mv:Object.assign({}, x, {plans:!x.plans})}); },
+          plansLabel: 'Use ' + (toName || 'it') + ' in my plans from now on',
+          confirmText: own && m.pick === 'new' ? 'Rename ' + F.name + ' to ' + toName + '? Its history comes too.' : what ? 'Move ' + what + ' from ' + F.name + ' to ' + toName + '?' : 'Nothing logged on ' + F.name + ' yet. Switch to ' + toName + '?',
+          goLabel: own && m.pick === 'new' ? 'Rename it' : what ? 'Move my history' : 'Switch to it',
+          msg: m.msg || '', canUndo: !!m.undo,
+          onQ:function(e){ self.set({mv:Object.assign({}, self.S().mv, {q:e.target.value, pick:null, err:''})}); },
+          go:function(){ self.mvConfirm(); }, undo:function(){ self.mvUndo(); }, close:function(){ self.set({mv:null}); }};
+      })(),
       tip:{kind:tipRow[0], text:tipRow[1]}, nextTip:function(){ self.set({tipIdx:(self.S().tipIdx || 0) + 1}); },
       ciAskOn: !!st.ciAsk,
       ciAskDo:function(){ self.set({ciAsk:false, screen:'checkin', checkStep:0, ciThenStart:true, back:'today'}); },
