@@ -232,11 +232,12 @@ button.dc.d-tap{cursor:pointer}
 .rm .nv.tour-on,.rm .nv-c.tour-on{animation:none}
 .sw-btn{appearance:none;border:1px solid rgba(245,245,242,.22);background:rgba(17,18,20,.35);color:#F5F5F2;border-radius:999px;min-height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .sw-ask{margin-top:14px;background:rgba(17,18,20,.6);border:1px solid rgba(245,245,242,.14);border-radius:20px;padding:14px}
-.sw-wrap{position:absolute;inset:0;z-index:30;background:#111214;display:flex;box-sizing:border-box}
-.sw-card{width:100%;height:100%;overflow-y:auto;scrollbar-width:none;background:#111214;padding:24px 20px 32px;box-sizing:border-box}
-.sw-card .sw-opt{background:#1C1D21}
+.sw-wrap{position:absolute;inset:0;z-index:72;display:flex;flex-direction:column;justify-content:flex-end;box-sizing:border-box}
+.sw-dim{position:absolute;inset:0;border:0;padding:0;background:rgba(0,0,0,.6);cursor:pointer}
+.sw-card{position:relative;height:88%;max-height:88%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#1C1D21;border-radius:30px 30px 0 0;padding:20px 20px 28px;box-sizing:border-box}
+.sw-card .sw-opt{background:#111214}
 .sw-card .sw-opt:hover,.sw-card .sw-opt:focus-visible{background:#26272C}
-.sw-card .sw-tabs{background:#1C1D21}
+.sw-card .sw-tabs{background:#111214}
 .sw-opt{appearance:none;border:0;width:100%;background:#111214;color:#F5F5F2;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;font:inherit;cursor:pointer}
 .sw-opt:hover,.sw-opt:focus-visible{background:#26272C}
 .sw-tabs{display:grid;gap:2px;background:#111214;border-radius:999px;padding:3px;margin:0 0 12px}
@@ -769,13 +770,14 @@ body.kb [data-chat-wrap]{bottom:0!important}
         <div class="pv-row">
           <span class="pv-n">{{r.n}}</span>
           <span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 16px">{{r.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{r.detail}}</span></span>
-          <sc-if value="{{pv.notOrdering}}" hint-placeholder-val="{{ true }}"><button class="btn sm b-ghost" style="flex: none" onClick="{{r.sw}}" aria-label="{{r.aria}}">Switch</button></sc-if>
+          <sc-if value="{{pv.notOrdering}}" hint-placeholder-val="{{ true }}"><span class="row" style="gap: 8px; flex: none"><button class="ic-btn" onClick="{{r.sw}}" aria-label="{{r.aria}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg></button><sc-if value="{{pv.canRm}}" hint-placeholder-val="{{ true }}"><button class="ic-btn" onClick="{{r.rm}}" aria-label="{{r.rmAria}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if></span></sc-if>
           <sc-if value="{{pv.ordering}}" hint-placeholder-val="{{ false }}"><span class="row" style="gap: 6px; flex: none"><button class="ord-btn" aria-label="{{r.upAria}}" aria-disabled="{{r.noUp}}" onClick="{{r.up}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button><button class="ord-btn" aria-label="{{r.downAria}}" aria-disabled="{{r.noDown}}" onClick="{{r.down}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button></span></sc-if>
         </div>
         </sc-for>
-        <sc-if value="{{pv.canOrder}}" hint-placeholder-val="{{ true }}"><button class="cx-add" style="margin-top: 0" onClick="{{pv.orderToggle}}" aria-pressed="{{pv.ordering}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">{{pv.orderLabel}}</span></button></sc-if>
+        <sc-if value="{{pv.showReorder}}" hint-placeholder-val="{{ true }}"><button class="cx-add" style="margin-top: 0" onClick="{{pv.orderToggle}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">Reorder</span></button></sc-if>
+        <sc-if value="{{pv.ordering}}" hint-placeholder-val="{{ false }}"><button class="cx-add" style="margin-top: 0" onClick="{{pv.orderDone}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">Done</span></button><button class="cx-add" style="margin-top: 0; border-color: #F4A29A; color: #F4A29A" onClick="{{pv.orderCancel}}" aria-label="Cancel: undo this reorder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">Cancel</span></button></sc-if>
         <sc-if value="{{pv.notOrdering}}" hint-placeholder-val="{{ true }}"><button class="cx-add" style="margin-top: 0" onClick="{{pv.add}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span style="flex: 1; text-align: left; font-weight: 600">Add an exercise</span></button></sc-if>
-        <sc-if value="{{pv.edited}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; min-height: 36px; padding: 0 4px; font-size: 14px; color: #B7A6F6" onClick="{{pv.reset}}">Back to the original plan</button></sc-if>
+        <sc-if value="{{pv.showReset}}" hint-placeholder-val="{{ false }}"><button class="link" style="align-self: flex-start; min-height: 36px; padding: 0 4px; font-size: 14px; color: #B7A6F6" onClick="{{pv.reset}}">Back to the original plan</button></sc-if>
       </div>
       </sc-if>
       </sc-if>
@@ -893,7 +895,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <text x="{{pg.c.lx}}" y="{{pg.c.lty}}" fill="#F5F5F2" font-size="14" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="end">{{pg.c.lastTxt}}</text>
       </svg>
     </sc-if>
-    <button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px" onClick="{{pg.rename}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Rename this exercise</button>
+    <div class="row" style="justify-content: space-between; gap: 12px; flex-wrap: wrap"><button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px" onClick="{{pg.rename}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Rename this exercise</button><button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; color: #F4A29A" onClick="{{pg.del}}" aria-label="Delete all data for {{pg.name}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>Delete its data</button></div>
     <sc-if value="{{pg.c.single}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 12px 0 4px; font-size: 14px; line-height: 1.5">{{pg.c.hint}}</p></sc-if>
   </div>
   </sc-if>
@@ -1077,7 +1079,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </div>
     <div style="flex: 1"></div>
     <h1 class="d" style="font-size: 40px; position: relative">{{plan.title}}</h1>
-    <p style="margin: 8px 0 0; font-size: 15px; position: relative; color: #E4E4E7">{{plan.mins}} mins, {{planMoves}}</p>
+    <p style="margin: 8px 0 0; font-size: 15px; position: relative; color: #E4E4E7">{{planMins}} mins, {{planMoves}}</p>
   </div>
   <div style="padding: 0 20px">
     <sc-if value="{{prepIsWorkout}}" hint-placeholder-val="{{ true }}">
@@ -1749,7 +1751,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 146</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 155</p>
 </div>
 </sc-if>
 
@@ -1812,11 +1814,24 @@ body.kb [data-chat-wrap]{bottom:0!important}
 </div>
 </sc-if>
 
+<!-- ================= ARE YOU SURE? (permanent actions) ================= -->
+<sc-if value="{{cf.on}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 80; display: flex; flex-direction: column; justify-content: flex-end">
+  <button aria-label="Close" onClick="{{cf.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.6); cursor: pointer"></button>
+  <div class="rise" role="alertdialog" aria-label="{{cf.title}}" style="position: relative; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><h2 class="d" style="font-size: 26px; min-width: 0">{{cf.title}}</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{cf.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <p style="margin: 10px 0 0; font-size: 16px; line-height: 1.5; color: #D4D4D8">{{cf.body}}</p>
+    <button class="btn full" style="margin-top: 20px; min-height: 60px; background: {{cf.yesBg}}; color: #111214" onClick="{{cf.yes}}">{{cf.yesLabel}}</button>
+    <button class="link" style="display: block; margin: 12px auto 0; min-height: 40px; font-size: 15px; color: #B7A6F6" onClick="{{cf.no}}">No, keep it as it is</button>
+  </div>
+</div>
+</sc-if>
+
 <!-- ================= RENAME AN EXERCISE (move its history) ================= -->
 <sc-if value="{{mv.on}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 72; display: flex; flex-direction: column; justify-content: flex-end">
   <button aria-label="Close" onClick="{{mv.close}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(0,0,0,.6); cursor: pointer"></button>
-  <div class="rise" role="dialog" aria-label="{{mv.title}}" style="position: relative; max-height: 88%; overflow-y: auto; overflow-x: hidden; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px">
+  <div class="rise" role="dialog" aria-label="{{mv.title}}" style="position: relative; height: 88%; max-height: 88%; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; background: #1C1D21; border-radius: 30px 30px 0 0; padding: 20px 20px 28px">
     <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><h2 class="d" style="font-size: 26px">{{mv.title}}</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{mv.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     <sc-if value="{{mv.pickStep}}" hint-placeholder-val="{{ true }}">
       <p class="mut" style="margin: 8px 0 0; font-size: 15px; line-height: 1.45">{{mv.sub}}</p>
@@ -2033,19 +2048,17 @@ body.kb [data-chat-wrap]{bottom:0!important}
 
 <!-- ================= SWITCH EXERCISE ================= -->
 <sc-if value="{{sw.on}}" hint-placeholder-val="{{ false }}">
-<div class="sw-wrap" role="dialog" aria-modal="true" aria-label="Switch exercise">
-  <div class="sw-card">
-    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px">
-      <span><span class="tour-kicker"><sc-if value="{{sw.notAdd}}" hint-placeholder-val="{{ true }}">Instead of </sc-if>{{sw.from}}</span><h2 class="d" style="font-size: 26px; margin: 6px 0 0">{{sw.title}}</h2></span>
-      <button class="tour-x" aria-label="Close" onClick="{{sw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
-    </div>
-    <p class="mut" style="margin: 8px 0 14px; font-size: 14px; line-height: 1.5">{{sw.sub}}</p>
+<div class="sw-wrap">
+  <button class="sw-dim" aria-label="Close" onClick="{{sw.close}}"></button>
+  <div class="sw-card rise" role="dialog" aria-modal="true" aria-label="{{sw.title}}">
+    <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 12px"><h2 class="d" style="font-size: 26px; min-width: 0">{{sw.title}}</h2><button class="mnav sheet-x" aria-label="Close" onClick="{{sw.close}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <p class="mut" style="margin: 8px 0 14px; font-size: 15px; line-height: 1.45">{{sw.sub}}</p>
     <sc-if value="{{sw.notAdd}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="What to switch to" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 14px"><sc-for list="{{sw.modes}}" as="t" hint-placeholder-count="2"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="font-size: 14px"><span class="sw-tab-l">{{t.label}}</span></button></sc-for></div></sc-if>
     <sc-if value="{{sw.same}}" hint-placeholder-val="{{ true }}">
     <sc-if value="{{sw.hasTabs}}" hint-placeholder-val="{{ true }}"><div class="sw-tabs" role="tablist" aria-label="Kit" style="grid-template-columns: {{sw.tabCols}}"><sc-for list="{{sw.tabs}}" as="t" hint-placeholder-count="4"><button class="sw-tab {{t.cls}}" role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}"><span class="sw-tab-l">{{t.label}}</span><span class="sw-tab-n">{{t.count}}</span></button></sc-for></div></sc-if>
     <sc-if value="{{sw.tabEmpty}}" hint-placeholder-val="{{ false }}"><p class="mut" style="margin: 6px 4px 0; font-size: 14px; line-height: 1.5">{{sw.tabEmptyText}}</p></sc-if>
     <div style="display: flex; flex-direction: column; gap: 8px" role="tabpanel">
-      <sc-for list="{{sw.opts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}<sc-if value="{{o.hasLast}}" hint-placeholder-val="{{ false }}"> · {{o.last}}</sc-if></span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-for>
+      <sc-for list="{{sw.opts}}" as="o" hint-placeholder-count="4"><button class="sw-opt" onClick="{{o.pick}}"><span style="flex: 1; min-width: 0; text-align: left"><span style="display: block; font-weight: 600; font-size: 16px">{{o.name}}</span><span class="mut" style="display: block; font-size: 13px; margin-top: 2px">{{o.area}}<sc-if value="{{o.hasLast}}" hint-placeholder-val="{{ false }}"> · {{o.last}}</sc-if></span></span></button></sc-for>
     </div>
     </sc-if>
     <sc-if value="{{sw.other}}" hint-placeholder-val="{{ false }}">
@@ -3154,6 +3167,16 @@ class Component extends DCLogic {
     const words = Q.split(/\s+/).filter(Boolean);
     const sc = function(id){ const n = EX[id].name.toLowerCase(); if (n === Q) return 100; let v = 0; if (n.indexOf(Q) === 0) v += 40; else if (n.indexOf(Q) >= 0) v += 25; words.forEach(function(w){ if (n.indexOf(w) >= 0) v += 10; if ((' ' + n).indexOf(' ' + w) >= 0) v += 4; }); if (EX[id].pat === fp) v += 3; return v; };
     return ids.map(function(id){ return [id, sc(id)]; }).filter(function(x){ return x[1] >= 10; }).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 8).map(function(x){ return x[0]; }); }
+  liftDelete(id, nm){
+    // Delete everything logged for one exercise. Sessions themselves stay, so consistency is untouched.
+    const st = this.S(); const name = nm || (EX[id] || {}).name;
+    const sLog = (st.sessLog || []).map(function(e){ if (!(e.items || []).some(function(it){ return it.id === id || it.name === name; })) return e;
+      return Object.assign({}, e, {items:(e.items || []).filter(function(it){ return it.id !== id && it.name !== name; })}); });
+    const h = Object.assign({}, st.hist || {}); delete h[id];
+    const b = Object.assign({}, st.bests || {}); delete b[id];
+    const pbLog = (st.pbLog || []).filter(function(p){ return p.name !== name; });
+    this.set({cfm:null, sessLog:sLog, hist:h, bests:b, pbLog:pbLog, progEx:null, progPick:false, toast:'Deleted all your ' + String(name).toLowerCase() + ' data.'});
+  }
   mvMove(from, to, usePlans){
     const st = this.S(); const self = this; if (!EX[from] || !EX[to] || from === to) return;
     const snap = {sessLog:st.sessLog, hist:st.hist, bests:st.bests, pbLog:st.pbLog, sess:st.sess, exPrefs:st.exPrefs, exAvoid:st.exAvoid, customEx:st.customEx, progEx:st.progEx};
@@ -3945,7 +3968,7 @@ class Component extends DCLogic {
       top(); setTimeout(top, 0); setTimeout(top, 60);
     }
   }
-  go(screen){ const st = this.S(); const extra = screen === 'checkin' ? {checkStep:0, jConfirm:null, tour:null} : {jConfirm:null, tour:null}; this.set(Object.assign({screen:screen, back: st.screen === screen ? st.back : st.screen, toast:'', paused:false, confirmWipe:false}, extra)); }
+  go(screen){ const st = this.S(); const extra = screen === 'checkin' ? {checkStep:0, jConfirm:null, tour:null} : {jConfirm:null, tour:null}; this.set(Object.assign({screen:screen, back: st.screen === screen ? st.back : st.screen, toast:'', paused:false, confirmWipe:false, cfm:null}, extra)); }
 
   reply(kind, memOn, ctx){
     let msg = this.replyRaw(kind, memOn, ctx);
@@ -4810,10 +4833,25 @@ class Component extends DCLogic {
   }
   componentDidMount(){
     const self = this;
-    if (this.S().cx || this.S().pvAdd || this.S().pvOpen || this.S().pvOrder) this.set({cx:null, pvAdd:false, pvOpen:false, pvOrder:false});
+    if (this.S().cx || this.S().pvAdd || this.S().pvOpen || this.S().pvOrder || this.S().cfm) this.set({cx:null, pvAdd:false, pvOpen:false, pvOrder:false, cfm:null});
     // Leaving the app (switching apps or locking the phone) also folds the list away.
     this.onHide = function(){ if (document.visibilityState === 'hidden') { const st = self.S(); if (st.pvOpen || st.pvOrder) self.set({pvOpen:false, pvOrder:false}); } };
     try { document.addEventListener('visibilitychange', this.onHide); } catch (e) {}
+    // Coach chat: when the keyboard opens (or the screen resizes), keep the coach's latest message in view above the text box.
+    // Only if you were already at the latest message, so rereading older messages never gets yanked away.
+    let chatPinned = true, pinT = [];
+    const chatEl = function(){ return document.querySelector('[data-chat-scroll]'); };
+    const atEnd = function(el){ return el.scrollHeight - el.scrollTop - el.clientHeight < 48; };
+    const toEnd = function(){ const el = chatEl(); if (el) el.scrollTop = el.scrollHeight; };
+    const follow = function(){ if (!chatPinned || !chatEl()) return; pinT.forEach(clearTimeout); pinT = [0, 60, 150, 280, 450, 700].map(function(ms){ return setTimeout(toEnd, ms); }); };
+    this.onChatScroll = function(e){ const t = e.target; if (t && t.getAttribute && t.getAttribute('data-chat-scroll') && !pinT.length) chatPinned = atEnd(t); };
+    this.onChatFocus = function(e){ const t = e.target; if (!t || !t.closest || !(t.closest('[data-chat-wrap]') || t.closest('.chat-type'))) return; const el = chatEl(); if (el && !pinT.length) chatPinned = atEnd(el); follow(); };
+    this.onChatResize = function(){ follow(); };
+    const settle = function(){ setTimeout(function(){ pinT = []; const el = chatEl(); if (el) chatPinned = atEnd(el); }, 760); };
+    const f0 = follow; const followAndSettle = function(){ f0(); settle(); };
+    this.onChatFocus = (function(inner){ return function(e){ inner(e); settle(); }; })(this.onChatFocus);
+    this.onChatResize = followAndSettle;
+    try { document.addEventListener('scroll', this.onChatScroll, true); document.addEventListener('focusin', this.onChatFocus); window.addEventListener('resize', this.onChatResize); if (window.visualViewport) window.visualViewport.addEventListener('resize', this.onChatResize); } catch (e) {}
     this.dayCheck();
     { const st1 = this.S(); if (st1.fresh && st1.sessLen >= 45 && st1.routine && !st1.lenFix45) { const rf = {}; Object.keys(st1.routine).forEach(function(k){ const r = st1.routine[k]; rf[k] = r && r.t === 'full' ? Object.assign({}, r, {t:'plus'}) : r; }); const p1 = {routine:rf, lenFix45:true, basePlan:'plus'}; p1.week = buildRealWeek(Object.assign({}, st1, {routine:rf})); if (st1.plan === 'full' && !adjOn(st1)) p1.plan = 'plus'; this.set(p1); } }
     { const st0 = this.S(); if (st0.screen === 'today' && this.inProgress(st0)) this.set({screen:'active', back:'today', resting:false, toast:''}); }
@@ -5013,7 +5051,10 @@ class Component extends DCLogic {
       const ru = function(ex){ const u = ex.repUnit || 'reps'; return /minute/.test(u) ? 'min' : /second/.test(u) ? 'sec' : /metre/.test(u) ? 'm' : /each/.test(u) ? 'each side' : 'reps'; };
       const rows = P.ids.map(function(id, i){ const ex = EX[id]; const det = P.sets[i] + ' × ' + P.reps[i] + ' ' + ru(ex) + (!ex.bw && P.kg[i] ? ' · ' + wt(P.kg[i]) + ' ' + unitW : '');
         const move = function(d){ const ids = P.ids.slice(); const j = i + d; if (j < 0 || j >= ids.length) return; const t = ids[i]; ids[i] = ids[j]; ids[j] = t; const e = self.editsFor(self.S()); e.order = ids; self.set({planEdits:e}); };
-        return {n:i + 1, name:ex.name, detail:det, aria:'Switch ' + ex.name, sw:function(){ self.set({pvSw:id, pvNever:false, swTab:null, swMode:null, swMuscle:null}); },
+        const rm = function(){ self.set({cfm:{kind:'pvRm', id:id, name:ex.name}}); };
+        const rmNow = function(){ const c = self.S(); if (P.ids.length <= 1) return self.set({toast:'That’s the only exercise today, so I’ll keep it.'}); const e = self.editsFor(c); const ai = e.added.indexOf(id); if (ai >= 0) e.added.splice(ai, 1); else e.removed[id] = true; e.order = (e.order || []).filter(function(x){ return x !== id; }); self.set({planEdits:e, toast:'Removed ' + ex.name.toLowerCase() + ' from today.'}); };
+        self._pvRm = self._pvRm || {}; self._pvRm[id] = rmNow;
+        return {n:i + 1, name:ex.name, detail:det, aria:'Switch ' + ex.name, rm:rm, rmAria:'Remove ' + ex.name + ' from today', sw:function(){ self.set({pvSw:id, pvNever:false, swTab:null, swMode:null, swMuscle:null}); },
           canUp: i > 0, canDown: i < P.ids.length - 1, noUp: i === 0 ? 'true' : 'false', noDown: i === P.ids.length - 1 ? 'true' : 'false', up:function(){ move(-1); }, down:function(){ move(1); }, upAria:'Move ' + ex.name + ' up', downAria:'Move ' + ex.name + ' down'}; });
       const swId = st.pvSw && P.ids.indexOf(st.pvSw) >= 0 ? st.pvSw : null;
       const editsBase = function(){ return self.editsFor(self.S()); };
@@ -5023,8 +5064,14 @@ class Component extends DCLogic {
       const WN = {gym:'the gym', home:'home', outside:'outside'};
       const whereOpts = [['gym','Gym'],['home','Home'],['outside','Outside']].map(function(w){ const on = pw === w[0]; return {label:w[1], on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({pvWhere:w[0]}); }}; });
       const swName = swId ? EX[swId].name : '';
-      return {has:true, open: !!st.pvOpen, rows:rows, ordering: !!st.pvOrder && rows.length > 1, notOrdering: !st.pvOrder || rows.length < 2, canOrder: rows.length > 1, orderToggle:function(){ self.set({pvOrder:!self.S().pvOrder}); }, orderLabel: st.pvOrder ? 'Done' : 'Reorder', whereOpts:whereOpts, otherEd:otherEd, otherTxt: otherEd ? 'Your changes for ' + WN[E0.where] + ' are kept for ' + WN[E0.where] + '.' : '', label: st.pvOpen ? 'Hide exercises' : 'See exercises (' + rows.length + ')', ic: st.pvOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
-        toggle:function(){ const o = !self.S().pvOpen; self.set({pvOpen:o, pvOrder:false}); }, add:function(){ self.set({pvAdd:true, pvSw:null, swMode:'other', swMuscle:null}); }, edited:edited, reset:function(){ self.set({planEdits:null, pvWhere:null, toast:'Back to the original plan.'}); },
+      let P0 = null; if (E0) { try { P0 = self.previewSess(Object.assign({}, st, {planEdits:null})); } catch (e) { P0 = null; } }
+      const sum = function(a){ return (a || []).reduce(function(t, x){ return t + (+x || 0); }, 0); };
+      const setRatio = P0 && sum(P0.sets) ? sum(P.sets) / sum(P0.sets) : 1;
+      return {has:true, open: !!st.pvOpen, rows:rows, setRatio:setRatio, ordering: !!st.pvOrder && rows.length > 1, notOrdering: !st.pvOrder || rows.length < 2, canOrder: rows.length > 1, canRm: rows.length > 1, showReorder: rows.length > 1 && !st.pvOrder, showReset: edited && !(st.pvOrder && rows.length > 1),
+        orderToggle:function(){ const c = self.S(); self.set({pvOrder:true, pvOrderSnap: c.planEdits ? JSON.parse(JSON.stringify(c.planEdits)) : null}); },
+        orderDone:function(){ self.set({pvOrder:false, pvOrderSnap:null}); },
+        orderCancel:function(){ const c = self.S(); self.set({pvOrder:false, planEdits: c.pvOrderSnap || null, pvOrderSnap:null}); }, orderLabel: st.pvOrder ? 'Done' : 'Reorder', whereOpts:whereOpts, otherEd:otherEd, otherTxt: otherEd ? 'Your changes for ' + WN[E0.where] + ' are kept for ' + WN[E0.where] + '.' : '', label: st.pvOpen ? 'Hide exercises' : 'See exercises (' + rows.length + ')', ic: st.pvOpen ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6',
+        toggle:function(){ const o = !self.S().pvOpen; self.set({pvOpen:o, pvOrder:false}); }, add:function(){ self.set({pvAdd:true, pvSw:null, swMode:'other', swMuscle:null}); }, edited:edited, reset:function(){ self.set({cfm:{kind:'planReset'}}); },
         skip:function(){ if (rows.length <= 1) return self.set({pvSw:null, toast:'That’s the only exercise today, so I’ll keep it.'}); const e = editsBase(); e.removed[swId] = true; self.set({planEdits:e, pvSw:null, pvNever:false, swTab:null, swMode:null, swMuscle:null, toast:'Skipping the ' + swName.toLowerCase() + ' today.'}); }};
     })();
     const navOn = {today:'',routine:'',journal:'',settings:'',companion:''};
@@ -5209,7 +5256,10 @@ class Component extends DCLogic {
     const todayTrain = gymDay && !st.dayOff && !st.doneToday;
     const todayRest = !gymDay && !st.doneToday;
     const todayAfter = !todayTrain && !todayRest;
-    const todayMeta = plan.mins + ' mins · ' + plan.ids.length + (plan.ids.length === 1 ? ' exercise' : ' exercises');
+    // Reflect your changes in See exercises: how many there are now, and roughly how long it'll take.
+    let metaN = plan.ids.length, metaMins = plan.mins;
+    if (self.planEditsToday(st) && !st.doneToday) { try { const sumS = function(a){ return (a || []).reduce(function(t, x){ return t + (+x || 0); }, 0); }; const pA = self.previewSess(st), pB = self.previewSess(Object.assign({}, st, {planEdits:null})); metaN = pA.ids.length; if (sumS(pB.sets)) metaMins = Math.max(1, Math.round(plan.mins * sumS(pA.sets) / sumS(pB.sets))); } catch (e) {} }
+    const todayMeta = metaMins + ' mins · ' + metaN + (metaN === 1 ? ' exercise' : ' exercises');
     const tObj = prefTimeObj(st);
     const ciOff = {'30m':30, '1h':60}[st.remindWhen];
     const ciTime = tObj && ciOff ? (function(){ const p = tObj[4].split(':'); let m = parseInt(p[0], 10) * 60 + parseInt(p[1], 10) - ciOff; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); })() : '';
@@ -5440,7 +5490,7 @@ class Component extends DCLogic {
     const sw = {tabs: swGroups.map(function(g){ const on = g.key === swTabKey; return {label:TAB_LABEL[g.key], count:g.ids.length, on:on, cls: on ? 'on' : '', sel: on ? 'true' : 'false', pick:function(){ self.set({swTab:g.key}); }}; }),
       tabCols: 'repeat(' + Math.max(1, swGroups.length) + ', minmax(0, 1fr))', hasTabs: swGroups.length > 1,
       on: (!!st.swOpen && !!st.sess) || !!pvS, pv: !!pvS && !pvAddMode, tabEmpty: !swList.length, tabEmptyText: 'This is the only ' + ({machine:'machine', cable:'cable', free:'free weights', band:'band', body:'bodyweight'}[swTabKey] || '') + ' option for this one. Try another tab.', taken: st.swReason === 'taken', from: pvAddMode ? 'today’s plan' : swCur ? swCur.name : '',
-      title: pvAddMode ? 'Add an exercise' : st.swReason === 'taken' ? 'Taken? Try one of these' : 'Switch exercise',
+      title: pvAddMode ? 'Add an exercise' : st.swReason === 'taken' ? 'Taken? Try one of these' : swCur ? 'Switch ' + swCur.name : 'Switch exercise',
       sub: pvAddMode ? 'Pick a muscle group, or add your own. It goes at the end of today.' : pvS ? (st.swMode === 'other' ? 'Train something else in this slot today.' : 'Same muscles, different kit. Not easier, just different.') : st.swMode === 'other' ? 'Train something else in this slot. Sets you’ve done stay logged.' : st.swReason === 'taken' ? 'Same muscles, so your workout stays the same. Just different kit.' : 'Same muscles, different kit. Not easier, just different. Sets you’ve done stay logged.',
       opts: swList.map(function(id){ const x = EX[id]; const L = self.lastOf(st, id); return {name:x.name, kit:KIT_LABEL[EQUIP[id]] || '', area:areaText(x.area), last: L.first || L.when === 'Last week' && st.fresh ? '' : (x.bw ? '' : 'Last time ' + wt(L.kg) + ' ' + uu(x.unit)), hasLast: !(L.first) && !x.bw && !(st.fresh && !(st.hist || {})[id]), pick:function(){ if (pvFrom) self.pvPick(pvFrom, id); else self.doSwitch(id, st.swReason); }}; }),
       close:function(){ self.set({swOpen:false, swReason:null, swTab:null, swMode:null, swMuscle:null, pvSw:null, pvAdd:false, pvNever:false}); },
@@ -5686,10 +5736,12 @@ class Component extends DCLogic {
       const blank = {multi:false, single:false, hint:'', name:'', sub:'', up:false, flat:false, gain:'', color:'#DDF58B', gid:'pgG', pts:'', area:'', dots:[], fx:0, fy:0, lx:0, ly:0, fty:0, lty:0, startTxt:'', lastTxt:'', aria:''};
       const c = !sel ? blank : sel.single ? Object.assign({}, blank, {single:true, name:sel.o.name, sub:'First logged ' + dlong(sel.o.at) + ': ' + sel.o.val, hint:'One session so far. Do it again and your line starts here.'}) : build(sel);
       const go = function(dir){ return function(){ const j = (idx + dir + items.length) % items.length; self.set({progEx:keyOf(items[j])}); }; };
-      const renameSel = function(){ const nm = c.name; let id = null; (st.sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.name === nm && EX[it.id]) id = it.id; }); }); if (!id) id = Object.keys(EX).find(function(k){ return EX[k].name === nm; }); if (id) self.mvOpen(id, 'progress'); };
+      const selId = function(){ const nm = c.name; let id = null; (self.S().sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.name === nm && EX[it.id]) id = it.id; }); }); if (!id) id = Object.keys(EX).find(function(k){ return EX[k].name === nm; }); return id; };
+      const renameSel = function(){ const id = selId(); if (id) self.mvOpen(id, 'progress'); };
+      const deleteSel = function(){ const id = selId(); if (id) self.set({cfm:{kind:'liftRm', id:id, name:c.name}}); };
       const picks = items.map(function(x, k){ const on = k === idx; return {name:keyOf(x), sub: x.single ? 'Logged once so far' : x.up ? x.gain + ' since ' + dshort(x.E.pts[0].at) : 'Holding steady', on:on, cls: on ? 'on' : '', pick:function(){ self.set({progEx:keyOf(x), progPick:false}); }}; });
       const at = st.adaptTotal || 0;
-      return {rename:renameSel, headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
+      return {rename:renameSel, del:deleteSel, headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
     })();
     const firstLift = st.fresh && st.hist ? Object.keys(st.hist).filter(function(id){ return !EX[id].bw; })[0] : null;
 
@@ -5879,7 +5931,7 @@ class Component extends DCLogic {
           close:function(){ self.set({cx:null}); }, save:function(){ self.saveCustom(); }};
       })(),
       myEx:(function(){ const cx = st.customEx || {}; const L = Object.keys(cx).filter(function(id){ return cx[id] && !cx[id].deleted; }).map(function(id){ const c = cx[id]; const mm = (MUSCLES.find(function(m){ return m[0] === c.muscle; }) || [0, ''])[1]; const ms = (CX_MEASURE.find(function(m){ return m[0] === c.measure; }) || [0, ''])[1];
-          return {name:c.name, sub: mm + ' · ' + ms.toLowerCase() + (c.kit ? ' · ' + (KIT_LABEL[c.kit] || '').toLowerCase() : ''), aria:'Remove ' + c.name, editAria:'Edit the name of ' + c.name, edit:function(){ self.mvOpen(id, 'settings'); }, remove:function(){ const o = Object.assign({}, self.S().customEx || {}); o[id] = Object.assign({}, o[id], {deleted:true}); syncCustom(o); self.set({customEx:o, toast:'Removed ' + c.name + '. Your past sets with it are kept.'}); }}; });
+          return {name:c.name, sub: mm + ' · ' + ms.toLowerCase() + (c.kit ? ' · ' + (KIT_LABEL[c.kit] || '').toLowerCase() : ''), aria:'Remove ' + c.name, editAria:'Edit the name of ' + c.name, edit:function(){ self.mvOpen(id, 'settings'); }, remove:function(){ self.set({cfm:{kind:'customRm', id:id}}); }}; });
         return {list:L, has: L.length > 0, none: !L.length, add:function(){ self.set({cx:{ctx:'settings'}}); }}; })(), goLabel: self.inProgress(st) ? 'Carry on' : 'Start workout', showNav:showNav, sw:sw, swAsk:ask, openSwitch:function(){ self.set({swOpen:true, swReason:null}); }, spinTf: 'rotate(' + (((self.spin && self.spin.angle) || 0) * 180 / Math.PI).toFixed(2) + 'deg)', tour:tourVals, tourHi:tourHi, tourNavCls: ti0 >= 0 ? 'tour-nav' : '',
       tourNext:function(){ const c = self.S(); if (c.tour >= TOUR_N - 1) return self.set({tour:null}); self.set({tour:c.tour + 1, tourDir:1, tourN:(c.tourN || 0) + 1}); },
       tourBack:function(){ const c = self.S(); if (c.tour > 0) self.set({tour:c.tour - 1, tourDir:-1, tourN:(c.tourN || 0) + 1}); },
@@ -6050,7 +6102,7 @@ class Component extends DCLogic {
       calmLeave:function(){ const cur = self.S(); self.set({screen: cur.calmFrom === 'env' ? 'env' : cur.calmFrom === 'chat' ? 'companion' : 'today', calmFrom:null}); },
       rw:rw, spl:planV, planNote:planNote, rwPopOn: !!st.rwPop, rwPopText: st.rwPop ? st.rwPop.text : '',
       todayBubble:todayBubble, todayBubbleSrc:todayBubbleSrc, hasBubbleSrc: !!todayBubbleSrc, notChecked:notChecked, showSuggest:showSuggest, showRest: st.dayOff && !st.doneToday, doneToday: st.doneToday,
-      plan:plan, planMoves: plan.ids.length + ' exercises',
+      plan:plan, planMoves: metaN + (metaN === 1 ? ' exercise' : ' exercises'), planMins: metaMins,
       easierLabel: st.plan === 'min' ? 'Just rest today' : 'Make it easier',
       easier:function(){ const cur = self.S(); if (cur.plan === 'plus') return self.set({plan:'full'}); if (cur.plan === 'full') return self.set({plan:'short'}); if (cur.plan === 'short') return self.set({plan:'min'}); self.set({dayOff:true}); },
       notToday:function(){ self.set({dayOff:true}); },
@@ -6204,7 +6256,7 @@ class Component extends DCLogic {
           models: AI_MODELS.map(function(mm){ const on = (st.aiModel || AI_MODELS[0][0]) === mm[0]; return {label:mm[1], sub:mm[2], on:on, cls: on ? 'on' : '', pick:function(){ self.set({aiModel:mm[0], aiStatus:''}); }}; }),
           onDraft:function(e){ self.set({aiKeyDraft:e.target.value}); },
           save:function(){ const k = (self.S().aiKeyDraft || '').trim(); if (k.length <= 20) return; self.set({aiKey:k, aiKeyDraft:'', aiOn:true, aiErr:''}); self.aiTest(); },
-          remove:function(){ self.set({aiKey:'', aiOn:false, aiStatus:'', aiErr:''}); },
+          remove:function(){ self.set({cfm:{kind:'aiKey'}}); },
           toggle:function(){ const c = self.S(); if (!c.aiKey) return; self.set({aiOn:!c.aiOn, aiErr:''}); },
           test:function(){ self.aiTest(); }, testLabel: st.aiTesting ? 'Testing…' : 'Test connection'};
       })(),
@@ -6212,6 +6264,22 @@ class Component extends DCLogic {
       editDraft:st.editDraft, onEdit:function(e){ self.set({editDraft:e.target.value}); }, cancelEdit:function(){ self.set({editing:null}); },
       goBack:function(){ const cur = self.S(); self.set({screen: cur.back && cur.back !== cur.screen ? cur.back : 'today', back:'today'}); },
       reducedMotion:st.reducedMotion, rmCls: st.reducedMotion ? 'on' : '', toggleRM:function(){ self.set({reducedMotion:!self.S().reducedMotion}); },
+      cf:(function(){ const c = st.cfm; if (!c) return {on:false};
+        const K = {planReset:{t:'Back to the original plan?', b:'Are you sure? It’s permanent. Your switches, removed and added exercises and new order for today will all be lost.', y:'Yes, go back to the original'},
+          customRm:{t:'Remove ' + ((st.customEx || {})[c.id] || {}).name + '?', b:'Are you sure? It’s permanent. It leaves your exercise list and won’t be suggested again. Your past sets with it are kept.', y:'Yes, remove it'},
+          pvRm:{t:'Remove ' + (c.name || 'this exercise') + ' from today?', b:'Are you sure? It comes out of today’s workout. You can bring it back with Back to the original plan.', y:'Yes, remove it'},
+          liftRm:{t:'Delete all ' + (c.name || 'this exercise') + ' data?', b:'Are you sure? It’s permanent. Every set, weight and personal best you’ve logged for ' + (c.name || 'it') + ' will be deleted and its progress line will go. Your workouts still count towards your consistency.', y:'Yes, delete it'},
+          aiKey:{t:'Remove your API key?', b:'Are you sure? It’s permanent. The key is deleted from this phone, and you’d need to paste it in again to use the AI coach.', y:'Yes, remove the key'}}[c.kind];
+        if (!K) return {on:false};
+        const close = function(){ self.set({cfm:null}); };
+        const yes = function(){ const cur = self.S(); const k = cur.cfm || {};
+          if (k.kind === 'planReset') return self.set({cfm:null, planEdits:null, pvWhere:null, pvOrder:false, toast:'Back to the original plan.'});
+          if (k.kind === 'customRm') { const o = Object.assign({}, cur.customEx || {}); const nm = (o[k.id] || {}).name || 'it'; o[k.id] = Object.assign({}, o[k.id], {deleted:true}); syncCustom(o); return self.set({cfm:null, customEx:o, toast:'Removed ' + nm + '. Your past sets with it are kept.'}); }
+          if (k.kind === 'pvRm') { self.set({cfm:null}); const f = self._pvRm && self._pvRm[k.id]; if (f) f(); return; }
+          if (k.kind === 'liftRm') return self.liftDelete(k.id, k.name);
+          if (k.kind === 'aiKey') return self.set({cfm:null, aiKey:'', aiOn:false, aiStatus:'', aiErr:''});
+          close(); };
+        return {on:true, title:String(K.t).replace(/-(?!\u2060)/g, '-\u2060'), body:K.b, yesLabel:K.y, yesBg: c.kind === 'planReset' ? '#DDF58B' : '#F4A29A', yes:yes, no:close, close:close}; })(),
       confirmWipe:st.confirmWipe, notConfirmWipe: !st.confirmWipe,
       askWipe:function(){ self.set({confirmWipe:true}); }, cancelWipe:function(){ self.set({confirmWipe:false}); },
       wipe:function(){ self.set({memories:[], confirmWipe:false}); },
