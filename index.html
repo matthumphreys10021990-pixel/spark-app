@@ -312,6 +312,13 @@ button.dc.d-tap{cursor:pointer}
 .ws.resting .ws-adapt{color:#A6D8FA;box-shadow:inset 0 0 0 1.5px rgba(166,216,250,.25)}
 @keyframes restWave{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.5}}
 .rest-wave{transform-box:fill-box;transform-origin:center;animation:restWave 5s ease-in-out infinite}
+/* Rest screen: a slow ripple on a loop (each ring takes 5.6s; a new one every 2.8s) */
+.rr{transform-box:view-box;transform-origin:100px 100px;opacity:0;animation:restRipple 5.6s cubic-bezier(.22,.6,.35,1) infinite}
+.rr2{animation-delay:-2.8s}
+@keyframes restRipple{0%{transform:scale(.42);opacity:0}10%{opacity:.22}100%{transform:scale(1);opacity:0}}
+.rm .rr,.rm .rr1,.rm .rr2,.rm .rr3{animation:none}
+.rm .rr1{transform:scale(.53);opacity:.16}.rm .rr2{transform:scale(.74);opacity:.09}.rm .rr3{transform:scale(.95);opacity:.05}
+@media (prefers-reduced-motion: reduce){.rr{animation:none}.rr1{transform:scale(.53);opacity:.16}.rr2{transform:scale(.74);opacity:.09}.rr3{transform:scale(.95);opacity:.05}}
 .rm .rest-wave{animation:none}
 @media (prefers-reduced-motion: reduce){.rest-wave{animation:none}}
 .meter{display:flex;flex-direction:column-reverse;gap:4px;width:30px;padding:5px;border-radius:999px;background:rgba(17,18,20,.08)}
@@ -432,6 +439,13 @@ button.dc.d-tap{cursor:pointer}
 .sp{transition:--a1 2.6s ease,--a2 2.6s ease,--a3 2.6s ease,--ao 2.6s ease}
 /* Soft colour fields far behind everything: pre-softened gradients, only transform animates. */
 .amb{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.wc-amb{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;border-radius:inherit}
+.wc-b{position:absolute;border-radius:50%;will-change:transform}
+.wc-b.l{width:140%;height:120%;right:-55%;top:-55%;background:radial-gradient(closest-side,rgba(183,166,246,.46),rgba(183,166,246,0));animation:wcl 15s ease-in-out infinite alternate}
+.wc-b.g{width:120%;height:110%;left:-50%;bottom:-50%;background:radial-gradient(closest-side,rgba(221,245,139,.22),rgba(221,245,139,0));animation:wcg 18s ease-in-out infinite alternate}
+@keyframes wcl{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}33%{transform:translate(-18%,12%) rotate(35deg) scale(1.2,.8)}66%{transform:translate(-6%,26%) rotate(-20deg) scale(.85,1.2)}100%{transform:translate(-24%,8%) rotate(25deg) scale(1.1,.92)}}
+@keyframes wcg{0%{transform:translate(0,0) rotate(0deg) scale(1,1)}33%{transform:translate(20%,-14%) rotate(-30deg) scale(1.25,.8)}66%{transform:translate(32%,-4%) rotate(20deg) scale(.9,1.2)}100%{transform:translate(12%,-24%) rotate(-15deg) scale(1.1,.95)}}
+@media (prefers-reduced-motion: reduce){.wc-b{animation:none}}
 .amb-px{position:absolute;left:0;right:0;top:-80px;bottom:-160px}
 .ab{position:absolute;border-radius:50%;will-change:transform;opacity:calc(var(--ao) * .17);transition:opacity 1.2s ease}
 .ab.a1{width:600px;height:540px;left:-250px;top:-170px;background:radial-gradient(closest-side,var(--a1),transparent);animation:ab1 17s ease-in-out infinite alternate}
@@ -756,7 +770,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     </sc-if>
 
     <section class="edge" aria-label="Today's workout" style="position: relative; overflow: hidden; isolation: isolate; background: #1C1D21; border-radius: 34px; padding: 24px 18px 18px; display: flex; flex-direction: column">
-      <svg class="rings" viewBox="0 0 200 200" width="300" height="300" aria-hidden="true" style="right: -110px; top: -120px; z-index: -1"><g fill="none" stroke="#DDF58B" stroke-opacity=".08" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
+      <div class="wc-amb" aria-hidden="true"><span class="wc-b l"></span><span class="wc-b g"></span></div>
       <span style="font-size: 14px; font-weight: 600; color: #B7A6F6; padding: 0 4px">Today's workout</span>
       <h2 class="d" style="font-size: 36px; margin-top: 8px; padding: 0 4px">{{plan.title}}</h2>
       <span class="mut" style="font-size: 15px; margin-top: 8px; padding: 0 4px">{{todayMeta}}</span>
@@ -1134,7 +1148,6 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <!-- ===== SET STAGE ===== -->
     <sc-if value="{{notResting}}" hint-placeholder-val="{{ true }}">
     <section class="rise edge" style="position: relative; overflow: hidden; isolation: isolate; margin-top: 16px; border-radius: 32px; padding: 22px 20px 20px; background: radial-gradient(120% 90% at 85% 0%, rgba(183,166,246,.42), rgba(183,166,246,0) 55%), radial-gradient(90% 80% at 0% 100%, rgba(221,245,139,.20), rgba(221,245,139,0) 60%), #1C1D21">
-      <svg class="rings" viewBox="0 0 200 200" width="280" height="280" aria-hidden="true" style="right: -110px; top: -110px; z-index: -1"><g fill="none" stroke="#F5F5F2" stroke-opacity=".06" stroke-width="10"><circle cx="100" cy="100" r="30"></circle><circle cx="100" cy="100" r="55"></circle><circle cx="100" cy="100" r="80"></circle></g></svg>
       <div class="row" style="justify-content: space-between; align-items: flex-start; gap: 10px">
         <span class="tag" style="background: rgba(17,18,20,.55); color: #DDF58B">{{act.kitLabel}}</span>
         <span class="row" style="gap: 8px; flex: none"><button class="ic-btn" onClick="{{act.rename}}" aria-label="Rename this exercise: logged the wrong one?"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></button><button class="ic-btn" onClick="{{openSwitch}}" aria-label="Switch to a similar exercise"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v5h-5"></path></svg></button><button class="ic-btn" onClick="{{toggleCues}}" aria-expanded="{{showCues}}" aria-label="{{cuesLabel}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 1-1 1.7V15M12 18.5v.5"></path></svg></button></span>
@@ -1203,7 +1216,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <!-- ===== REST STAGE ===== -->
     <sc-if value="{{rest.on}}" hint-placeholder-val="{{ false }}">
     <div class="rise" style="position: relative; isolation: isolate; margin-top: 22px; display: flex; flex-direction: column; align-items: center; text-align: center">
-      <div aria-hidden="true" style="position: absolute; top: -200px; bottom: 0; left: -18px; right: -18px; overflow: hidden; z-index: -1; pointer-events: none"><svg viewBox="0 0 200 200" width="520" height="520" aria-hidden="true" style="position: absolute; left: 50%; top: 355px; transform: translate(-50%, -50%); pointer-events: none"><g fill="none" stroke="#A6D8FA" stroke-width="7"><circle class="rest-wave" cx="100" cy="100" r="50" stroke-opacity=".16"></circle><circle cx="100" cy="100" r="70" stroke-opacity=".09"></circle><circle cx="100" cy="100" r="90" stroke-opacity=".05"></circle></g></svg></div>
+      <div aria-hidden="true" style="position: absolute; top: -200px; bottom: 0; left: -18px; right: -18px; overflow: hidden; z-index: -1; pointer-events: none"><svg viewBox="0 0 200 200" width="520" height="520" aria-hidden="true" style="position: absolute; left: 50%; top: 355px; transform: translate(-50%, -50%); pointer-events: none"><g fill="none" stroke="#A6D8FA" stroke-width="7"><circle class="rr rr1" cx="100" cy="100" r="95" vector-effect="non-scaling-stroke"></circle><circle class="rr rr2" cx="100" cy="100" r="95" vector-effect="non-scaling-stroke"></circle></g></svg></div>
       <span style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 999px; background: #A6D8FA; color: #0C1822; font-size: 13px; font-weight: 600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{rest.badge}}</span>
       <div style="position: relative; width: 210px; height: 210px; margin-top: 18px">
         <svg width="210" height="210" viewBox="0 0 76 76" role="img" aria-label="Rest time left {{rest.left}}" style="position: absolute; inset: 0">
@@ -1751,7 +1764,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 156</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 164</p>
 </div>
 </sc-if>
 
