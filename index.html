@@ -439,6 +439,19 @@ button.dc.d-tap{cursor:pointer}
 .sp{transition:--a1 2.6s ease,--a2 2.6s ease,--a3 2.6s ease,--ao 2.6s ease}
 /* Soft colour fields far behind everything: pre-softened gradients, only transform animates. */
 .amb{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+/* Your strength chart: the line draws left to right with the shading following it, and each point pops in as the line reaches it */
+.pg-g.gw,.pg-lbl.gw{opacity:0}
+.pg-g.g0 .pg-line{stroke-dasharray:1;animation:pgDrawA 1.05s cubic-bezier(.65,0,.35,1) both}.pg-g.g1 .pg-line{stroke-dasharray:1;animation:pgDrawB 1.05s cubic-bezier(.65,0,.35,1) both}
+.pg-g.g0 .pg-area{animation:pgWipeA 1.05s cubic-bezier(.65,0,.35,1) both}.pg-g.g1 .pg-area{animation:pgWipeB 1.05s cubic-bezier(.65,0,.35,1) both}
+@keyframes pgWipeA{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}@keyframes pgWipeB{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.pg-dot,.pg-end{transform-box:fill-box;transform-origin:center}
+.pg-g.g0 .pg-dot,.pg-g.g0 .pg-end{animation:pgPopA .38s cubic-bezier(.34,1.56,.64,1) both}.pg-g.g1 .pg-dot,.pg-g.g1 .pg-end{animation:pgPopB .38s cubic-bezier(.34,1.56,.64,1) both}
+.pg-lbl.g0{animation:pgFadeA .35s ease-out both}.pg-lbl.g1{animation:pgFadeB .35s ease-out both}
+@keyframes pgPopA{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}@keyframes pgPopB{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+@keyframes pgDrawA{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes pgDrawB{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pgFadeA{from{opacity:0}to{opacity:1}}@keyframes pgFadeB{from{opacity:0}to{opacity:1}}
+.rm .pg-g,.rm .pg-line,.rm .pg-area,.rm .pg-dot,.rm .pg-end,.rm .pg-lbl{animation:none!important;opacity:1!important}
+@media (prefers-reduced-motion: reduce){.pg-g,.pg-line,.pg-area,.pg-dot,.pg-end,.pg-lbl{animation:none!important;opacity:1!important}}
 .wc-amb{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;border-radius:inherit}
 .wc-b{position:absolute;border-radius:50%;will-change:transform}
 .wc-b.l{width:140%;height:120%;right:-55%;top:-55%;background:radial-gradient(closest-side,rgba(183,166,246,.46),rgba(183,166,246,0));animation:wcl 15s ease-in-out infinite alternate}
@@ -897,16 +910,18 @@ body.kb [data-chat-wrap]{bottom:0!important}
       <span style="flex: none; text-align: right"><sc-if value="{{pg.c.up}}" hint-placeholder-val="{{ true }}"><span class="n9" style="font-size: 24px; color: #DDF58B; display: block">{{pg.c.gain}}</span></sc-if><sc-if value="{{pg.c.flat}}" hint-placeholder-val="{{ false }}"><span style="display: block; font-size: 14px; font-weight: 600; color: #A1A1AA; padding-top: 3px">Holding steady</span></sc-if></span>
     </div>
     <sc-if value="{{pg.c.multi}}" hint-placeholder-val="{{ true }}">
-    <svg viewBox="0 0 300 108" width="100%" height="108" role="img" aria-label="{{pg.c.aria}}" style="margin-top: 8px; display: block">
+    <svg data-pg-chart="1" viewBox="0 0 300 108" width="100%" height="108" role="img" aria-label="{{pg.c.aria}}" style="margin-top: 8px; display: block">
       <defs><linearGradient id="{{pg.c.gid}}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{pg.c.color}}" stop-opacity=".28"></stop><stop offset="1" stop-color="{{pg.c.color}}" stop-opacity="0"></stop></linearGradient></defs>
       <path d="M14 100H286" stroke="#26272C" stroke-width="1"></path>
-      <path d="{{pg.c.area}}" fill="url(#{{pg.c.gid}})"></path>
-      <polyline points="{{pg.c.pts}}" fill="none" stroke="{{pg.c.color}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
-      <sc-for list="{{pg.c.dots}}" as="d" hint-placeholder-count="5"><circle cx="{{d.cx}}" cy="{{d.cy}}" r="3" fill="{{pg.c.color}}"></circle></sc-for>
-      <circle cx="{{pg.c.fx}}" cy="{{pg.c.fy}}" r="4.5" fill="#1C1D21" stroke="{{pg.c.color}}" stroke-width="2.5"></circle>
-      <circle cx="{{pg.c.lx}}" cy="{{pg.c.ly}}" r="6" fill="{{pg.c.color}}" stroke="#1C1D21" stroke-width="3"></circle>
-      <text x="{{pg.c.fx}}" y="{{pg.c.fty}}" fill="#A1A1AA" font-size="13" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="start">{{pg.c.startTxt}}</text>
-      <text x="{{pg.c.lx}}" y="{{pg.c.lty}}" fill="#F5F5F2" font-size="14" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="end">{{pg.c.lastTxt}}</text>
+      <g class="pg-g {{pg.anim}}">
+      <path class="pg-area" d="{{pg.c.area}}" fill="url(#{{pg.c.gid}})"></path>
+      <polyline class="pg-line" pathLength="1" points="{{pg.c.pts}}" fill="none" stroke="{{pg.c.color}}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+      <sc-for list="{{pg.c.dots}}" as="d" hint-placeholder-count="5"><circle class="pg-dot" style="{{d.delay}}" cx="{{d.cx}}" cy="{{d.cy}}" r="3" fill="{{pg.c.color}}"></circle></sc-for>
+      <circle class="pg-dot" style="{{pg.c.fDelay}}" cx="{{pg.c.fx}}" cy="{{pg.c.fy}}" r="4.5" fill="#1C1D21" stroke="{{pg.c.color}}" stroke-width="2.5"></circle>
+      <circle class="pg-end" style="{{pg.c.lDelay}}" cx="{{pg.c.lx}}" cy="{{pg.c.ly}}" r="6" fill="{{pg.c.color}}" stroke="#1C1D21" stroke-width="3"></circle>
+      </g>
+      <text class="pg-lbl {{pg.anim}}" style="{{pg.c.fDelay}}" x="{{pg.c.fx}}" y="{{pg.c.fty}}" fill="#A1A1AA" font-size="13" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="start">{{pg.c.startTxt}}</text>
+      <text class="pg-lbl {{pg.anim}}" style="{{pg.c.lDelay}}" x="{{pg.c.lx}}" y="{{pg.c.lty}}" fill="#F5F5F2" font-size="14" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="end">{{pg.c.lastTxt}}</text>
       </svg>
     </sc-if>
     <div class="row" style="justify-content: space-between; gap: 12px; flex-wrap: wrap"><button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px" onClick="{{pg.rename}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Rename this exercise</button><button class="link" style="min-height: 40px; margin-top: 4px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; color: #F4A29A" onClick="{{pg.del}}" aria-label="Delete all data for {{pg.name}}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>Delete its data</button></div>
@@ -1764,7 +1779,7 @@ body.kb [data-chat-wrap]{bottom:0!important}
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px"><sc-for list="{{spl.tools}}" as="t" hint-placeholder-count="6"><button class="btn b-surf sm" style="font-size: 14px" onClick="{{t.go}}">{{t.label}}</button></sc-for></div>
   </div>
   </sc-if>
-  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 164</p>
+  <p class="mut" style="margin: 6px 4px 0; font-size: 12px; opacity: .6">Spark version 167</p>
 </div>
 </sc-if>
 
@@ -3975,6 +3990,7 @@ class Component extends DCLogic {
     const was = this.S();
     // Today's exercise list always starts collapsed when you come back to Today.
     if (patch && patch.screen && patch.screen !== was.screen && (was.pvOpen || was.pvOrder)) patch = Object.assign({}, patch, {pvOpen:false, pvOrder:false});
+    if (patch && patch.screen && patch.screen !== was.screen && was.pgShown) patch = Object.assign({}, patch, {pgShown:false});
     this.setState(Object.assign({}, was, patch));
     // Switching between a set and its rest always starts at the top of the page.
     if (patch && 'resting' in patch && !!patch.resting !== !!was.resting) {
@@ -4856,6 +4872,11 @@ class Component extends DCLogic {
     // Leaving the app (switching apps or locking the phone) also folds the list away.
     this.onHide = function(){ if (document.visibilityState === 'hidden') { const st = self.S(); if (st.pvOpen || st.pvOrder) self.set({pvOpen:false, pvOrder:false}); } };
     try { document.addEventListener('visibilitychange', this.onHide); } catch (e) {}
+    // Your strength chart: animate once it scrolls into view on Today.
+    if (this.S().pgShown) this.set({pgShown:false});
+    const pgCheck = function(){ try { const st = self.S(); if (st.pgShown || st.screen !== 'today') return; const el = document.querySelector('[data-pg-chart]'); if (!el) return; const r = el.getBoundingClientRect(); const vh = window.innerHeight || 800; if (r.top < vh * 0.88 && r.bottom > 0 && r.height > 0) self.set({pgShown:true}); } catch (e) {} };
+    this.onPgScroll = pgCheck; this.pgTimer = setInterval(pgCheck, 400);
+    try { document.addEventListener('scroll', this.onPgScroll, true); } catch (e) {}
     // Coach chat: when the keyboard opens (or the screen resizes), keep the coach's latest message in view above the text box.
     // Only if you were already at the latest message, so rereading older messages never gets yanked away.
     let chatPinned = true, pinT = [];
@@ -5749,15 +5770,21 @@ class Component extends DCLogic {
         const Y = function(v){ return hi - lo < 1e-6 ? 64 : 86 - (v - lo) / (hi - lo) * 46; };
         const pts = vals.map(function(v, k){ return X(k).toFixed(1) + ',' + Y(v).toFixed(1); });
         const color = x.up ? '#DDF58B' : '#B7A6F6';
+        // When the drawing line reaches each point (the line eases in and out over 1.05s), so each dot pops in as the line passes it.
+        const segs = [0]; for (let k = 1; k < n; k++) segs.push(segs[k - 1] + Math.hypot(X(k) - X(k - 1), Y(vals[k]) - Y(vals[k - 1])));
+        const totL = segs[n - 1] || 1;
+        const bz = function(a, b, u){ return 3 * a * u * (1 - u) * (1 - u) + 3 * b * u * u * (1 - u) + u * u * u; };
+        const whenAt = function(frac){ let lo = 0, hi = 1; for (let it = 0; it < 24; it++) { const m = (lo + hi) / 2; if (bz(0, 1, m) < frac) lo = m; else hi = m; } return bz(.65, .35, (lo + hi) / 2); };
+        const delayAt = function(k){ return Math.max(0, whenAt(segs[k] / totL) * 1.05).toFixed(2) + 's'; };
         const fy = Y(vals[0]), ly = Y(vals[n - 1]);
         const what = x.useW ? 'Working weight' : /second/.test(E.repUnit) ? 'Longest hold' : 'Best reps';
         return {multi:true, single:false, hint:'', name:E.name, sub: what + ' since ' + dlong(E.pts[0].at), up:x.up, flat:!x.up, gain:x.gain, color:color, gid:'pgG',
           pts:pts.join(' '), area:'M' + X(0).toFixed(1) + ',100 L' + pts.join(' L') + ' L' + X(n - 1).toFixed(1) + ',100 Z',
-          dots: vals.slice(1, -1).map(function(v, k){ return {cx:X(k + 1).toFixed(1), cy:Y(v).toFixed(1)}; }),
+          dots: vals.slice(1, -1).map(function(v, k){ return {cx:X(k + 1).toFixed(1), cy:Y(v).toFixed(1), delay:'animation-delay: ' + delayAt(k + 1)}; }), fDelay:'animation-delay: 0s', lDelay:'animation-delay: ' + delayAt(n - 1),
           fx:X(0).toFixed(1), fy:fy.toFixed(1), lx:X(n - 1).toFixed(1), ly:ly.toFixed(1), fty:(n > 1 && vals[1] >= vals[0] ? fy + 19 : fy - 11).toFixed(1), lty:(ly - 11 < 14 ? ly + 21 : ly - 11).toFixed(1),
           startTxt:x.txt(E.pts[0]), lastTxt:x.txt(E.pts[E.pts.length - 1]),
           aria:E.name + ': ' + what.toLowerCase() + ' from ' + x.txt(E.pts[0]) + ' on ' + dlong(E.pts[0].at) + ' to ' + x.txt(E.pts[E.pts.length - 1]) + ' last time' + (x.up ? ', up ' + x.gain : ', holding steady')}; };
-      const blank = {multi:false, single:false, hint:'', name:'', sub:'', up:false, flat:false, gain:'', color:'#DDF58B', gid:'pgG', pts:'', area:'', dots:[], fx:0, fy:0, lx:0, ly:0, fty:0, lty:0, startTxt:'', lastTxt:'', aria:''};
+      const blank = {multi:false, single:false, hint:'', name:'', sub:'', up:false, flat:false, gain:'', color:'#DDF58B', gid:'pgG', pts:'', area:'', dots:[], fDelay:'', lDelay:'', fx:0, fy:0, lx:0, ly:0, fty:0, lty:0, startTxt:'', lastTxt:'', aria:''};
       const c = !sel ? blank : sel.single ? Object.assign({}, blank, {single:true, name:sel.o.name, sub:'First logged ' + dlong(sel.o.at) + ': ' + sel.o.val, hint:'One session so far. Do it again and your line starts here.'}) : build(sel);
       const go = function(dir){ return function(){ const j = (idx + dir + items.length) % items.length; self.set({progEx:keyOf(items[j])}); }; };
       const selId = function(){ const nm = c.name; let id = null; (self.S().sessLog || []).forEach(function(e){ (e.items || []).forEach(function(it){ if (it.name === nm && EX[it.id]) id = it.id; }); }); if (!id) id = Object.keys(EX).find(function(k){ return EX[k].name === nm; }); return id; };
@@ -5765,7 +5792,10 @@ class Component extends DCLogic {
       const deleteSel = function(){ const id = selId(); if (id) self.set({cfm:{kind:'liftRm', id:id, name:c.name}}); };
       const picks = items.map(function(x, k){ const on = k === idx; return {name:keyOf(x), sub: x.single ? 'Logged once so far' : x.up ? x.gain + ' since ' + dshort(x.E.pts[0].at) : 'Holding steady', on:on, cls: on ? 'on' : '', pick:function(){ self.set({progEx:keyOf(x), progPick:false}); }}; });
       const at = st.adaptTotal || 0;
-      return {rename:renameSel, del:deleteSel, headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
+      // Restart the chart animation whenever the lift changes, or the chart first scrolls into view.
+      const animKey = (c.name || '') + '|' + (st.pgShown ? 1 : 0); if (self._pgKey !== animKey) { self._pgKey = animKey; self._pgN = (self._pgN || 0) + 1; }
+      const anim = st.pgShown ? 'g' + (self._pgN % 2) : 'gw';
+      return {anim:anim, rename:renameSel, del:deleteSel, headline:headline, tiles:tiles, tileN:tiles.length, hasLifts: lifts.length > 0 || once.length > 0, noLifts: !lifts.length && !once.length, showChips: present.length > 1, chips:chips, c:c, name:c.name, many: items.length > 1, prev:go(-1), next:go(1), openPick:function(){ self.set({progPick:true}); }, pickOn: !!st.progPick, closePick:function(){ self.set({progPick:false}); }, picks:picks, hasAdapt: at > 0, adaptLabel: at === 1 ? 'time you adapted a workout instead of leaving it' : 'times you adapted a workout instead of leaving it'};
     })();
     const firstLift = st.fresh && st.hist ? Object.keys(st.hist).filter(function(id){ return !EX[id].bw; })[0] : null;
 
